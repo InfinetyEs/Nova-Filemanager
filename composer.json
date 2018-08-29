@@ -1,0 +1,54 @@
+{
+    "name": "infinety-es/nova-filemanager",
+    "description": "Filemanager tool for Laravel Nova",
+    "keywords": [
+        "laravel",
+        "nova",
+        "filemanager"
+    ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../nova"
+        }
+    ],
+    "homepage": "https://github.com/krato/nova-filemanager",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eric Lagarda",
+            "email": "eric@infinety.es",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "laravel/nova": "*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^3.6",
+        "phpunit/phpunit": "7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Infinety\\Filemanager\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Infinety\\Filemanager\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Infinety\\Filemanager\\FilemanagerServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
