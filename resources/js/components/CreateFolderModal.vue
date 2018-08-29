@@ -25,59 +25,58 @@
 </template>
 
 <script>
-    import api from '../api';
+import api from '../api';
 
-    export default {
-    	props: {
-    		active: {
-    			type: Boolean,
-    			default: false,
-    			required: true
-    		},
-    		current: {
-    			type: String,
-    			default: '/',
-    			required: true
-    		}
-    	},
+export default {
+    props: {
+        active: {
+            type: Boolean,
+            default: false,
+            required: true,
+        },
+        current: {
+            type: String,
+            default: '/',
+            required: true,
+        },
+    },
 
-        data: () =>  ({
-        	folderName: null,
-        	error: false,
-            showUpload: false,
-            isSaving: false,
-        }),
+    data: () => ({
+        folderName: null,
+        error: false,
+        showUpload: false,
+        isSaving: false,
+    }),
 
-        methods: {
-            createFolder() {
-
-            	if (this.folderName == null) {
-            		this.error = true;
-            		return false;
-            	}
-
-                return api.createFolder(this.folderName, this.current).then(result => {
-                    this.error = false
-                    this.folderName = null
-                    if (result == true) {
-                    	this.$emit('closeCreateFolderModal', true)
-                    	this.$toasted.show(this.__('Folder created successfully'), { type: 'success' })
-                        this.$emit('refresh', true)
-                    } else {
-                        this.$toasted.show(this.__('Error creating the folder'), { type: 'error' })
-                    }
-                });
-            },
-
-            cancelCreate() {
-            	this.error = false
-            	this.folderName = null
-            	this.$emit('closeCreateFolderModal', true)
+    methods: {
+        createFolder() {
+            if (this.folderName == null) {
+                this.error = true;
+                return false;
             }
-        }
-    }
+
+            return api.createFolder(this.folderName, this.current).then(result => {
+                this.error = false;
+                this.folderName = null;
+                if (result == true) {
+                    this.$emit('closeCreateFolderModal', true);
+                    this.$toasted.show(this.__('Folder created successfully'), { type: 'success' });
+                    this.$emit('refresh', true);
+                } else {
+                    this.$toasted.show(this.__('Error creating the folder'), { type: 'error' });
+                }
+            });
+        },
+
+        cancelCreate() {
+            this.error = false;
+            this.folderName = null;
+            this.$emit('closeCreateFolderModal', true);
+        },
+    },
+};
 </script>
 
 <style>
-    /* Scoped Styles */
+/* Scoped Styles */
 </style>

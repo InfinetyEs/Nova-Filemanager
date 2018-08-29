@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import { FormField, HandlesValidationErrors } from 'laravel-nova'
-import FileSelect from './custom/FileSelect'
-import ModalFileManager from '../components/ModalFileManager'
+import { FormField, HandlesValidationErrors } from 'laravel-nova';
+import FileSelect from './custom/FileSelect';
+import ModalFileManager from '../components/ModalFileManager';
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -24,45 +24,43 @@ export default {
     props: ['resourceName', 'resourceId', 'field'],
 
     components: {
-      'file-select': FileSelect,
-      'modal-filemanager': ModalFileManager,
+        'file-select': FileSelect,
+        'modal-filemanager': ModalFileManager,
     },
 
-    data: () =>  ({
+    data: () => ({
         openModal: false,
     }),
 
     methods: {
-
         openFilemanagerModal() {
-            this.openModal = true
+            this.openModal = true;
         },
 
         closeFilemanagerModal() {
-            this.openModal = false
+            this.openModal = false;
         },
-
 
         /*
          * Set the initial, internal value for the field.
          */
         setInitialValue() {
-          this.value = this.field.value || ''
+            this.value = this.field.value || '';
         },
 
         /**
          * Fill the given FormData object with the field's internal value.
          */
         fill(formData) {
-          formData.append(this.field.attribute, this.value || '')
+            formData.append(this.field.attribute, this.value || '');
         },
 
         /**
          * Update the field's internal value.
          */
         handleChange(value) {
-          this.value = value
-        }
-    }
-}
+            this.value = value;
+        },
+    },
+};
 </script>

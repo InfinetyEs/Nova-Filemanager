@@ -5,5 +5,5 @@ Nova.booting((Vue, router) => {
             path: '/nova-filemanager',
             component: require('./components/Tool'),
         },
-    ])
-})
+    ]);
+});

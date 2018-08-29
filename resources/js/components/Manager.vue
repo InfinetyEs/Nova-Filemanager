@@ -60,125 +60,125 @@
 </template>
 
 <script>
-    import _ from 'lodash'
-    import api from '../api';
-    import ImageLoader from '../modules/ImageLoader'
-    import Folder from '../modules/Folder'
-    import DetailPopup from '../components/DetailPopup'
+import _ from 'lodash';
+import api from '../api';
+import ImageLoader from '../modules/ImageLoader';
+import Folder from '../modules/Folder';
+import DetailPopup from '../components/DetailPopup';
 
-    export default {
+export default {
+    components: {
+        ImageLoader: ImageLoader,
+        Folder: Folder,
+        DetailPopup: DetailPopup,
+    },
 
-        components: {
-            'ImageLoader': ImageLoader,
-            'Folder': Folder,
-            'DetailPopup': DetailPopup,
+    props: {
+        files: {
+            default: function() {
+                return [];
+            },
+            required: true,
+        },
+        path: {
+            default: function() {
+                return [];
+            },
+            required: true,
+        },
+        current: {
+            type: String,
+            default: '/',
+            required: true,
+        },
+        noFiles: {
+            type: Boolean,
+            default: false,
+            required: true,
+        },
+        popupLoaded: {
+            type: Boolean,
+            defalut: false,
+            required: false,
+        },
+    },
+
+    data: () => ({
+        loading: true,
+        info: {},
+        activeInfo: false,
+    }),
+
+    methods: {
+        goToFolder(path) {
+            this.$emit('goToFolderManager', path);
         },
 
-    	props: {
-    		files: {
-                default: function () {
-                    return []
-                },
-                required: true
-            }, 
-            path : {
-                default: function () {
-                    return []
-                },
-                required: true
-            },
-            current : {
-                type: String,
-                default: '/',
-                required: true
-            },
-            noFiles : {
-                type: Boolean,
-                default: false,
-                required: true
-            },
-            popupLoaded: {
-                type: Boolean,
-                defalut: false,
-                required: false
-            }
-    	},
-
-        data: () =>  ({
-            loading: true,
-            info: {},
-            activeInfo: false,
-        }),
-
-        methods: {
-            goToFolder(path) {
-                this.$emit('goToFolderManager', path)
-            },
-
-            goToFolderNav(path) {
-                this.$emit('goToFolderManagerNav', path)
-            },
-
-            checkIsLastItem(index){ 
-                return (_.size(this.path) == (parseInt(index) + 1)) ? true : false;
-            },
-
-            removeDirectory()
-            {
-                return api.removeDirectory(this.current).then(result => {
-                    if (result == true) {
-                        this.$toasted.show(this.__('Folder removed successfully'), { type: 'success' })
-                        this.$emit('goToFolderManager', '/');
-                    } else {
-                        this.$toasted.show(this.__('Error removing the folder. Please check permissions'), { type: 'error' })
-                    }
-                    
-                });
-            },
-
-            showInfo(file) {
-                return api.getInfo(file.path).then(result => {
-                    this.activeInfo = true;
-                    this.info = result;
-                });
-            },
-
-            closePreview(){
-                this.activeInfo = false;
-                this.info = {};
-            }, 
-
-            refresh() {
-                this.$emit('refresh');
-            }
+        goToFolderNav(path) {
+            this.$emit('goToFolderManagerNav', path);
         },
 
-        computed: {
-            pathsLength() {
-                return _.size(this.path);
-            },
+        checkIsLastItem(index) {
+            return _.size(this.path) == parseInt(index) + 1 ? true : false;
+        },
 
-            filesCount(){
-                return _.size(this.files);
-            }
-        }
-    }
+        removeDirectory() {
+            return api.removeDirectory(this.current).then(result => {
+                if (result == true) {
+                    this.$toasted.show(this.__('Folder removed successfully'), { type: 'success' });
+                    this.$emit('goToFolderManager', '/');
+                } else {
+                    this.$toasted.show(
+                        this.__('Error removing the folder. Please check permissions'),
+                        { type: 'error' }
+                    );
+                }
+            });
+        },
+
+        showInfo(file) {
+            return api.getInfo(file.path).then(result => {
+                this.activeInfo = true;
+                this.info = result;
+            });
+        },
+
+        closePreview() {
+            this.activeInfo = false;
+            this.info = {};
+        },
+
+        refresh() {
+            this.$emit('refresh');
+        },
+    },
+
+    computed: {
+        pathsLength() {
+            return _.size(this.path);
+        },
+
+        filesCount() {
+            return _.size(this.files);
+        },
+    },
+};
 </script>
 
 <style>
-    /* Scoped Styles */
-    .w-1\/8 {
-        width: 12.5%;
-    }
-    .w-40 {
-        width: 10rem;
-    }
+/* Scoped Styles */
+.w-1\/8 {
+    width: 12.5%;
+}
+.w-40 {
+    width: 10rem;
+}
 
-    .h-40 {
-        height: 10rem;
-    }
+.h-40 {
+    height: 10rem;
+}
 
-    .obfit-cover {
-        object-fit: cover;
-    }
+.obfit-cover {
+    object-fit: cover;
+}
 </style>

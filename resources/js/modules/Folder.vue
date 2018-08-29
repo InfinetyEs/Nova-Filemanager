@@ -22,16 +22,15 @@
 </template>
 
 <script>
-
 export default {
     props: {
         file: {
             type: Object,
-            default: function () {
-                return {name:''}
+            default: function() {
+                return { name: '' };
             },
-            required: true
-        }, 
+            required: true,
+        },
     },
 
     data: () => ({
@@ -40,15 +39,15 @@ export default {
     }),
 
     mounted() {
-        this.loading = false
+        this.loading = false;
     },
 
     methods: {
         goToFolder() {
-            this.$emit('goToFolderEvent', this.file.path)
-        }
-    }
-}
+            this.$emit('goToFolderEvent', this.file.path);
+        },
+    },
+};
 </script>
 
 <style scoped  lang="scss">
@@ -57,21 +56,20 @@ export default {
 
     &:hover {
         > svg {
-            opacity: .5;    
+            opacity: 0.5;
         }
     }
 }
-
 
 .h-5\/6 {
     height: 83.33333%;
 }
 
 .h-1\/6 {
-    height: 16.66667%
+    height: 16.66667%;
 }
 
 .h-2\/3 {
-        height: 75%;
+    height: 75%;
 }
 </style>

@@ -37,100 +37,95 @@
 </template>
 
 <script>
-    import URI from 'urijs';
-    import _ from 'lodash'
-    import api from '../api';
-    import CreateFolderModal from './CreateFolderModal';
-    import Manager from './Manager';
-    import Upload from './Upload';
+import URI from 'urijs';
+import _ from 'lodash';
+import api from '../api';
+import CreateFolderModal from './CreateFolderModal';
+import Manager from './Manager';
+import Upload from './Upload';
 
-    export default {
+export default {
+    components: {
+        upload: Upload,
+        'create-folder': CreateFolderModal,
+        manager: Manager,
+    },
 
-        components: {
-            'upload': Upload,
-            'create-folder': CreateFolderModal,
-            'manager': Manager
-        },
+    data: () => ({
+        loaded: false,
+        activeDisk: null,
+        activeDiskBackups: [],
+        backupStatusses: [],
+        showUpload: false,
+        showCreateFolder: false,
+        currentPath: '/',
+        files: [],
+        path: [],
+        noFiles: false,
+    }),
 
-        data: () =>  ({
-            loaded: false,
-            activeDisk: null,
-            activeDiskBackups: [],
-            backupStatusses: [],
-            showUpload: false,
-            showCreateFolder: false,
-            currentPath: '/',
-            files: [],
-            path: [],
-            noFiles: false,
-        }),
+    async created() {
+        let currentUrl = new URI();
 
-        async created() {
-            let currentUrl = new URI();
-
-            if (currentUrl.hasQuery('path')) {
-                let params = currentUrl.query(true);
-                this.currentPath = params.path
-            }
-
-            await this.getData(this.currentPath);
-
-            this.loaded = true;
-        },
-
-        methods: {
-
-            getData(pathToList)
-            {
-                this.files = [];
-                this.path = [];
-                this.noFiles = false;
-                return api.getData(pathToList).then(result => {
-                    if (_.size(result.files) == 0) {
-                        this.noFiles = true
-                    }
-                    this.files = result.files;
-                    this.path = result.path;
-                });
-            },
-
-            showModalCreateFolder() {
-                this.showCreateFolder = true;
-            },
-            closeModalCreateFolder() {
-                this.showCreateFolder = false;
-            },
-
-            refreshCurrent() {
-                this.getData(this.currentPath)
-            },
-
-            goToFolder(path) {
-                // this.currentPath = this.currentPath + '/' + path; 
-                this.getData(path)
-                this.currentPath = path;
-                history.pushState(null, null, '?path='+path);
-            },
-
-            goToFolderNav(path) {
-                this.getData(path)
-                this.currentPath = path;
-                if (this.currentPath == '/') {
-                    history.pushState(null, null, '?path='+path);    
-                } else {
-                    history.pushState(null, null, '?path='+path);
-                }
-            }
-        },
-
-        events: {
-            //
+        if (currentUrl.hasQuery('path')) {
+            let params = currentUrl.query(true);
+            this.currentPath = params.path;
         }
 
+        await this.getData(this.currentPath);
 
-    }
+        this.loaded = true;
+    },
+
+    methods: {
+        getData(pathToList) {
+            this.files = [];
+            this.path = [];
+            this.noFiles = false;
+            return api.getData(pathToList).then(result => {
+                if (_.size(result.files) == 0) {
+                    this.noFiles = true;
+                }
+                this.files = result.files;
+                this.path = result.path;
+            });
+        },
+
+        showModalCreateFolder() {
+            this.showCreateFolder = true;
+        },
+        closeModalCreateFolder() {
+            this.showCreateFolder = false;
+        },
+
+        refreshCurrent() {
+            this.getData(this.currentPath);
+        },
+
+        goToFolder(path) {
+            // this.currentPath = this.currentPath + '/' + path;
+            this.getData(path);
+            this.currentPath = path;
+            history.pushState(null, null, '?path=' + path);
+        },
+
+        goToFolderNav(path) {
+            this.getData(path);
+            this.currentPath = path;
+            if (this.currentPath == '/') {
+                history.pushState(null, null, '?path=' + path);
+            } else {
+                history.pushState(null, null, '?path=' + path);
+            }
+        },
+    },
+
+    events: {
+        //
+    },
+};
 </script>
 
 <style>
-    /* Scoped Styles */
+/* Scoped Styles */
 </style>

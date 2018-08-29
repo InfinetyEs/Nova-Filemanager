@@ -26,10 +26,9 @@
 </template>
 
 <script>
-import { Minimum } from 'laravel-nova'
+import { Minimum } from 'laravel-nova';
 
 export default {
-
     components: {
         //
     },
@@ -37,11 +36,11 @@ export default {
     props: {
         file: {
             type: Object,
-            default: function () {
-                return {name:'',}
+            default: function() {
+                return { name: '' };
             },
-            required: true
-        }, 
+            required: true,
+        },
     },
 
     data: () => ({
@@ -51,32 +50,31 @@ export default {
 
     mounted() {
         Minimum(
-
             window.axios.get(this.file.image, {
                 responseType: 'blob',
             })
         )
             .then(({ headers, data }) => {
-                const blob = new Blob([data], { type: headers['content-type'] })
-                let newImage = new Image()
-                newImage.src = window.URL.createObjectURL(blob)
-                newImage.className = 'block w-full'
-                newImage.draggable = false
-                this.$refs.imageDiv.appendChild(newImage)
-                this.loading = false
+                const blob = new Blob([data], { type: headers['content-type'] });
+                let newImage = new Image();
+                newImage.src = window.URL.createObjectURL(blob);
+                newImage.className = 'block w-full';
+                newImage.draggable = false;
+                this.$refs.imageDiv.appendChild(newImage);
+                this.loading = false;
             })
             .catch(error => {
                 if (error) {
-                    this.missing = true
-                    this.$emit('missing', true)
-                    this.loading = false    
+                    this.missing = true;
+                    this.$emit('missing', true);
+                    this.loading = false;
                 }
-            })
+            });
     },
     methods: {
         //
-    }
-}
+    },
+};
 </script>
 
 <style scoped  lang="scss">
@@ -84,21 +82,19 @@ export default {
     padding: 0 !important;
 }
 
-
 .h-5\/6 {
     height: 83.33333%;
 }
 
 .h-1\/6 {
-    height: 16.66667%
+    height: 16.66667%;
 }
-
 </style>
 
 <style>
-    .svg-mime {
-        width: 80px;
-        height: 75%;
-        fill: #62676d;
-    }
+.svg-mime {
+    width: 80px;
+    height: 75%;
+    fill: #62676d;
+}
 </style>

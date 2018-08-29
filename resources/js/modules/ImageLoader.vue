@@ -35,11 +35,9 @@
 </template>
 
 <script>
-import api from '../api'
-import { Minimum } from 'laravel-nova'
+import { Minimum } from 'laravel-nova';
 
 export default {
-
     components: {
         //
     },
@@ -47,11 +45,11 @@ export default {
     props: {
         file: {
             type: Object,
-            default: function () {
-                return {name:'',}
+            default: function() {
+                return { name: '' };
             },
-            required: true
-        }, 
+            required: true,
+        },
     },
 
     data: () => ({
@@ -62,37 +60,37 @@ export default {
     mounted() {
         if (this.file.mime == 'image') {
             Minimum(
-
                 window.axios.get(this.file.thumb, {
                     responseType: 'blob',
                 })
             )
                 .then(({ headers, data }) => {
-                    const blob = new Blob([data], { type: headers['content-type'] })
-                    let imageDiv = document.createElement('div')
-                    imageDiv.style.backgroundImage = "url('"+window.URL.createObjectURL(blob)+"')"
-                    imageDiv.className = 'block w-full h-full bg-center bg-cover h-2/3'
-                    imageDiv.draggable = false
-                    this.$refs.image.appendChild(imageDiv)
-                    this.loading = false
+                    const blob = new Blob([data], { type: headers['content-type'] });
+                    let imageDiv = document.createElement('div');
+                    imageDiv.style.backgroundImage =
+                        "url('" + window.URL.createObjectURL(blob) + "')";
+                    imageDiv.className = 'block w-full h-full bg-center bg-cover h-2/3';
+                    imageDiv.draggable = false;
+                    this.$refs.image.appendChild(imageDiv);
+                    this.loading = false;
                 })
                 .catch(error => {
                     if (error) {
-                        this.missing = true
-                        this.$emit('missing', true)
-                        this.loading = false    
+                        this.missing = true;
+                        this.$emit('missing', true);
+                        this.loading = false;
                     }
-                })
+                });
         } else {
-            this.loading = false
+            this.loading = false;
         }
     },
     methods: {
         showInfo() {
-            this.$emit('showInfo', this.file)
-        }
-    }
-}
+            this.$emit('showInfo', this.file);
+        },
+    },
+};
 </script>
 
 <style scoped  lang="scss">
@@ -100,28 +98,26 @@ export default {
     padding: 0 !important;
 
     &:hover {
-        > .image-block, > .mime-icon {
-            opacity: .5;    
-        }   
+        > .image-block,
+        > .mime-icon {
+            opacity: 0.5;
+        }
     }
-
 }
-
 
 .h-5\/6 {
     height: 83.33333%;
 }
 
 .h-1\/6 {
-    height: 16.66667%
+    height: 16.66667%;
 }
-
 </style>
 
 <style>
-    .svg-mime {
-        width: 80px;
-        height: 75%;
-        fill: #62676d;
-    }
+.svg-mime {
+    width: 80px;
+    height: 75%;
+    fill: #62676d;
+}
 </style>

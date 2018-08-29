@@ -102,113 +102,115 @@
 </template>
 
 <script>
-    import api from '../api';
-    import ImageInfo from '../modules/Image';
-    import ConfirmationButton from './ConfirmationButton';
-    import { copy } from 'v-copy'
+import api from '../api';
+import ImageInfo from '../modules/Image';
+import ConfirmationButton from './ConfirmationButton';
+import { copy } from 'v-copy';
 
-    export default {
-    	props: {
-            active: {
-                type: Boolean,
-                default: false,
-                required: true
+export default {
+    props: {
+        active: {
+            type: Boolean,
+            default: false,
+            required: true,
+        },
+        info: {
+            type: Object,
+            default: function() {
+                return { name: '' };
             },
-    		info: {
-                type: Object,
-                default: function () {
-                    return {name:'',}
-                },
-                required: true
-            },
-            popup: {
-                type: Boolean,
-                default: false,
-                required: false
-            }
-    	},
+            required: true,
+        },
+        popup: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
+    },
 
-    	components: {
-    		'ImageInfo': ImageInfo,
-            'ConfirmationButton': ConfirmationButton,
-    	},
+    components: {
+        ImageInfo: ImageInfo,
+        ConfirmationButton: ConfirmationButton,
+    },
 
-        directives: {
-            copy
+    directives: {
+        copy,
+    },
+
+    data: () => ({
+        messagesRemove: ['Remove File', 'Are you sure', 'Removing...'],
+    }),
+    mounted() {
+        //
+    },
+
+    methods: {
+        closePreview() {
+            this.$emit('closePreview', true);
         },
 
-        data: () =>  ({
-        	messagesRemove: [
-                'Remove File',
-                'Are you sure',
-                'Removing...'
-            ]
-        }),
-        mounted() {
-        	//
+        onCopy() {
+            this.$toasted.show(this.__('Text copied to clipboard'), { type: 'success' });
         },
 
-        methods: {
-            closePreview() {
-                this.$emit('closePreview', true)
-            },
+        removeFilePopup() {
+            this.closePreview();
 
-            onCopy() {
-              this.$toasted.show(this.__('Text copied to clipboard'), { type: 'success' })
-            },
-
-            removeFilePopup() {
-                this.closePreview();
-                
-                return api.removeFile(this.info.path).then(result => {
-                    if (result == true) {
-                        this.$toasted.show(this.__('File removed successfully'), { type: 'success' })
-                        this.$emit('refresh');
-                    } else {
-                        this.$toasted.show(this.__('Error removing the file. Please check permissions'), { type: 'error' })
-                    }
-                    
-                });
-            }
+            return api.removeFile(this.info.path).then(result => {
+                if (result == true) {
+                    this.$toasted.show(this.__('File removed successfully'), { type: 'success' });
+                    this.$emit('refresh');
+                } else {
+                    this.$toasted.show(
+                        this.__('Error removing the file. Please check permissions'),
+                        { type: 'error' }
+                    );
+                }
+            });
         },
-    }
+    },
+};
 </script>
 
 <style scoped lang="scss">
-    .buttons-actions {
-        padding-left: 1rem;
-        padding-right: 1rem;
-        border-left: 1px solid rgb(221, 221, 221);
-        // border-bottom: 1px solid rgb(221, 221, 221);
-        text-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+.buttons-actions {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-left: 1px solid rgb(221, 221, 221);
+    // border-bottom: 1px solid rgb(221, 221, 221);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.box-preview {
+    /*min-height: 500px;*/
+}
+
+.info {
+    .title,
+    .value {
+        font-size: 0.75rem;
     }
 
-    .box-preview {
-        /*min-height: 500px;*/
+    .value {
+        //-moz-user-select: text;
+         -khtml-user-select: text;
+         -webkit-user-select: text;
+         -ms-user-select: text;
+         user-select: text;
     }
 
-    .info {
-        .title, .value {
-            font-size: .75rem;
-        }
-
-        .value {
-            //
-        }
-
-        .copy {
-            &:active, &:focus {
-                outline: 0;
-            }
+    .copy {
+        &:active,
+        &:focus {
+            outline: 0;
         }
     }
+}
 </style>
 
 <style>
-    .no-preview  > .svg-mime {
-        width: 150px;
-        height: 100%;
-    }
+.no-preview > .svg-mime {
+    width: 150px;
+    height: 100%;
+}
 </style>
-
-
