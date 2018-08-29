@@ -3,8 +3,6 @@
 namespace Infinety\Filemanager\Http\Services;
 
 use Illuminate\Support\Facades\Storage;
-use Infinety\Filemanager\Http\Services\FileFunctions;
-use Infinety\Filemanager\Http\Services\FileTypesImages;
 
 trait GetFiles
 {
@@ -24,7 +22,7 @@ trait GetFiles
         $files = [];
 
         foreach ($filesData as $file) {
-            if (!$this->isDot($file) && !$this->exceptExtensions->contains($file['extension']) && !$this->exceptFolders->contains($file['basename']) && !$this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
+            if (! $this->isDot($file) && ! $this->exceptExtensions->contains($file['extension']) && ! $this->exceptFolders->contains($file['basename']) && ! $this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
                 $fileInfo = [
                     'id'         => md5(trim($file['basename']).$file['timestamp']),
                     'name'       => trim($file['basename']),
@@ -234,10 +232,10 @@ trait GetFiles
     public function normalizeFiles($files)
     {
         foreach ($files as $key => $file) {
-            if (!isset($file['extension'])) {
+            if (! isset($file['extension'])) {
                 $files[$key]['extension'] = null;
             }
-            if (!isset($file['size'])) {
+            if (! isset($file['size'])) {
                 $files[$key]['size'] = null;
             }
         }
@@ -288,11 +286,11 @@ trait GetFiles
     }
 
     /**
-     * Check if file is Dot
+     * Check if file is Dot.
      *
-     * @param   String   $file
+     * @param   string   $file
      *
-     * @return  boolean
+     * @return  bool
      */
     private function isDot($file)
     {

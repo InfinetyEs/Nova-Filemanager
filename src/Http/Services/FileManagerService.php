@@ -4,8 +4,6 @@ namespace Infinety\Filemanager\Http\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Infinety\Filemanager\Http\Services\GetFiles;
-use Infinety\Filemanager\Http\Services\NormalizeFile;
 
 class FileManagerService
 {
@@ -72,11 +70,11 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (!$order) {
+        if (! $order) {
             $order = 'type';
         }
         $filter = $request->get('filter');
-        if (!$filter) {
+        if (! $filter) {
             $filter = false;
         }
 
