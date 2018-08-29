@@ -33,7 +33,7 @@ trait FileFunctions
     }
 
     /**
-     * Clean Slashes
+     * Clean Slashes.
      *
      * @param $str
      *

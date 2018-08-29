@@ -4,7 +4,6 @@ namespace Infinety\Filemanager\Http\Services;
 
 class FileTypesImages
 {
-
     /**
      * @param $mime
      * @return mixed
@@ -39,12 +38,12 @@ class FileTypesImages
     }
 
     /**
-     * Check if mime has type
+     * Check if mime has type.
      *
-     * @param   String  $mime
-     * @param   String  $type
+     * @param   string  $mime
+     * @param   string  $type
      *
-     * @return  Boolean
+     * @return  bool
      */
     private function checkMime($mime, $type)
     {
