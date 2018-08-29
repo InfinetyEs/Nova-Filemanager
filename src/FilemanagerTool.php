@@ -7,7 +7,6 @@ use Laravel\Nova\Tool as BaseTool;
 
 class FilemanagerTool extends BaseTool
 {
-
     /**
      * @param $options
      * @param $component
