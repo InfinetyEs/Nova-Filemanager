@@ -1,5 +1,5 @@
 <template>
-    <portal to="modals">
+    <portal to="modals" name="File Preview">
         <transition name="fade">
             <modal v-if="active">
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 900px;">
@@ -74,11 +74,20 @@
 
                             <div class="info-actions w-full flex flex-wrap self-end justify-end">
                                 <!-- <button type="button" data-testid="cancel-button" @click.prevent="removeFilePopup" class="btn text-danger text-sm font-normal h-9 px-3 mr-3 btn-link">{{ __('Remove file') }}</button> -->
+                                <div :class="{ 'm-3': popup }">
+                                    <confirmation-button
+                                        :messages="messagesRemove"
+                                        :css="'btn text-danger text-sm font-normal h-9 px-3 mr-3 btn-link'"
+                                        v-on:confirmation-success="removeFilePopup()"></confirmation-button>
 
-                                <confirmation-button
-                                    :messages="messagesRemove"
-                                    :css="'btn text-danger text-sm font-normal h-9 px-3 mr-3 btn-link'"
-                                    v-on:confirmation-success="removeFilePopup()"></confirmation-button>
+
+                                    <template v-if="popup">
+                                        <button @click="showUpload = !showUpload" class="btn btn-default btn-primary">
+                                            {{ __('Select file') }}
+                                        </button>
+                                    </template>
+                                </div>
+                                
                             </div>
 
                         </div>
@@ -111,7 +120,12 @@
                     return {name:'',}
                 },
                 required: true
-            }, 
+            },
+            popup: {
+                type: Boolean,
+                default: false,
+                required: false
+            }
     	},
 
     	components: {

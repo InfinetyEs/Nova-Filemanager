@@ -39,7 +39,7 @@
                     <template v-if="!files.error" v-for="file in files">
                         <div class="w-1/6 h-40  px-2 mb-3" v-bind:key="file.id">
                             <template v-if="file.type == 'file'">
-                                <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:refresh="refresh" />
+                                <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
                             </template>
                             <template v-if="file.type == 'dir'">
                                 <Folder :file="file" class="h-40"  v-on:goToFolderEvent="goToFolder" />
@@ -52,7 +52,10 @@
                  
 
             </div>
+
+            
         </transition>
+        <DetailPopup :info="info" :active="activeInfo" :popup="popupLoaded" v-on:closePreview="closePreview" v-on:refresh="refresh"></DetailPopup>
     </div>
 </template>
 
@@ -61,12 +64,14 @@
     import api from '../api';
     import ImageLoader from '../modules/ImageLoader'
     import Folder from '../modules/Folder'
+    import DetailPopup from '../components/DetailPopup'
 
     export default {
 
         components: {
             'ImageLoader': ImageLoader,
             'Folder': Folder,
+            'DetailPopup': DetailPopup,
         },
 
     	props: {
@@ -91,11 +96,18 @@
                 type: Boolean,
                 default: false,
                 required: true
+            },
+            popupLoaded: {
+                type: Boolean,
+                defalut: false,
+                required: false
             }
     	},
 
         data: () =>  ({
             loading: true,
+            info: {},
+            activeInfo: false,
         }),
 
         methods: {
@@ -123,6 +135,18 @@
                     
                 });
             },
+
+            showInfo(file) {
+                return api.getInfo(file.path).then(result => {
+                    this.activeInfo = true;
+                    this.info = result;
+                });
+            },
+
+            closePreview(){
+                this.activeInfo = false;
+                this.info = {};
+            }, 
 
             refresh() {
                 this.$emit('refresh');

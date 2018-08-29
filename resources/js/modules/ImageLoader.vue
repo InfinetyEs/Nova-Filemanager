@@ -30,7 +30,6 @@
                 {{ file.name }}
             </div>
 
-            <DetailPopup :info="info" :active="activeInfo" v-on:closePreview="closePreview" v-on:refresh="refresh"></DetailPopup>
         </div>
     </transition>
 </template>
@@ -38,12 +37,11 @@
 <script>
 import api from '../api'
 import { Minimum } from 'laravel-nova'
-import DetailPopup from '../components/DetailPopup'
 
 export default {
 
     components: {
-        'DetailPopup': DetailPopup,
+        //
     },
 
     props: {
@@ -59,8 +57,6 @@ export default {
     data: () => ({
         loading: true,
         missing: false,
-        info: {},
-        activeInfo: false,
     }),
 
     mounted() {
@@ -93,19 +89,7 @@ export default {
     },
     methods: {
         showInfo() {
-            return api.getInfo(this.file.path).then(result => {
-                this.activeInfo = true;
-                this.info = result;
-            });
-        },
-
-        closePreview(){
-            this.activeInfo = false;
-            this.info = {};
-        }, 
-
-        refresh() {
-            this.$emit('refresh');
+            this.$emit('showInfo', this.file)
         }
     }
 }

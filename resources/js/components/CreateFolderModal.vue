@@ -1,5 +1,5 @@
 <template>
-    <portal to="modals">
+    <portal to="modals" name="Create Folder">
         <transition name="fade">
             <modal v-if="active">
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 800px;">

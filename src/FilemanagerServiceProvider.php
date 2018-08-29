@@ -24,7 +24,8 @@ class FilemanagerServiceProvider extends ServiceProvider
         });
 
         Nova::serving(function (ServingNova $event) {
-            //
+            Nova::script('filemanager-field', __DIR__.'/../dist/js/field.js');
+            Nova::style('filemanager-field', __DIR__.'/../dist/css/field.css');
         });
     }
 
