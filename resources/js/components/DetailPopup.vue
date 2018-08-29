@@ -193,10 +193,10 @@ export default {
 
     .value {
         //-moz-user-select: text;
-         -khtml-user-select: text;
-         -webkit-user-select: text;
-         -ms-user-select: text;
-         user-select: text;
+        -khtml-user-select: text;
+        -webkit-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
     }
 
     .copy {
