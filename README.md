@@ -1,11 +1,9 @@
 # Filemanager tool for Laravel Nova
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/infinety-es/nova-filemanager.svg?style=flat-square)](https://packagist.org/packages/infinety-es/nova-filemanager)
-![CircleCI branch](https://img.shields.io/circleci/project/github/infinety-es/nova-filemanager/master.svg?style=flat-square)
-[![Build Status](https://img.shields.io/travis/infinety-es/nova-filemanager/master.svg?style=flat-square)](https://travis-ci.org/infinety-es/nova-filemanager)
-[![Quality Score](https://img.shields.io/scrutinizer/g/infinety-es/nova-filemanager.svg?style=flat-square)](https://scrutinizer-ci.com/g/infinety-es/nova-filemanager)
+![CircleCI branch](https://img.shields.io/circleci/project/github/spatie/nova-tags-field/master.svg?style=flat-square)
+[![StyleCI](https://github.styleci.io/repos/146585053/shield?branch=master)](https://github.styleci.io/repos/146585053)
 [![Total Downloads](https://img.shields.io/packagist/dt/infinety-es/nova-filemanager.svg?style=flat-square)](https://packagist.org/packages/infinety-es/nova-filemanager)
-
 
 A Filemanager tool and Field for Laravel Nova
 
