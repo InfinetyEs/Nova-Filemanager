@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager;
 
-use Infinety\Filemanager\Http\Services\FileManagerService;
 use Laravel\Nova\Fields\Field;
+use Infinety\Filemanager\Http\Services\FileManagerService;
 
 class FilemanagerField extends Field
 {
@@ -15,7 +15,7 @@ class FilemanagerField extends Field
     public $component = 'filemanager-field';
 
     /**
-     * Set display in details and list as image or icon
+     * Set display in details and list as image or icon.
      *
      * @return $this
      */

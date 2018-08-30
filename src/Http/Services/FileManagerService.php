@@ -67,11 +67,11 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (!$order) {
+        if (! $order) {
             $order = 'type';
         }
         $filter = $request->get('filter');
-        if (!$filter) {
+        if (! $filter) {
             $filter = false;
         }
 
@@ -81,7 +81,7 @@ class FileManagerService
     }
 
     /**
-     *  Create a folder on current path
+     *  Create a folder on current path.
      *
      * @param $folder
      * @param $path
@@ -104,7 +104,7 @@ class FileManagerService
     }
 
     /**
-     * Removes a directory
+     * Removes a directory.
      *
      * @param $currentFolder
      *
@@ -120,7 +120,7 @@ class FileManagerService
     }
 
     /**
-     * Upload a file on current folder
+     * Upload a file on current folder.
      *
      * @param $file
      * @param $currentFolder
@@ -139,7 +139,7 @@ class FileManagerService
     }
 
     /**
-     * Get info of file normalized
+     * Get info of file normalized.
      *
      * @param $file
      *
@@ -155,7 +155,7 @@ class FileManagerService
     }
 
     /**
-     * Get info of file as Array
+     * Get info of file as Array.
      *
      * @param $file
      *
@@ -171,7 +171,7 @@ class FileManagerService
     }
 
     /**
-     * Remove a file from storage
+     * Remove a file from storage.
      *
      * @param $file
      *
