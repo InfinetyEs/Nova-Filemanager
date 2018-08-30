@@ -24,9 +24,9 @@
 
                             <template v-else-if="info.type == 'others'">
                                 
-                                  <audio controls>
+                                <audio controls>
                                     <source :src="info.src" :type="info.mime"/>
-                                  </audio>
+                                </audio>
                                 
                             </template>
                             
@@ -115,7 +115,6 @@ import ImageInfo from '../modules/Image';
 import ConfirmationButton from './ConfirmationButton';
 import { copy } from 'v-copy';
 
-
 export default {
     props: {
         active: {
@@ -138,8 +137,8 @@ export default {
     },
 
     components: {
-        'ImageInfo': ImageInfo,
-        'ConfirmationButton': ConfirmationButton,
+        ImageInfo: ImageInfo,
+        ConfirmationButton: ConfirmationButton,
     },
 
     directives: {
@@ -192,15 +191,17 @@ export default {
                         url: this.info.name,
                     },
                     autoplay: false,
-                    contextmenu: [{
-                        text: 'GitHub',
-                        link: 'https://github.com/MoePlayer/vue-dplayer'
-                    }]
-                }
+                    contextmenu: [
+                        {
+                            text: 'GitHub',
+                            link: 'https://github.com/MoePlayer/vue-dplayer',
+                        },
+                    ],
+                };
             }
-            return {}
-        }
-    }
+            return {};
+        },
+    },
 };
 </script>
 

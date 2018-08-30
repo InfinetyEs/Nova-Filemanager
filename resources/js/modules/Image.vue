@@ -43,8 +43,7 @@ export default {
         },
         css: {
             type: String,
-            default:
-                'card relative w-2/3 flex flex-wrap justify-center overflow-hidden px-0 py-0',
+            default: 'card relative w-2/3 flex flex-wrap justify-center overflow-hidden px-0 py-0',
             required: false,
         },
     },

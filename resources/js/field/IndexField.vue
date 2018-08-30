@@ -33,9 +33,9 @@ export default {
 </script>
 
 <style>
-    .svg-icon > svg {
-        width: 2rem;
-        height: 2rem;
-        fill: var(--80);
-    }
+.svg-icon > svg {
+    width: 2rem;
+    height: 2rem;
+    fill: var(--80);
+}
 </style>
