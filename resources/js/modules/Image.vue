@@ -4,7 +4,7 @@
         <div
             ref="card"
             :loading="loading"
-            class="card relative w-2/3 flex flex-wrap justify-center border border-lg border-50 overflow-hidden px-0 py-0 cursor-pointer"
+            :class="css"
         >
             <template v-if="loading">
                 <div class="rounded-lg flex items-center justify-center absolute pin z-50">
@@ -40,6 +40,12 @@ export default {
                 return { name: '' };
             },
             required: true,
+        },
+        css: {
+            type: String,
+            default:
+                'card relative w-2/3 flex flex-wrap justify-center overflow-hidden px-0 py-0',
+            required: false,
         },
     },
 
@@ -80,6 +86,8 @@ export default {
 <style scoped  lang="scss">
 .card {
     padding: 0 !important;
+    box-shadow: none;
+    border-radius: 0;
 }
 
 .h-5\/6 {

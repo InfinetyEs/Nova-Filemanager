@@ -2,7 +2,7 @@
     <default-field :field="field">
         <template slot="field">
 
-            <modal-filemanager :active="openModal" v-on:close-modal="closeFilemanagerModal" :value="value"></modal-filemanager>
+            <modal-filemanager :active="openModal" v-on:close-modal="closeFilemanagerModal" v-on:setFileValue="setValue" :value="value"></modal-filemanager>
 
             <file-select :id="field.name" :css="errorClasses"  v-model="value" v-on:open-modal="openFilemanagerModal"></file-select>
 
@@ -58,8 +58,8 @@ export default {
         /**
          * Update the field's internal value.
          */
-        handleChange(value) {
-            this.value = value;
+        setValue(file) {
+            this.value = file.path;
         },
     },
 };

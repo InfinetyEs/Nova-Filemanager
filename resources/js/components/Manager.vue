@@ -37,13 +37,25 @@
                     </template>
 
                     <template v-if="!files.error" v-for="file in files">
-                        <div class="w-1/6 h-40  px-2 mb-3" v-bind:key="file.id">
-                            <template v-if="file.type == 'file'">
-                                <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                        <div :class="filemanagerClass" v-bind:key="file.id">
+                            <template v-if="view == 'grid'">
+                                <template v-if="file.type == 'file'">
+                                    <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                </template>
+                                <template v-if="file.type == 'dir'">
+                                    <Folder :file="file" class="h-40" v-on:goToFolderEvent="goToFolder" />
+                                </template>
                             </template>
-                            <template v-if="file.type == 'dir'">
-                                <Folder :file="file" class="h-40"  v-on:goToFolderEvent="goToFolder" />
+
+                            <template v-else>
+                                <template v-if="file.type == 'file'">
+                                    <ImageLoader :file="file" :view="view" class="h-8" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                </template>
+                                <template v-if="file.type == 'dir'">
+                                    <Folder :file="file" :view="view" class="h-8" v-on:goToFolderEvent="goToFolder" />
+                                </template>
                             </template>
+                            
                         </div>
                     </template>
 
@@ -55,7 +67,16 @@
 
             
         </transition>
-        <DetailPopup :info="info" :active="activeInfo" :popup="popupLoaded" v-on:closePreview="closePreview" v-on:refresh="refresh"></DetailPopup>
+        <DetailPopup 
+            :info="info"
+            :active="activeInfo"
+            :popup="popupLoaded"
+            v-on:closePreview="closePreview" 
+            v-on:refresh="refresh"
+            v-on:selectFile="selectFile"
+        >
+                
+        </DetailPopup>
     </div>
 </template>
 
@@ -99,6 +120,11 @@ export default {
         popupLoaded: {
             type: Boolean,
             defalut: false,
+            required: false,
+        },
+        view: {
+            type: String,
+            default: 'grid',
             required: false,
         },
     },
@@ -151,6 +177,10 @@ export default {
         refresh() {
             this.$emit('refresh');
         },
+
+        selectFile(file) {
+            this.$emit('selectFile', file);
+        },
     },
 
     computed: {
@@ -160,6 +190,22 @@ export default {
 
         filesCount() {
             return _.size(this.files);
+        },
+
+        filemanagerClass() {
+            if (this.view == 'grid') {
+                return 'w-1/6 h-40  px-2 mb-3';
+            } else {
+                return 'w-full h-8  px-2 mb-3';
+            }
+        },
+
+        filemanagerIconClass() {
+            if (this.view == 'grid') {
+                return 'h-40';
+            } else {
+                return 'h-8';
+            }
         },
     },
 };

@@ -2,10 +2,10 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use SplFileInfo;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Collection;
+use SplFileInfo;
 
 class NormalizeFile
 {
@@ -70,6 +70,18 @@ class NormalizeFile
             $data->put('dimensions', $this->getDimensions($this->storage->getMimetype($this->storagePath)));
         }
 
+        // Video
+        if (str_contains($mime, 'audio')) {
+            $data->put('type', 'audio');
+            $src = str_replace(env('APP_URL'), '', $this->storage->url($this->storagePath));
+            $data->put('src', $src);
+        }
+
+        // Video
+        if (str_contains($mime, 'video')) {
+            $data->put('type', 'video');
+        }
+
         $data->put('image', $this->getImage($mime));
 
         return $data;
@@ -99,7 +111,7 @@ class NormalizeFile
         if (str_contains($mime, 'image')) {
             list($width, $height) = getimagesize($this->storage->path($this->storagePath));
 
-            if (! empty($width) && ! empty($height)) {
+            if (!empty($width) && !empty($height)) {
                 return $width.'x'.$height;
             }
         }

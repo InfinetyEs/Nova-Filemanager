@@ -12,14 +12,35 @@
 
         <div class="card relative">
 
-            <div class="p-3 flex items-center border-b border-50">
-                <button @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
-                    {{ __('Upload') }}
-                </button>
+            <div class="p-3 flex items-center justify-between border-b border-50">
+                <div class="flex flex-wrap">
+                    <button @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
+                        {{ __('Upload') }}
+                    </button>
 
-                <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
-                    {{ __('Create folder') }}
-                </button>
+                    <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
+                        {{ __('Create folder') }}
+                    </button>
+                </div>
+
+                <div class="flex flex-wrap">
+
+
+                    <!-- <button @click="changeToList" class="btn btn-link mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" height="24" width="24">
+                          <circle cx="24.879" cy="64" r="10.059" fill="#2f3435"/>
+                          <circle cx="24.878" cy="100.09" r="10.059" fill="#2f3435"/>
+                          <circle cx="24.879" cy="27.91" r="10.058" fill="#2f3435"/>
+                          <path fill="none" stroke="#2f3435" stroke-miterlimit="10" stroke-width="14.334" d="M48.682 27.91h64.501M48.682 64h64.501M48.682 100.09h64.501"/>
+                        </svg>
+                    </button>
+
+                    <button @click="changeToGrid" class="btn btn-link mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M5 3h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5h-4zM5 13h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4h-4z"/></svg>
+                    </button> -->
+
+                </div>
+                
             </div>
             
             <manager 
@@ -27,6 +48,7 @@
                 :path="path"
                 :current="currentPath"
                 :noFiles="noFiles"
+                :view="view"
                 v-on:goToFolderManager="goToFolder"
                 v-on:goToFolderManagerNav="goToFolderNav"
                 v-on:refresh="refreshCurrent"
@@ -62,6 +84,7 @@ export default {
         files: [],
         path: [],
         noFiles: false,
+        view: 'grid',
     }),
 
     async created() {
@@ -117,6 +140,16 @@ export default {
             } else {
                 history.pushState(null, null, '?path=' + path);
             }
+        },
+
+        changeToList() {
+            this.view = 'list';
+            localStorage.setItem('view', 'list');
+        },
+
+        changeToGrid() {
+            this.view = 'grid';
+            localStorage.setItem('view', 'grid');
         },
     },
 

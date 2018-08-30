@@ -2,6 +2,7 @@
 
 namespace Infinety\Filemanager;
 
+use Infinety\Filemanager\Http\Services\FileManagerService;
 use Laravel\Nova\Fields\Field;
 
 class FilemanagerField extends Field
@@ -14,13 +15,38 @@ class FilemanagerField extends Field
     public $component = 'filemanager-field';
 
     /**
-     * Set the hues that may be selected by the color picker.
+     * Set display in details and list as image or icon
      *
-     * @param  array  $hues
      * @return $this
      */
-    public function disk(array $disk)
+    public function displayAsImage()
     {
-        return $this->withMeta(['disk' => $disk]);
+        return $this->withMeta(['display' => 'image']);
+    }
+
+    /**
+     * Resolve the thumbnail URL for the field.
+     *
+     * @return string|null
+     */
+    public function resolveInfo()
+    {
+        if ($this->value) {
+            $service = new FileManagerService();
+
+            return $service->getFileInfoAsArray($this->value);
+        }
+
+        return [];
+    }
+
+    /**
+     * Get additional meta information to merge with the element payload.
+     *
+     * @return array
+     */
+    public function meta()
+    {
+        return array_merge($this->resolveInfo(), $this->meta);
     }
 }

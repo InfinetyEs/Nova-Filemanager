@@ -44,7 +44,7 @@ class FileManagerService
      */
     public function __construct()
     {
-        $this->disk = 'public';
+        $this->disk = env('FILEMANAGER_DISK', 'public');
         $this->storage = Storage::disk($this->disk);
         $this->exceptFiles = collect([]);
         $this->exceptFolders = collect([]);
@@ -57,10 +57,7 @@ class FileManagerService
      *
      * @param Request $request
      *
-     * @throws \Exception
-     * @throws \Throwable
-     *
-     * @return string
+     * @return json
      */
     public function ajaxGetFilesAndFolders(Request $request)
     {
@@ -70,11 +67,11 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (! $order) {
+        if (!$order) {
             $order = 'type';
         }
         $filter = $request->get('filter');
-        if (! $filter) {
+        if (!$filter) {
             $filter = false;
         }
 
@@ -84,12 +81,21 @@ class FileManagerService
     }
 
     /**
+     *  Create a folder on current path
+     *
      * @param $folder
      * @param $path
+     *
+     * @return  json
      */
     public function createFolderOnPath($folder, $currentFolder)
     {
         $path = $currentFolder.'/'.$folder;
+
+        if ($this->storage->has($path)) {
+            return response()->json(['error' => __('The folder exist in current path')]);
+        }
+
         if ($this->storage->makeDirectory($path)) {
             return response()->json(true);
         } else {
@@ -98,7 +104,11 @@ class FileManagerService
     }
 
     /**
+     * Removes a directory
+     *
      * @param $currentFolder
+     *
+     * @return  json
      */
     public function deleteDirectory($currentFolder)
     {
@@ -110,20 +120,30 @@ class FileManagerService
     }
 
     /**
+     * Upload a file on current folder
+     *
      * @param $file
      * @param $currentFolder
+     *
+     * @return  json
      */
     public function uploadFile($file, $currentFolder)
     {
-        if ($this->storage->putFileAs($currentFolder, $file, $file->getClientOriginalName())) {
-            return response()->json(true);
+        $fileName = $this->checkFileExists($currentFolder, $file);
+
+        if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
+            return response()->json(['success' => true, 'name' => $fileName]);
         } else {
-            return response()->json(false);
+            return response()->json(['success' => false]);
         }
     }
 
     /**
+     * Get info of file normalized
+     *
      * @param $file
+     *
+     * @return  json
      */
     public function getFileInfo($file)
     {
@@ -135,7 +155,27 @@ class FileManagerService
     }
 
     /**
+     * Get info of file as Array
+     *
      * @param $file
+     *
+     * @return  json
+     */
+    public function getFileInfoAsArray($file)
+    {
+        $fullPath = $this->storage->path($file);
+
+        $info = new NormalizeFile($this->storage, $fullPath, $file);
+
+        return $info->toArray();
+    }
+
+    /**
+     * Remove a file from storage
+     *
+     * @param $file
+     *
+     * @return  json
      */
     public function removeFile($files)
     {
@@ -144,5 +184,20 @@ class FileManagerService
         } else {
             return response()->json(false);
         }
+    }
+
+    /**
+     * @param $filePath
+     */
+    private function checkFileExists($currentFolder, $file)
+    {
+        if ($this->storage->has($currentFolder.'/'.$file->getClientOriginalName())) {
+            $random = str_random(7);
+            $newName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.mb_strtolower($random);
+
+            return $newName.'.'.$file->getClientOriginalExtension();
+        }
+
+        return $file->getClientOriginalName();
     }
 }

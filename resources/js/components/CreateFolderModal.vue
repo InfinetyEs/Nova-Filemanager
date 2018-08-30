@@ -2,11 +2,11 @@
     <portal to="modals" name="Create Folder">
         <transition name="fade">
             <modal v-if="active">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 800px;">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 600px;">
                     <div class="p-8">
                         <heading :level="2" class="mb-6">Create Folder</heading>
-                        <input type="text" class="w-full h-full form-control form-input form-input-bordered py-3" placeholder="Write a folder name" v-model="folderName" required>
-                        <p class="my-2 text-danger" v-if="error">The folder name is required.</p>
+                        <input type="text" class="w-full h-full form-control form-input form-input-bordered py-3" placeholder="Write a folder name" v-model="folderName" autofocus required>
+                        <p class="my-2 text-danger" v-if="error">{{ errorMsg }}</p>
                     </div>
 
                     <div class="bg-30 px-6 py-3 flex">
@@ -44,6 +44,7 @@ export default {
     data: () => ({
         folderName: null,
         error: false,
+        errorMsg: 'The folder name is required.',
         showUpload: false,
         isSaving: false,
     }),
@@ -63,7 +64,16 @@ export default {
                     this.$toasted.show(this.__('Folder created successfully'), { type: 'success' });
                     this.$emit('refresh', true);
                 } else {
-                    this.$toasted.show(this.__('Error creating the folder'), { type: 'error' });
+                    this.error = true;
+                    if (result.error) {
+                        this.errorMsg = result.error;
+                        this.$toasted.show(this.__('Error:') + ' ' + result.error, {
+                            type: 'error',
+                        });
+                    } else {
+                        this.errorMsg = 'The folder name is required.';
+                        this.$toasted.show(this.__('Error creating the folder'), { type: 'error' });
+                    }
                 }
             });
         },

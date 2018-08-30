@@ -21,6 +21,14 @@
                             <template v-if="info.type == 'image'">
                                 <ImageInfo :file="info" />
                             </template>
+
+                            <template v-else-if="info.type == 'others'">
+                                
+                                  <audio controls>
+                                    <source :src="info.src" :type="info.mime"/>
+                                  </audio>
+                                
+                            </template>
                             
                             <template v-else>
                                 <object class="no-preview" v-html="info.image">
@@ -82,7 +90,7 @@
 
 
                                     <template v-if="popup">
-                                        <button @click="showUpload = !showUpload" class="btn btn-default btn-primary">
+                                        <button @click="selectFile" class="btn btn-default btn-primary">
                                             {{ __('Select file') }}
                                         </button>
                                     </template>
@@ -107,6 +115,7 @@ import ImageInfo from '../modules/Image';
 import ConfirmationButton from './ConfirmationButton';
 import { copy } from 'v-copy';
 
+
 export default {
     props: {
         active: {
@@ -129,8 +138,8 @@ export default {
     },
 
     components: {
-        ImageInfo: ImageInfo,
-        ConfirmationButton: ConfirmationButton,
+        'ImageInfo': ImageInfo,
+        'ConfirmationButton': ConfirmationButton,
     },
 
     directives: {
@@ -168,7 +177,30 @@ export default {
                 }
             });
         },
+
+        selectFile() {
+            this.closePreview();
+            this.$emit('selectFile', this.info);
+        },
     },
+
+    computed: {
+        playerOptions() {
+            if (this.info) {
+                return {
+                    video: {
+                        url: this.info.name,
+                    },
+                    autoplay: false,
+                    contextmenu: [{
+                        text: 'GitHub',
+                        link: 'https://github.com/MoePlayer/vue-dplayer'
+                    }]
+                }
+            }
+            return {}
+        }
+    }
 };
 </script>
 

@@ -65,10 +65,10 @@ export default {
         },
 
         vsuccess(file, response) {
-            if (response == true) {
+            if (response.success == true) {
                 this.$refs.dropzone.removeFile(file);
                 this.$toasted.show(
-                    this.__('File') + ' ' + file.name + ' ' + this.__('uploaded successfully'),
+                    this.__('File') + ' ' + response.name + ' ' + this.__('uploaded successfully'),
                     { type: 'success' }
                 );
                 this.$emit('refresh', true);

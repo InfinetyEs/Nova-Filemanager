@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="flex flex-wrap">
-                        <div class="card relative">
+                        <div class="card relative w-full">
 
                             <transition name="fade">
                                 <div class="w-full border-dashed border-grey border-50 mb-4" v-if="showUpload">
@@ -41,6 +41,7 @@
                                 v-on:goToFolderManager="goToFolder"
                                 v-on:goToFolderManagerNav="goToFolderNav"
                                 v-on:refresh="refreshCurrent"
+                                v-on:selectFile="setFileValue"
                             />
 				            
                         </div>
@@ -134,6 +135,11 @@ export default {
 
         closeModal() {
             this.$emit('close-modal');
+        },
+
+        setFileValue(file) {
+            this.closeModal();
+            this.$emit('setFileValue', file);
         },
     },
 

@@ -8,17 +8,6 @@ use Laravel\Nova\Tool as BaseTool;
 class FilemanagerTool extends BaseTool
 {
     /**
-     * @param $options
-     * @param $component
-     */
-    public function __construct($component = null)
-    {
-        // $this->meta = $options;
-
-        parent::__construct();
-    }
-
-    /**
      * Perform any tasks that need to happen when the tool is booted.
      *
      * @return void
@@ -26,7 +15,6 @@ class FilemanagerTool extends BaseTool
     public function boot()
     {
         Nova::script('nova-filemanager', __DIR__.'/../dist/js/tool.js');
-        // Nova::style('nova-filemanager', __DIR__.'/../dist/css/tool.css');
     }
 
     /**
