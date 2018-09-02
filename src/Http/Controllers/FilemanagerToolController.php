@@ -50,6 +50,8 @@ class FilemanagerToolController extends Controller
      */
     public function upload(Request $request)
     {
+        sleep(5);
+
         return $this->service->uploadFile($request->file, $request->current);
     }
 

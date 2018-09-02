@@ -1,5 +1,5 @@
 <template>
-    <div v-if="loaded">
+    <div v-if="loaded" ref="filemanager-container">
         <heading class="mb-6">FileManager</heading>
 
         <transition name="fade">
@@ -8,9 +8,11 @@
             </div>
         </transition>
 
+        <UploadProgress :current="currentPath" :files="filesToUpload"  v-on:removeFile="removeFileFromUpload"></UploadProgress>
+
         <create-folder :active="showCreateFolder" :current="currentPath" v-on:closeCreateFolderModal="closeModalCreateFolder" v-on:refresh="refreshCurrent" />
 
-        <div class="card relative">
+        <div class="card relative" id="filemanager-manager" :class="cssFilemenagerContainer">
 
             <div class="p-3 flex items-center justify-between border-b border-50">
                 <div class="flex flex-wrap">
@@ -61,16 +63,22 @@
 <script>
 import URI from 'urijs';
 import _ from 'lodash';
+import filesize from 'filesize';
+import MD5 from '../tools/md5'
 import api from '../api';
 import CreateFolderModal from './CreateFolderModal';
 import Manager from './Manager';
 import Upload from './Upload';
+import UploadProgress from './UploadProgress';
+
+let arrayFiles = [];
 
 export default {
     components: {
         upload: Upload,
         'create-folder': CreateFolderModal,
         manager: Manager,
+        'UploadProgress': UploadProgress,
     },
 
     data: () => ({
@@ -85,6 +93,9 @@ export default {
         path: [],
         noFiles: false,
         view: 'grid',
+        cssDragAndDrop: null,
+        eventsLoaded: false,
+        filesToUpload: [],
     }),
 
     async created() {
@@ -98,6 +109,15 @@ export default {
         await this.getData(this.currentPath);
 
         this.loaded = true;
+    },
+
+    updated: function () {
+        if (!this.eventsLoaded) {
+            this.$nextTick(function () {
+                this.eventsLoaded = true;
+                this.setDragAndDropEvents();
+            })    
+        }        
     },
 
     methods: {
@@ -123,6 +143,11 @@ export default {
 
         refreshCurrent() {
             this.getData(this.currentPath);
+        },
+
+        refreshCurrentAfterUpload() {
+            this.getData(this.currentPath);
+            this.filesToUpload = []
         },
 
         goToFolder(path) {
@@ -151,11 +176,94 @@ export default {
             this.view = 'grid';
             localStorage.setItem('view', 'grid');
         },
+
+        setDragAndDropEvents() {
+            console.log("timesss");
+            let self = this;
+            let filemanagerContainer = document.querySelector("#filemanager-manager");
+
+            filemanagerContainer.addEventListener("dragenter", function (e) {
+                e.preventDefault();
+                self.cssDragAndDrop = "inside";
+            });
+
+            filemanagerContainer.addEventListener("dragleave", function (e) {
+                e.preventDefault();
+                self.cssDragAndDrop = "outside";
+            });
+
+            filemanagerContainer.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                self.cssDragAndDrop = "inside";
+            });
+
+            filemanagerContainer.addEventListener("drop", function (e) {
+                e.preventDefault();
+                self.cssDragAndDrop = "drop";
+              
+                let files = e.dataTransfer.files;
+
+                
+                Array.from(files).forEach((file) => {
+                    arrayFiles.push({
+                        id: MD5(file.name),
+                        preview: self.getPreview(file),
+                        type: file.type,
+                        name: file.name,
+                        size: filesize(file.size),
+                        upload: true,
+                        progress: 0,
+                        error: false,
+                        file: file,
+                    })
+                })
+
+                self.filesToUpload = arrayFiles;
+                console.log("Drop files:", self.filesToUpload);
+                //this.uploadFile(files);
+            });
+        },
+
+        getPreview(file) {
+            
+            if (this.isImage(file)) {
+                return  URL.createObjectURL(file);
+            }
+
+            return file.name.split('.').pop();;
+        },
+
+        isImage(file){
+           return (file.type.includes('image'));//returns true or false
+        },
+
+        removeFileFromUpload(uploadedFileIndex) {
+            this.$delete(this.filesToUpload, uploadedFileIndex)
+
+            if (this.filesToUpload.length === 0) {
+                this.refreshCurrent()
+            }
+        }
     },
 
-    events: {
-        //
-    },
+    computed: {
+        cssFilemenagerContainer() {
+            console.log(this.cssDragAndDrop)
+            if (this.cssDragAndDrop == 'inside') {
+                return 'bg-20';
+            }
+
+            if (this.cssDragAndDrop == 'outside') {
+                return '';
+            }
+
+
+            return '';
+        }
+    }
+    
+
+ 
 };
 </script>
 
