@@ -12,7 +12,7 @@
                 </div>
             </template>
 
-            <div ref="imageDiv" class="image-block block w-full h-5/6">
+            <div ref="imageDiv" class="image-block flex flex-justift w-full h-5/6">
 
             </div>
 
@@ -43,7 +43,8 @@ export default {
         },
         css: {
             type: String,
-            default: 'card relative w-2/3 flex flex-wrap justify-center overflow-hidden px-0 py-0',
+            default:
+                'card relative w-2/3 flex flex-wrap justify-center items-center overflow-hidden px-0 py-0',
             required: false,
         },
     },
@@ -63,7 +64,7 @@ export default {
                 const blob = new Blob([data], { type: headers['content-type'] });
                 let newImage = new Image();
                 newImage.src = window.URL.createObjectURL(blob);
-                newImage.className = 'block w-full';
+                newImage.className = 'image block w-full';
                 newImage.draggable = false;
                 this.$refs.imageDiv.appendChild(newImage);
                 this.loading = false;
@@ -82,7 +83,7 @@ export default {
 };
 </script>
 
-<style scoped  lang="scss">
+<style scoped lang="scss">
 .card {
     padding: 0 !important;
     box-shadow: none;
@@ -96,12 +97,34 @@ export default {
 .h-1\/6 {
     height: 16.66667%;
 }
+
+.image-block {
+    max-height: 500px;
+
+    .image {
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+    }
+}
 </style>
 
-<style>
+<style lang="scss">
 .svg-mime {
     width: 80px;
     height: 75%;
     fill: #62676d;
+}
+
+.image-block {
+    .image {
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+    }
 }
 </style>
