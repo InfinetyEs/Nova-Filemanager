@@ -215,7 +215,7 @@ export default {
 }
 
 .box-preview {
-    /*min-height: 500px;*/
+    max-height: 500px;
 }
 
 .info {
