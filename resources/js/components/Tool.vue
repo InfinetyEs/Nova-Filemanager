@@ -49,6 +49,7 @@
                 :current="currentPath"
                 :noFiles="noFiles"
                 :view="view"
+                :loading="loadingfiles"
                 v-on:goToFolderManager="goToFolder"
                 v-on:goToFolderManagerNav="goToFolderNav"
                 v-on:refresh="refreshCurrent"
@@ -75,6 +76,7 @@ export default {
 
     data: () => ({
         loaded: false,
+        loadingfiles: false,
         activeDisk: null,
         activeDiskBackups: [],
         backupStatusses: [],
@@ -105,12 +107,14 @@ export default {
             this.files = [];
             this.path = [];
             this.noFiles = false;
+            this.loadingfiles = true;
             return api.getData(pathToList).then(result => {
                 if (_.size(result.files) == 0) {
                     this.noFiles = true;
                 }
                 this.files = result.files;
                 this.path = result.path;
+                this.loadingfiles = false;
             });
         },
 

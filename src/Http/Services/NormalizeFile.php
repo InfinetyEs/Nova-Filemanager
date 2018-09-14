@@ -2,10 +2,10 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use SplFileInfo;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Collection;
+use SplFileInfo;
 
 class NormalizeFile
 {
@@ -46,9 +46,9 @@ class NormalizeFile
             'name' => $this->file->getFilename(),
             'mime' => $this->storage->getMimetype($this->storagePath),
             'path' => $this->storagePath,
-            'size' => ($this->file->getSize() != 0) ? $this->formatBytes($this->file->getSize(), 0) : 0,
+            'size' => $this->getFileSize(),
             'url'  => $this->cleanSlashes($this->storage->url($this->storagePath)),
-            'date' => $this->modificationDate($this->file->getMTime()),
+            'date' => $this->modificationDate(),
         ]);
 
         $data = $this->setExtras($data);
@@ -67,7 +67,7 @@ class NormalizeFile
         // Image
         if (str_contains($mime, 'image')) {
             $data->put('type', 'image');
-            $data->put('dimensions', $this->getDimensions($this->storage->getMimetype($this->storagePath)));
+            // $data->put('dimensions', $this->getDimensions($this->storage->getMimetype($this->storagePath)));
         }
 
         // Video
@@ -85,6 +85,15 @@ class NormalizeFile
         $data->put('image', $this->getImage($mime));
 
         return $data;
+    }
+
+    public function getFileSize()
+    {
+        try {
+            return ($this->file->getSize() != 0) ? $this->formatBytes($this->file->getSize(), 0) : 0;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -108,10 +117,14 @@ class NormalizeFile
      */
     private function getDimensions($mime)
     {
+        if ($this->disk != 'public') {
+            return false;
+        }
+
         if (str_contains($mime, 'image')) {
             list($width, $height) = getimagesize($this->storage->path($this->storagePath));
 
-            if (! empty($width) && ! empty($height)) {
+            if (!empty($width) && !empty($height)) {
                 return $width.'x'.$height;
             }
         }
@@ -122,8 +135,12 @@ class NormalizeFile
     /**
      * @param $timestamp
      */
-    public function modificationDate($timestamp)
+    public function modificationDate()
     {
-        return Carbon::createFromTimestamp($timestamp)->format('Y-m-d H:i:s');
+        try {
+            return Carbon::createFromTimestamp($this->file->getMTime())->format('Y-m-d H:i:s');
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

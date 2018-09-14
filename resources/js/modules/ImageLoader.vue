@@ -67,8 +67,16 @@ export default {
                 .then(({ headers, data }) => {
                     const blob = new Blob([data], { type: headers['content-type'] });
                     let imageDiv = document.createElement('div');
+                    let imageBlog = null
+
+                    if (window.webkitURL) {
+                        imageBlog = window.webkitURL.createObjectURL(blob);
+                    } else if (window.URL && window.URL.createObjectURL) {
+                        imageBlog = window.URL.createObjectURL(blob);
+                    }
+
                     imageDiv.style.backgroundImage =
-                        "url('" + window.URL.createObjectURL(blob) + "')";
+                        "url('" + imageBlog + "')";
                     imageDiv.className = 'block w-full h-full bg-center bg-cover h-2/3';
                     imageDiv.draggable = false;
                     this.$refs.image.appendChild(imageDiv);
@@ -76,8 +84,13 @@ export default {
                 })
                 .catch(error => {
                     if (error) {
-                        this.missing = true;
-                        this.$emit('missing', true);
+                        //defaulImage
+                        let imageDiv = document.createElement('div');
+                        imageDiv.style.backgroundImage =
+                        "url('" + this.file.thumb + "')";
+                        imageDiv.className = 'block w-full h-full bg-center bg-cover h-2/3';
+                        imageDiv.draggable = false;
+                        this.$refs.image.appendChild(imageDiv);
                         this.loading = false;
                     }
                 });

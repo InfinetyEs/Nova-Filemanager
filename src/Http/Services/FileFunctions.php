@@ -41,6 +41,6 @@ trait FileFunctions
      */
     public function cleanSlashes($str)
     {
-        return preg_replace('#/+#', '/', $str);
+        return preg_replace('/([^:])(\/{2,})/', '$1/', $str);
     }
 }

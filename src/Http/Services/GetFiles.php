@@ -2,6 +2,8 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 trait GetFiles
@@ -21,28 +23,16 @@ trait GetFiles
 
         $files = [];
 
+        $minutes = env('FILEMANAGER_CACHE', 5);
+
         foreach ($filesData as $file) {
-            if (! $this->isDot($file) && ! $this->exceptExtensions->contains($file['extension']) && ! $this->exceptFolders->contains($file['basename']) && ! $this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
-                $fileInfo = [
-                    'id'         => md5(trim($file['basename']).$file['timestamp']),
-                    'name'       => trim($file['basename']),
-                    'path'       => $this->cleanSlashes($file['path']),
-                    'type'       => $file['type'],
-                    'mime'       => $this->getFileType($file),
-                    'size'       => ($file['size'] != 0) ? $file['size'] : 0,
-                    'size_human' => ($file['size'] != 0) ? $this->formatBytes($file['size'], 0) : 0,
-                    'thumb'      => $this->cleanSlashes($this->getThumb($file, $this->currentPath)),
-                    'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
-                    'can'        => true,
-                ];
+            $id = $this->generateId($file);
 
-                if ($fileInfo['mime'] == 'image') {
-                    list($width, $height) = getimagesize($this->storage->path($fileInfo['path']));
-                    $fileInfo['dimensions'] = $width.'x'.$height;
-                }
+            $fileData = Cache::remember($id, $minutes, function () use ($file, $id) {
+                return $this->getFileData($file, $id);
+            });
 
-                $files[] = (object) $fileInfo;
-            }
+            $files[] = $fileData;
         }
         $files = collect($files);
         if ($filter != false) {
@@ -50,6 +40,39 @@ trait GetFiles
         }
 
         return $this->orderData($files, $order);
+    }
+
+    /**
+     * @param $file
+     * @param $id
+     */
+    public function getFileData($file, $id)
+    {
+        if (!$this->isDot($file) && !$this->exceptExtensions->contains($file['extension']) && !$this->exceptFolders->contains($file['basename']) && !$this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
+            $fileInfo = [
+                'id'         => $id,
+                'name'       => trim($file['basename']),
+                'path'       => $this->cleanSlashes($file['path']),
+                'type'       => $file['type'],
+                'mime'       => $this->getFileType($file),
+                'size'       => ($file['size'] != 0) ? $file['size'] : 0,
+                'size_human' => ($file['size'] != 0) ? $this->formatBytes($file['size'], 0) : 0,
+                'thumb'      => $this->getThumbFile($file),
+                'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
+                'can'        => true,
+            ];
+
+            if (isset($file['timestamp'])) {
+                $fileInfo['last_modification'] = $file['timestamp'];
+            }
+
+            if ($fileInfo['mime'] == 'image') {
+                list($width, $height) = $this->getImageDimesions($file);
+                $fileInfo['dimensions'] = $width.'x'.$height;
+            }
+
+            return (object) $fileInfo;
+        }
     }
 
     /**
@@ -123,6 +146,22 @@ trait GetFiles
         }
 
         return $folders->merge($items);
+    }
+
+    /**
+     * Generates an id based on file
+     *
+     * @param   Array  $file
+     *
+     * @return  string
+     */
+    public function generateId($file)
+    {
+        if (isset($file['timestamp'])) {
+            return md5($this->disk.'_'.trim($file['basename']).$file['timestamp']);
+        }
+
+        return md5($this->disk.'_'.trim($file['basename']));
     }
 
     /**
@@ -217,6 +256,11 @@ trait GetFiles
             // if ($folder) {
             //     return '/'.$folder.DIRECTORY_SEPARATOR.$file['basename'];
             // }
+            if ($this->disk == 's3') {
+                ;
+
+                return $this->storage->url($file['path']);
+            }
 
             return $folder.'/'.$file['basename'];
         }
@@ -227,15 +271,67 @@ trait GetFiles
     }
 
     /**
+     * Get image dimensions for files
+     *
+     * @param $file
+     */
+    public function getImageDimesions($file)
+    {
+        if ($this->disk == 'public') {
+            return getimagesize($this->storage->path($file['path']));
+        }
+
+        if ($this->disk == 's3') {
+            return false;
+
+            return $this->getImageDimesionsFromCloud($file);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get image dimensions from cloud
+     *
+     * @param $file
+     */
+    public function getImageDimesionsFromCloud($file)
+    {
+        try {
+            $client = new Client();
+
+            $response = $client->get($this->storage->url($file['path']), ['stream' => true]);
+            $image = imagecreatefromstring($response->getBody()->getContents());
+            $dims = [imagesx($image), imagesy($image)];
+            imagedestroy($image);
+
+            return $dims;
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $file
+     * @return mixed
+     */
+    public function getThumbFile($file)
+    {
+        return $this->cleanSlashes($this->getThumb($file, $this->currentPath));
+    }
+
+    /**
      * @param $files
      */
     public function normalizeFiles($files)
     {
         foreach ($files as $key => $file) {
-            if (! isset($file['extension'])) {
+            if (!isset($file['extension'])) {
                 $files[$key]['extension'] = null;
             }
-            if (! isset($file['size'])) {
+            if (!isset($file['size'])) {
                 $files[$key]['size'] = null;
             }
         }
@@ -292,7 +388,7 @@ trait GetFiles
      *
      * @return  bool
      */
-    private function isDot($file)
+    public function isDot($file)
     {
         if (starts_with($file['basename'], '.')) {
             return true;
@@ -308,10 +404,14 @@ trait GetFiles
     {
         $defaultPath = $this->cleanSlashes($this->storage->path('/'));
         $currentPath = $this->cleanSlashes($this->storage->path($currentFolder));
+        $paths = $currentPath;
 
-        $paths = str_replace($defaultPath, '', $currentPath);
+        if ($defaultPath != '/') {
+            $paths = str_replace($defaultPath, '', $currentPath);
+        }
 
         $paths = collect(explode('/', $paths))->filter();
+
         $goodPaths = collect([]);
 
         foreach ($paths as $path) {
@@ -324,7 +424,7 @@ trait GetFiles
     /**
      * @param $pathCollection
      */
-    private function recursivePaths($name, $pathCollection)
+    public function recursivePaths($name, $pathCollection)
     {
         return str_before($pathCollection->implode('/'), $name).$name;
     }
