@@ -85,7 +85,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .h-16 {
-        height: 4rem;
-    }
+.h-16 {
+    height: 4rem;
+}
 </style>

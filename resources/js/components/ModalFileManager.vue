@@ -17,21 +17,21 @@
                     <div class="flex flex-wrap">
                         <div class="card relative w-full">
 
-                            <transition name="fade">
-                                <div class="w-full border-dashed border-grey border-50 mb-4" v-if="showUpload">
-                                    <upload :current="currentPath" v-on:refresh="refreshCurrent"></upload>
-                                </div>
-                            </transition>
-
 
                             <div class="p-3 flex items-center border-b border-50">
-                                <button @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
-                                    {{ __('Upload') }}
-                                </button>
+                                <label class="manual_upload cursor-pointer">
+                                    <div @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
+                                        {{ __('Upload') }}
+                                    </div>
+                                    <input type="file" multiple="true" @change="uploadFilesByButton"/>
+                                </label>
 
                             </div>
+
+                            
 				            
                             <manager 
+                                ref="manager"
                                 :files="files"
                                 :path="path"
                                 :current="currentPath"
@@ -54,10 +54,12 @@
 
 <script>
 import _ from 'lodash';
+import URI from 'urijs';
 import api from '../api';
 import CreateFolderModal from './CreateFolderModal';
 import Manager from './Manager';
 import Upload from './Upload';
+import UploadProgress from './UploadProgress';
 
 export default {
     props: {
@@ -76,6 +78,7 @@ export default {
         upload: Upload,
         'create-folder': CreateFolderModal,
         manager: Manager,
+        UploadProgress: UploadProgress,
     },
 
     data: () => ({
@@ -89,6 +92,8 @@ export default {
         files: [],
         path: [],
         noFiles: false,
+        filesToUpload: [],
+        firstTime: true,
     }),
 
     methods: {
@@ -141,12 +146,21 @@ export default {
             this.closeModal();
             this.$emit('setFileValue', file);
         },
-    },
 
+        uploadFilesByButton(e) {
+            this.$refs.manager.uploadFiles(e.target.files);
+        },
+    },
     watch: {
         active: function(val) {
             if (val) {
-                this.getData('/');
+                let currentUrl = new URI();
+                if (currentUrl.hasQuery('path')) {
+                    let params = currentUrl.query(true);
+                    this.currentPath = params.path;
+                }
+
+                this.getData(this.currentPath);
             }
         },
     },
@@ -160,5 +174,9 @@ export default {
     border-left: 1px solid rgb(221, 221, 221);
     // border-bottom: 1px solid rgb(221, 221, 221);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.manual_upload > input[type='file'] {
+    display: none;
 }
 </style>

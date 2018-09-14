@@ -2,23 +2,23 @@
     <div v-if="loaded" ref="filemanager-container">
         <heading class="mb-6">FileManager</heading>
 
-        <transition name="fade">
-            <div class="w-full border-dashed border-grey border-50 mb-4" v-if="showUpload">
-                <upload :current="currentPath" v-on:refresh="refreshCurrent"></upload>
-            </div>
-        </transition>
+        
 
-        <UploadProgress :current="currentPath" :files="filesToUpload"  v-on:removeFile="removeFileFromUpload"></UploadProgress>
+        
 
         <create-folder :active="showCreateFolder" :current="currentPath" v-on:closeCreateFolderModal="closeModalCreateFolder" v-on:refresh="refreshCurrent" />
 
-        <div class="card relative" id="filemanager-manager" :class="cssFilemenagerContainer">
+        <div class="card relative" id="filemanager-manager">
 
             <div class="p-3 flex items-center justify-between border-b border-50">
                 <div class="flex flex-wrap">
-                    <button @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
-                        {{ __('Upload') }}
-                    </button>
+                    <label class="manual_upload cursor-pointer">
+                        <div @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
+                            {{ __('Upload') }}
+                        </div>
+                        <input type="file" multiple="true" @change="uploadFilesByButton"/>
+                    </label>
+
 
                     <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
                         {{ __('Create folder') }}
@@ -44,8 +44,8 @@
                 </div>
                 
             </div>
-            
-            <manager 
+            <manager
+                ref="manager"
                 :files="files"
                 :path="path"
                 :current="currentPath"
@@ -63,22 +63,16 @@
 <script>
 import URI from 'urijs';
 import _ from 'lodash';
-import filesize from 'filesize';
-import MD5 from '../tools/md5'
 import api from '../api';
 import CreateFolderModal from './CreateFolderModal';
 import Manager from './Manager';
 import Upload from './Upload';
-import UploadProgress from './UploadProgress';
-
-let arrayFiles = [];
 
 export default {
     components: {
         upload: Upload,
         'create-folder': CreateFolderModal,
         manager: Manager,
-        'UploadProgress': UploadProgress,
     },
 
     data: () => ({
@@ -93,9 +87,6 @@ export default {
         path: [],
         noFiles: false,
         view: 'grid',
-        cssDragAndDrop: null,
-        eventsLoaded: false,
-        filesToUpload: [],
     }),
 
     async created() {
@@ -109,15 +100,6 @@ export default {
         await this.getData(this.currentPath);
 
         this.loaded = true;
-    },
-
-    updated: function () {
-        if (!this.eventsLoaded) {
-            this.$nextTick(function () {
-                this.eventsLoaded = true;
-                this.setDragAndDropEvents();
-            })    
-        }        
     },
 
     methods: {
@@ -147,7 +129,7 @@ export default {
 
         refreshCurrentAfterUpload() {
             this.getData(this.currentPath);
-            this.filesToUpload = []
+            this.filesToUpload = [];
         },
 
         goToFolder(path) {
@@ -177,78 +159,22 @@ export default {
             localStorage.setItem('view', 'grid');
         },
 
-        setDragAndDropEvents() {
-            console.log("timesss");
-            let self = this;
-            let filemanagerContainer = document.querySelector("#filemanager-manager");
-
-            filemanagerContainer.addEventListener("dragenter", function (e) {
-                e.preventDefault();
-                self.cssDragAndDrop = "inside";
-            });
-
-            filemanagerContainer.addEventListener("dragleave", function (e) {
-                e.preventDefault();
-                self.cssDragAndDrop = "outside";
-            });
-
-            filemanagerContainer.addEventListener("dragover", function (e) {
-                e.preventDefault();
-                self.cssDragAndDrop = "inside";
-            });
-
-            filemanagerContainer.addEventListener("drop", function (e) {
-                e.preventDefault();
-                self.cssDragAndDrop = "drop";
-              
-                let files = e.dataTransfer.files;
-
-                
-                Array.from(files).forEach((file) => {
-                    arrayFiles.push({
-                        id: MD5(file.name),
-                        preview: self.getPreview(file),
-                        type: file.type,
-                        name: file.name,
-                        size: filesize(file.size),
-                        upload: true,
-                        progress: 0,
-                        error: false,
-                        file: file,
-                    })
-                })
-
-                self.filesToUpload = arrayFiles;
-                console.log("Drop files:", self.filesToUpload);
-                //this.uploadFile(files);
-            });
-        },
-
-        getPreview(file) {
-            
-            if (this.isImage(file)) {
-                return  URL.createObjectURL(file);
-            }
-
-            return file.name.split('.').pop();;
-        },
-
-        isImage(file){
-           return (file.type.includes('image'));//returns true or false
-        },
-
-        removeFileFromUpload(uploadedFileIndex) {
-            this.$delete(this.filesToUpload, uploadedFileIndex)
+        removeFileFromUpload(uploadedFileId) {
+            let index = this.filesToUpload.map(item => item.id).indexOf(uploadedFileId);
+            this.$delete(this.filesToUpload, index);
 
             if (this.filesToUpload.length === 0) {
-                this.refreshCurrent()
+                this.refreshCurrent();
             }
-        }
+        },
+
+        uploadFilesByButton(e) {
+            this.$refs.manager.uploadFiles(e.target.files);
+        },
     },
 
     computed: {
         cssFilemenagerContainer() {
-            console.log(this.cssDragAndDrop)
             if (this.cssDragAndDrop == 'inside') {
                 return 'bg-20';
             }
@@ -256,17 +182,14 @@ export default {
             if (this.cssDragAndDrop == 'outside') {
                 return '';
             }
-
-
             return '';
-        }
-    }
-    
-
- 
+        },
+    },
 };
 </script>
 
-<style>
-/* Scoped Styles */
+<style scoped>
+.manual_upload > input[type='file'] {
+    display: none;
+}
 </style>

@@ -2,9 +2,9 @@
     <default-field :field="field">
         <template slot="field">
 
-            <modal-filemanager :active="openModal" v-on:close-modal="closeFilemanagerModal" v-on:setFileValue="setValue" :value="value"></modal-filemanager>
+            <modal-filemanager ref="managercontainer" :active="openModal" v-on:close-modal="closeFilemanagerModal" v-on:setFileValue="setValue" :value="value"></modal-filemanager>
 
-            <file-select :id="field.name" :css="errorClasses"  v-model="value" v-on:open-modal="openFilemanagerModal"></file-select>
+            <file-select :id="field.name" :field="field" :css="errorClasses"  v-model="value" v-on:open-modal="openFilemanagerModal"></file-select>
 
             <p v-if="hasError" class="my-2 text-danger">
                 {{ firstError }}

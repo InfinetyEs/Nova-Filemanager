@@ -34,7 +34,9 @@ class FilemanagerField extends Field
         if ($this->value) {
             $service = new FileManagerService();
 
-            return $service->getFileInfoAsArray($this->value);
+            $data = $service->getFileInfoAsArray($this->value);
+
+            return $this->fixNameLabel($data);
         }
 
         return [];
@@ -48,5 +50,20 @@ class FilemanagerField extends Field
     public function meta()
     {
         return array_merge($this->resolveInfo(), $this->meta);
+    }
+
+    /**
+     * FIx name label
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    private function fixNameLabel(array $data): array
+    {
+        $data['filename'] = $data['name'];
+        unset($data['name']);
+
+        return $data;
     }
 }

@@ -163,6 +163,10 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
+        if (!$this->storage->exists($file)) {
+            return [];
+        }
+
         $fullPath = $this->storage->path($file);
 
         $info = new NormalizeFile($this->storage, $fullPath, $file);
