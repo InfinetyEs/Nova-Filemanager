@@ -10,7 +10,7 @@
 
 <script>
 export default {
-    props: ['value'],
+    props: ['value', 'field'],
 
     methods: {
         openModalFilemanager() {

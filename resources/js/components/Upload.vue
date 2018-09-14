@@ -12,9 +12,10 @@
         			
             </vue-dropzone>
 
-           
+        
             
         </div>
+
     </div>
 </template>
 
@@ -83,6 +84,8 @@ export default {
 };
 </script>
 
-<style>
-/* Scoped Styles */
+<style scoped lang="scss">
+.h-16 {
+    height: 4rem;
+}
 </style>

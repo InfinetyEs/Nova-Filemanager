@@ -1,22 +1,24 @@
 <template>
-    <div v-if="loaded">
+    <div v-if="loaded" ref="filemanager-container">
         <heading class="mb-6">FileManager</heading>
 
-        <transition name="fade">
-            <div class="w-full border-dashed border-grey border-50 mb-4" v-if="showUpload">
-                <upload :current="currentPath" v-on:refresh="refreshCurrent"></upload>
-            </div>
-        </transition>
+        
+
+        
 
         <create-folder :active="showCreateFolder" :current="currentPath" v-on:closeCreateFolderModal="closeModalCreateFolder" v-on:refresh="refreshCurrent" />
 
-        <div class="card relative">
+        <div class="card relative" id="filemanager-manager">
 
             <div class="p-3 flex items-center justify-between border-b border-50">
                 <div class="flex flex-wrap">
-                    <button @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
-                        {{ __('Upload') }}
-                    </button>
+                    <label class="manual_upload cursor-pointer">
+                        <div @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
+                            {{ __('Upload') }}
+                        </div>
+                        <input type="file" multiple="true" @change="uploadFilesByButton"/>
+                    </label>
+
 
                     <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
                         {{ __('Create folder') }}
@@ -42,8 +44,8 @@
                 </div>
                 
             </div>
-            
-            <manager 
+            <manager
+                ref="manager"
                 :files="files"
                 :path="path"
                 :current="currentPath"
@@ -129,6 +131,11 @@ export default {
             this.getData(this.currentPath);
         },
 
+        refreshCurrentAfterUpload() {
+            this.getData(this.currentPath);
+            this.filesToUpload = [];
+        },
+
         goToFolder(path) {
             // this.currentPath = this.currentPath + '/' + path;
             this.getData(path);
@@ -155,14 +162,38 @@ export default {
             this.view = 'grid';
             localStorage.setItem('view', 'grid');
         },
+
+        removeFileFromUpload(uploadedFileId) {
+            let index = this.filesToUpload.map(item => item.id).indexOf(uploadedFileId);
+            this.$delete(this.filesToUpload, index);
+
+            if (this.filesToUpload.length === 0) {
+                this.refreshCurrent();
+            }
+        },
+
+        uploadFilesByButton(e) {
+            this.$refs.manager.uploadFiles(e.target.files);
+        },
     },
 
-    events: {
-        //
+    computed: {
+        cssFilemenagerContainer() {
+            if (this.cssDragAndDrop == 'inside') {
+                return 'bg-20';
+            }
+
+            if (this.cssDragAndDrop == 'outside') {
+                return '';
+            }
+            return '';
+        },
     },
 };
 </script>
 
-<style>
-/* Scoped Styles */
+<style scoped>
+.manual_upload > input[type='file'] {
+    display: none;
+}
 </style>

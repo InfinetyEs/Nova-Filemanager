@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "animated-scroll-to": "^1.2.2",
+        "filesize": "^3.6.1",
         "laravel-nova": "^1.0.2",
         "urijs": "^1.19.1",
         "v-copy": "^0.1.0",

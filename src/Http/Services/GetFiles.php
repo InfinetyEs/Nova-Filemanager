@@ -19,7 +19,6 @@ trait GetFiles
     {
         $filesData = $this->storage->listContents($folder);
         $filesData = $this->normalizeFiles($filesData);
-        // dd($filesData);
 
         $files = [];
 

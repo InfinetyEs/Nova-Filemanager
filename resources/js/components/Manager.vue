@@ -1,5 +1,5 @@
 <template>
-    <div class=" p-3 ">
+    <div id="filemanager-manager" class="p-3"  :class="cssFilemenagerContainer">
         <nav class="bg-grey-light rounded font-sans w-full m-4">
             <ol class="list-reset flex text-grey-dark">
                 <li><span class="text-blue font-bold cursor-pointer" @click="goToFolderNav('/')">{{ __('Home') }}</span></li>
@@ -20,7 +20,7 @@
             </ol>
         </nav>
         <transition name="fade">
-            <div class="px-2 files" v-cloak>
+            <div class="px-2 overflow-y-auto files" v-cloak>
                 <div class="flex flex-wrap -mx-2">
 
                     <template v-if="files.error">
@@ -126,21 +126,29 @@
         >
                 
         </DetailPopup>
+
+        <UploadProgress ref="uploader" :current="current" :files="filesToUpload"  v-on:removeFile="removeFileFromUpload"></UploadProgress>
     </div>
 </template>
 
 <script>
 import _ from 'lodash';
+import filesize from 'filesize';
+import MD5 from '../tools/md5';
 import api from '../api';
 import ImageLoader from '../modules/ImageLoader';
 import Folder from '../modules/Folder';
 import DetailPopup from '../components/DetailPopup';
+import UploadProgress from './UploadProgress';
+
+let arrayFiles = [];
 
 export default {
     components: {
         ImageLoader: ImageLoader,
         Folder: Folder,
         DetailPopup: DetailPopup,
+        UploadProgress: UploadProgress,
     },
 
     props: {
@@ -186,6 +194,9 @@ export default {
     data: () => ({
         info: {},
         activeInfo: false,
+        eventsLoaded: false,
+        cssDragAndDrop: null,
+        filesToUpload: [],
     }),
 
     methods: {
@@ -234,6 +245,83 @@ export default {
         selectFile(file) {
             this.$emit('selectFile', file);
         },
+
+        setDragAndDropEvents() {
+            let self = this;
+            let filemanagerContainer = document.querySelector('#filemanager-manager');
+
+            filemanagerContainer.addEventListener('dragenter', function(e) {
+                e.preventDefault();
+                self.cssDragAndDrop = 'inside';
+            });
+
+            filemanagerContainer.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                self.cssDragAndDrop = 'outside';
+            });
+
+            filemanagerContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                self.cssDragAndDrop = 'inside';
+            });
+
+            filemanagerContainer.addEventListener('drop', function(e) {
+                e.preventDefault();
+                self.cssDragAndDrop = 'drop';
+
+                let files = e.dataTransfer.files;
+                self.uploadFiles(files);
+            });
+        },
+
+        uploadFiles(files) {
+            Array.from(files).forEach(file => {
+                arrayFiles.push({
+                    id: MD5(file.name),
+                    preview: this.getPreview(file),
+                    type: file.type,
+                    name: file.name,
+                    size: filesize(file.size),
+                    upload: true,
+                    progress: 0,
+                    error: false,
+                    file: file,
+                });
+            });
+
+            this.filesToUpload = arrayFiles;
+            this.$refs.uploader.uploadFiles(this.filesToUpload);
+        },
+
+        getPreview(file) {
+            if (this.isImage(file)) {
+                return URL.createObjectURL(file);
+            }
+
+            return file.name.split('.').pop();
+        },
+
+        isImage(file) {
+            return file.type.includes('image'); //returns true or false
+        },
+
+        removeFileFromUpload(uploadedFileId) {
+            let index = this.filesToUpload.map(item => item.id).indexOf(uploadedFileId);
+            this.$delete(this.filesToUpload, index);
+
+            if (this.filesToUpload.length === 0) {
+                this.$emit('refresh');
+            }
+        },
+    },
+
+    updated: function() {
+        if (!this.eventsLoaded) {
+            this.$nextTick(function() {
+                this.eventsLoaded = true;
+                this.setDragAndDropEvents();
+            });
+        }
     },
 
     computed: {
@@ -260,6 +348,16 @@ export default {
                 return 'h-8';
             }
         },
+        cssFilemenagerContainer() {
+            if (this.cssDragAndDrop == 'inside') {
+                return 'bg-20';
+            }
+
+            if (this.cssDragAndDrop == 'outside') {
+                return '';
+            }
+            return '';
+        },
     },
 };
 </script>
@@ -279,5 +377,9 @@ export default {
 
 .obfit-cover {
     object-fit: cover;
+}
+
+.files {
+    max-height: 60vh;
 }
 </style>
