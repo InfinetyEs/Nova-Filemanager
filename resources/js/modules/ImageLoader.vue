@@ -27,7 +27,7 @@
             </div>
 
             <div class="h-1/6 w-full text-center text-xs  border-t border-30 bg-50 flex items-center justify-center">
-                {{ file.name }}
+                {{ file.name | truncate(30) }}
             </div>
 
         </div>
@@ -67,16 +67,10 @@ export default {
                 .then(({ headers, data }) => {
                     const blob = new Blob([data], { type: headers['content-type'] });
                     let imageDiv = document.createElement('div');
-                    let imageBlog = null
+                    let imageBlog = null;
 
-                    if (window.webkitURL) {
-                        imageBlog = window.webkitURL.createObjectURL(blob);
-                    } else if (window.URL && window.URL.createObjectURL) {
-                        imageBlog = window.URL.createObjectURL(blob);
-                    }
-
-                    imageDiv.style.backgroundImage =
-                        "url('" + imageBlog + "')";
+                    imageBlog = window.URL.createObjectURL(blob);
+                    imageDiv.style.backgroundImage = "url('" + imageBlog + "')";
                     imageDiv.className = 'block w-full h-full bg-center bg-cover h-2/3';
                     imageDiv.draggable = false;
                     this.$refs.image.appendChild(imageDiv);
@@ -86,8 +80,7 @@ export default {
                     if (error) {
                         //defaulImage
                         let imageDiv = document.createElement('div');
-                        imageDiv.style.backgroundImage =
-                        "url('" + this.file.thumb + "')";
+                        imageDiv.style.backgroundImage = "url('" + this.file.thumb + "')";
                         imageDiv.className = 'block w-full h-full bg-center bg-cover h-2/3';
                         imageDiv.draggable = false;
                         this.$refs.image.appendChild(imageDiv);
@@ -101,6 +94,20 @@ export default {
     methods: {
         showInfo() {
             this.$emit('showInfo', this.file);
+        },
+    },
+    filters: {
+        truncate: function(text, stop, clamp) {
+            return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '');
+        },
+    },
+    watch: {
+        'file.loading': function(value) {
+            if (value == true) {
+                this.loading = true;
+            } else {
+                this.loading = false;
+            }
         },
     },
 };

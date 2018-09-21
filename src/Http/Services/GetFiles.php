@@ -59,6 +59,7 @@ trait GetFiles
                 'thumb'      => $this->getThumbFile($file),
                 'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
                 'can'        => true,
+                'loading'    => false,
             ];
 
             if (isset($file['timestamp'])) {
@@ -125,7 +126,7 @@ trait GetFiles
      *
      * @return mixed
      */
-    public function orderData($files, $order)
+    public function orderData($files, $order, $direction = 'asc')
     {
         $folders = $files->where('type', 'dir');
         $items = $files->where('type', 'file');
@@ -134,14 +135,25 @@ trait GetFiles
             $folders = $folders->sortByDesc($order);
             $items = $items->sortByDesc($order);
         } else {
-            // mb_strtolower to fix order by alpha
-            $folders = $folders->sortBy(function ($item) {
-                return mb_strtolower($item->name);
-            })->values();
+            if ($direction == 'asc') {
+                // mb_strtolower to fix order by alpha
+                $folders = $folders->sortBy('name')->sortBy(function ($item) use ($order) {
+                    return mb_strtolower($item->{$order});
+                })->values();
 
-            $items = $items->sortBy(function ($item) {
-                return mb_strtolower($item->name);
-            })->values();
+                $items = $items->sortBy('name')->sortBy(function ($item) use ($order) {
+                    return mb_strtolower($item->{$order});
+                })->values();
+            } else {
+                // mb_strtolower to fix order by alpha
+                $folders = $folders->sortByDesc(function ($item) use ($order) {
+                    return mb_strtolower($item->{$order});
+                })->values();
+
+                $items = $items->sortByDesc(function ($item) use ($order) {
+                    return mb_strtolower($item->{$order});
+                })->values();
+            }
         }
 
         return $folders->merge($items);

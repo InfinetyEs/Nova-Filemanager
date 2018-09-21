@@ -67,11 +67,11 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (! $order) {
-            $order = 'type';
+        if (!$order) {
+            $order = 'mime';
         }
         $filter = $request->get('filter');
-        if (! $filter) {
+        if (!$filter) {
             $filter = false;
         }
 
@@ -90,6 +90,8 @@ class FileManagerService
      */
     public function createFolderOnPath($folder, $currentFolder)
     {
+        $folder = $this->fixDirname($this->fixFilename($folder));
+
         $path = $currentFolder.'/'.$folder;
 
         if ($this->storage->has($path)) {
@@ -132,6 +134,8 @@ class FileManagerService
         $fileName = $this->checkFileExists($currentFolder, $file);
 
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
+            $this->setVisibility($currentFolder, $fileName);
+
             return response()->json(['success' => true, 'name' => $fileName]);
         } else {
             return response()->json(['success' => false]);
@@ -203,5 +207,19 @@ class FileManagerService
         }
 
         return $file->getClientOriginalName();
+    }
+
+    /**
+     * Set visibility to public
+     *
+     * @param $folder
+     * @param $file
+     */
+    private function setVisibility($folder, $file)
+    {
+        if ($folder != '/') {
+            $folder .= '/';
+        }
+        $this->storage->setVisibility($folder.$file, 'public');
     }
 }

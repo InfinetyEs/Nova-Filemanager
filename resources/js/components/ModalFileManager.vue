@@ -1,8 +1,9 @@
 <template>
-    <portal to="modals">
+    <portal to="modals" name="FileManager Field Modal">
         <transition name="fade">
             <modal v-if="active">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 900px;">
+
+                <div class="bg-white rounded-lg shadow-lg" style="width: 900px;">
                     <div class="bg-30 flex flex-wrap border-b border-70">
                         <div class="w-3/4 px-4 py-3 ">
                             {{ __('FileManager') }}
@@ -26,6 +27,10 @@
                                     <input type="file" multiple="true" @change="uploadFilesByButton"/>
                                 </label>
 
+                                <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
+                                    {{ __('Create folder') }}
+                                </button>
+
                             </div>
 
                             
@@ -38,10 +43,13 @@
                                 :noFiles="noFiles"
                                 :selector="value"
                                 :popupLoaded="true"
+                                :loading="loadingfiles"
                                 v-on:goToFolderManager="goToFolder"
                                 v-on:goToFolderManagerNav="goToFolderNav"
                                 v-on:refresh="refreshCurrent"
                                 v-on:selectFile="setFileValue"
+                                v-on:showInfoItem="showInfoItem"
+                                v-on:uploadFiles="uploadFiles"
                             />
 				            
                         </div>
@@ -56,7 +64,6 @@
 import _ from 'lodash';
 import URI from 'urijs';
 import api from '../api';
-import CreateFolderModal from './CreateFolderModal';
 import Manager from './Manager';
 import Upload from './Upload';
 import UploadProgress from './UploadProgress';
@@ -76,13 +83,13 @@ export default {
 
     components: {
         upload: Upload,
-        'create-folder': CreateFolderModal,
         manager: Manager,
         UploadProgress: UploadProgress,
     },
 
     data: () => ({
         loaded: false,
+        loadingfiles: false,
         activeDisk: null,
         activeDiskBackups: [],
         backupStatusses: [],
@@ -101,20 +108,19 @@ export default {
             this.files = [];
             this.path = [];
             this.noFiles = false;
+            this.loadingfiles = true;
             api.getData(pathToList).then(result => {
                 if (_.size(result.files) == 0) {
                     this.noFiles = true;
                 }
                 this.files = result.files;
                 this.path = result.path;
+                this.loadingfiles = false;
             });
         },
 
         showModalCreateFolder() {
-            this.showCreateFolder = true;
-        },
-        closeModalCreateFolder() {
-            this.showCreateFolder = false;
+            this.$emit('open-modal');
         },
 
         refreshCurrent() {
@@ -150,6 +156,13 @@ export default {
         uploadFilesByButton(e) {
             this.$refs.manager.uploadFiles(e.target.files);
         },
+
+        showInfoItem(item) {
+            this.$emit('showInfoItem', item);
+        },
+        uploadFiles(files) {
+            this.$emit('uploadFiles', files);
+        },
     },
     watch: {
         active: function(val) {
@@ -162,6 +175,9 @@ export default {
 
                 this.getData(this.currentPath);
             }
+        },
+        currentPath: function(val) {
+            this.$emit('update-current-path', val);
         },
     },
 };

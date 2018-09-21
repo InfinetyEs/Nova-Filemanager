@@ -5,7 +5,10 @@ namespace Infinety\Filemanager\Http\Services;
 use Carbon\Carbon;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Collection;
+use Infinety\Filemanager\Http\Services\MimeTypes;
+use RarArchive;
 use SplFileInfo;
+use ZipArchive;
 
 class NormalizeFile
 {
@@ -25,7 +28,6 @@ class NormalizeFile
      * @var mixed
      */
     protected $storagePath;
-
     /**
      * @param string $path
      */
@@ -67,7 +69,7 @@ class NormalizeFile
         // Image
         if (str_contains($mime, 'image')) {
             $data->put('type', 'image');
-            // $data->put('dimensions', $this->getDimensions($this->storage->getMimetype($this->storagePath)));
+            $data->put('dimensions', $this->getDimensions($this->storage->getMimetype($this->storagePath)));
         }
 
         // Video
@@ -81,6 +83,36 @@ class NormalizeFile
         if (str_contains($mime, 'video')) {
             $data->put('type', 'video');
         }
+
+        // text
+        if ($this->availablesTextExtensions() && str_contains($mime, 'text')) {
+            $data->put('type', 'text');
+
+            $data->put('source', $this->storage->get($this->storagePath));
+        }
+
+        // text
+        if (str_contains($mime, 'pdf')) {
+            $data->put('type', 'pdf');
+        }
+
+        // docx
+        if (str_contains($mime, 'wordprocessingml')) {
+            $data->put('type', 'word');
+            // $data->put('source', $this->storage->get($this->storagePath));
+        }
+
+        // zip
+        if (str_contains($mime, 'zip')) {
+            $data->put('type', 'zip');
+            $data->put('source', $this->readZip());
+        }
+
+        // // zip
+        // if (str_contains($mime, 'rar')) {
+        //     $data->put('type', 'zip');
+        //     $data->put('source', $this->readRar());
+        // }
 
         $data->put('image', $this->getImage($mime));
 
@@ -117,7 +149,7 @@ class NormalizeFile
      */
     private function getDimensions($mime)
     {
-        if ($this->disk != 'public') {
+        if (env('FILEMANAGER_DISK') != 'public') {
             return false;
         }
 
@@ -142,5 +174,108 @@ class NormalizeFile
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    private function availablesTextExtensions()
+    {
+        $extension = $this->file->getExtension();
+        $types = MimeTypes::checkMimeType($extension);
+        $exist = false;
+        for ($i = 0; $i < count($types); $i++) {
+            if (str_contains($types[$i], 'text')) {
+                $exist = true;
+                break;
+            }
+        }
+
+        if ($exist) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Read zip files
+     *
+     * @return mixed
+     */
+    private function readZip()
+    {
+        $zip = new ZipArchive();
+        $zip->open($this->storage->path($this->storagePath));
+        $contents = [];
+
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $stat = $zip->statIndex($i);
+            $contents[$stat['name']] = [
+                'name' => $stat['name'],
+                'size' => $stat['size'],
+            ];
+            // $contents[$stat['name']] = $stat['name'];
+        }
+
+        return $this->buildTree($contents);
+    }
+
+    /**
+     * Read rar files
+     *
+     * @return mixed
+     */
+    private function readRar()
+    {
+        $zip = new \RarArchive();
+        $zip->open($this->storage->path($this->storagePath));
+        $contents = [];
+
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $stat = $zip->statIndex($i);
+            $contents[$stat['name']] = [
+                'name' => $stat['name'],
+                'size' => $stat['size'],
+            ];
+            // $contents[$stat['name']] = $stat['name'];
+        }
+
+        return $this->buildTree($contents);
+    }
+
+    /**
+     * @param $pathList
+     * @return mixed
+     */
+    private function buildTree($pathList)
+    {
+        $data = array();
+        foreach ($pathList as $path => $info) {
+            $list = explode('/', trim($path, '/'));
+            $last_dir = &$data;
+            foreach ($list as $dir) {
+                $last_dir = &$last_dir[$dir];
+            }
+            // $last_dir['info'] = $info;
+        }
+        $keys = $this->arrayKeysRecursive($data);
+        array_reverse($keys);
+
+        return json_encode($keys);
+    }
+
+    /**
+     * @param array $array
+     * @return mixed
+     */
+    private function arrayKeysRecursive(array $array): array
+    {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $index[$key] = $this->arrayKeysRecursive($value);
+            } else {
+                $index[] = $key;
+            }
+        }
+
+        return $index ?? [];
     }
 }

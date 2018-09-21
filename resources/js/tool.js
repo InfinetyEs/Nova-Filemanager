@@ -1,6 +1,5 @@
 Nova.booting((Vue, router) => {
-	
-	Vue.config.devtools = true
+    Vue.config.devtools = true;
 
     router.addRoutes([
         {

@@ -1,6 +1,5 @@
 <template>
-
-    <div class="stack-uploads fixed pin-b z-50 bg-white shadow" v-if="files.length > 0">
+    <div class="stack-uploads fixed pin-b bg-white shadow" v-if="files.length > 0">
         <div class="files p-4" v-for="(file, indexFiles) in files" v-bind:key="indexFiles">
             <transition name="fade" >
                 <div class="flex flex-wrap w-full items-center"  v-bind:key="indexFiles" v-if="file.upload == true">
@@ -14,10 +13,10 @@
                     </div>
                     <div class="w-2/3 text-xs">
                         <template v-if="file.error">
-                            <div class="text-danger">Error on upload</div>
+                            <div class="text-danger">{{ __('Error on upload') }}</div>
                         </template>
                         <template v-else>
-                            {{ file.name }}
+                            {{ file.name }} <small v-if="file.progress == 100" class="text-success uppercase">{{ __('Success') }}</small>
                             <progress-module :file="file"></progress-module>
                         </template>
                     </div>
@@ -25,7 +24,6 @@
             </transition>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -35,10 +33,6 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 
 export default {
     props: {
-        files: {
-            type: Array,
-            required: true,
-        },
         current: {
             type: String,
             default: '/',
@@ -52,6 +46,7 @@ export default {
 
     data: () => ({
         token: token.content,
+        files: [],
         filesUploaded: [],
     }),
 
@@ -64,8 +59,9 @@ export default {
             return Math.random() * (max - min) + min;
         },
 
-        uploadFiles(files) {
-            Array.from(files).forEach(file => {
+        startUploadingFiles(files) {
+            this.files = files;
+            Array.from(this.files).forEach(file => {
                 this.startUpload(file);
             });
         },
@@ -96,7 +92,10 @@ export default {
                             }
                         });
                         this.filesUploaded.push(file.id);
-                        this.$emit('removeFile', file.id);
+
+                        setTimeout(() => {
+                            this.$emit('removeFile', file.id);
+                        }, 2000);
                     } else {
                         this.$toasted.show(
                             this.__(
@@ -119,10 +118,6 @@ export default {
                 });
         },
     },
-
-    computed: {
-        //
-    },
 };
 </script>
 
@@ -131,5 +126,6 @@ export default {
     right: 10px;
     bottom: 10px;
     width: 300px;
+    z-index: 99;
 }
 </style>

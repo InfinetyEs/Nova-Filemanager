@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('data', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getData');
 Route::post('actions/create-folder', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@createFolder');
 Route::post('actions/delete-folder', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@deleteFolder');
-Route::post('actions/get-info', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getInfo');
+Route::any('actions/get-info', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getInfo');
 Route::post('actions/remove-file', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@removeFile');
 
 Route::post('uploads/add', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@upload');

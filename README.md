@@ -16,7 +16,7 @@ A Filemanager Tool and Field for Laravel Nova
 ![FileManager Field](https://user-images.githubusercontent.com/42798230/44864362-5f9cd700-ac77-11e8-9e0f-330d18a81598.gif)
 
 
-## Installation
+### Installation
 
 You can install the package in to a Laravel app that uses [Nova](https://nova.laravel.com) via composer:
 
@@ -47,12 +47,12 @@ Nova Filemanager works with Laravel Flysystem. Default disk is `public`. You can
 FILEMANAGER_DISK=public
 ```
 
-## Tool Usage
+### Tool Usage
 
 Click on the "FileManager" menu item in your Nova app to see the Filemanager Tool
 
 
-## Field Usage
+### Field Usage
 
 ```php
 use Infinety\Filemanager\FilemanagerField;
@@ -66,6 +66,53 @@ FilemanagerField::make('field')->displayAsImage();
 
 ```
 
+### Localization
+
+Set your translations in the corresponding xx.json file located in /resources/lang/vendor/nova
+
+```json
+...
+
+    "Filemanager": "Gestor de archivos",
+    "Create folder": "Crear carpeta",
+    "Write a folder name": "Escribe el nombre de la carpeta",
+    "Create": "Crear",
+    "Creating": "Creando",
+    "Cancel": "Cancelar",
+    "The folder name is required": "El nombre de la carpeta es requerido",
+    "Folder created successfully": "Carpeta creada correctamente",
+    "Error creating the folder": "Error al crear la carpeta",
+    "Preview of": "Vista previa de",
+    "Name": "Nombre",
+    "Mime Type": "Tipo de archivo",
+    "Last Modification": "Última modificación",
+    "Size": "Tamaño",
+    "Dimensions": "Dimensiones",
+    "Url": "Enlace",
+    "Copy": "Copiar",
+    "Select file": "Seleccionar archivo",
+    "Remove File": "Eliminar archivo",
+    "Are you sure?": "¿Estás seguro?",
+    "Removing...": "Eliminando...",
+    "Text copied to clipboard": "Texto copiado al portapapeles",
+    "File removed successfully": "Archivo eliminado correctamente",
+    "Error removing the file. Please check permissions": "Error al eliminar el archivo. Por favor, comprueba los permisos",
+    "Home": "Inicio",
+    "You don\\'t have permissions to view this folder": "No tienes permisos para ver esta carpeta",
+    "No files or folders in current directory": "Esta carpeta esta vacía",
+    "Remove directory": "Eliminar carpeta",
+    "Folder removed successfully": "Carpeta eliminada correctamente",
+    "Error removing the folder. Please check permissions": "Error al eliminar la carpeta. Por favor, comprueba los permisos",
+    "Upload": "Subir",
+    "Error on upload": "Error al subir",
+    "Success": "Éxito",
+    "Error uploading the file. Check your MaxFilesize or permissions": "Error al subir el archivo. Comprueba la directiva MaxFilesize o los permisos",
+    "Select a file": "Selecciona un archivo",
+    "Open FileManager": "Abrir Gestor de archivos",
+    "This image": "Esta imagen",
+    "could not be found.": "no se encuentra."
+```
+
 ### Testing
 
 ``` bash
@@ -76,8 +123,9 @@ yarn check-format
 
 ### ToDo
 
+* ~~AWS S3 support~~
+* ~~Different upload method~~
 * Grid / List views
-* DIfferent upload method
 * FIles actions
 
 ### Changelog

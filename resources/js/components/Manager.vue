@@ -1,5 +1,5 @@
 <template>
-    <div id="filemanager-manager" class="p-3"  :class="cssFilemenagerContainer">
+    <div ref="fileManagerContainer" id="filemanager-manager-container" class="p-3"  :class="cssFilemenagerContainer">
         <nav class="bg-grey-light rounded font-sans w-full m-4">
             <ol class="list-reset flex text-grey-dark">
                 <li><span class="text-blue font-bold cursor-pointer" @click="goToFolderNav('/')">{{ __('Home') }}</span></li>
@@ -14,8 +14,6 @@
                         <li  v-bind:key="index"><span href="#" class="text-blue cursor-pointer font-bold" @click="goToFolder(folder.path)">{{ folder.name }}</span></li>
                         <li  v-bind:key="index+'_separator'"><span class="mx-2">/</span></li>
                     </template>
-                
-                <!-- <li v-if="checkIsLastItem(index)"><span class="mx-2">/</span></li> -->
                 </template>
             </ol>
         </nav>
@@ -31,48 +29,7 @@
 
                     <template v-if="loading">
                         <div class="w-full text-lg text-center my-4">
-                            <svg class="text-primary" fill="currentColor" width="100" height="100">
-                              <filter id="fancy-goo">
-                                <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
-                                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
-                                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-                              </filter>
-                              <g filter="url(#fancy-goo)">
-                                <animateTransform id="mainAnim"
-                                                  attributeName="transform"
-                                                  attributeType="XML"
-                                                  type="rotate"
-                                                  from="0 50 50"
-                                                  to="359 50 50"
-                                                  dur="1.2s"
-                                                  repeatCount="indefinite"
-                                                  />
-                                <circle cx="50%" cy="40" r="11">
-                                  <animate id="cAnim1"
-                                           attributeType="XML" 
-                                           attributeName="cy" 
-                                           dur="0.6s" 
-                                           begin="0;cAnim1.end+0.2s"
-                                           calcMode="spline"
-                                           values="40;20;40"
-                                           keyTimes="0;0.3;1" 
-                                           keySplines="0.175, 0.885, 0.320, 1.5;
-                                                       0.175, 0.885, 0.320, 1.5" />
-                                </circle>
-                                <circle cx="50%" cy="60" r="11">
-                                  <animate id="cAnim2"
-                                           attributeType="XML" 
-                                           attributeName="cy" 
-                                           dur="0.6s" 
-                                           begin="0.4s;cAnim2.end+0.2s"
-                                           calcMode="spline"
-                                           values="60;80;60"
-                                           keyTimes="0;0.3;1" 
-                                           keySplines="0.175, 0.885, 0.320, 1.5;
-                                                       0.175, 0.885, 0.320, 1.5" />
-                                </circle>
-                              </g>
-                            </svg>
+                            <loading />
                         </div>
                     </template> 
 
@@ -92,16 +49,16 @@
                                     <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
                                 </template>
                                 <template v-if="file.type == 'dir'">
-                                    <Folder :file="file" class="h-40" v-on:goToFolderEvent="goToFolder" />
+                                    <Folder :file="file" class="h-40" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
                                 </template>
                             </template>
 
                             <template v-else>
                                 <template v-if="file.type == 'file'">
-                                    <ImageLoader :file="file" :view="view" class="h-8" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                    <ImageLoader :file="file" :view="view" class="h-8" :class="{'loading': loadingInfo}" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
                                 </template>
                                 <template v-if="file.type == 'dir'">
-                                    <Folder :file="file" :view="view" class="h-8" v-on:goToFolderEvent="goToFolder" />
+                                    <Folder :file="file" :view="view" class="h-8" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
                                 </template>
                             </template>
                             
@@ -116,18 +73,7 @@
 
             
         </transition>
-        <DetailPopup 
-            :info="info"
-            :active="activeInfo"
-            :popup="popupLoaded"
-            v-on:closePreview="closePreview" 
-            v-on:refresh="refresh"
-            v-on:selectFile="selectFile"
-        >
-                
-        </DetailPopup>
-
-        <UploadProgress ref="uploader" :current="current" :files="filesToUpload"  v-on:removeFile="removeFileFromUpload"></UploadProgress>
+        
     </div>
 </template>
 
@@ -138,17 +84,14 @@ import MD5 from '../tools/md5';
 import api from '../api';
 import ImageLoader from '../modules/ImageLoader';
 import Folder from '../modules/Folder';
-import DetailPopup from '../components/DetailPopup';
-import UploadProgress from './UploadProgress';
-
+import Loading from './Loading';
 let arrayFiles = [];
 
 export default {
     components: {
         ImageLoader: ImageLoader,
         Folder: Folder,
-        DetailPopup: DetailPopup,
-        UploadProgress: UploadProgress,
+        loading: Loading,
     },
 
     props: {
@@ -197,6 +140,7 @@ export default {
         eventsLoaded: false,
         cssDragAndDrop: null,
         filesToUpload: [],
+        loadingInfo: false,
     }),
 
     methods: {
@@ -227,10 +171,19 @@ export default {
         },
 
         showInfo(file) {
-            return api.getInfo(file.path).then(result => {
-                this.activeInfo = true;
-                this.info = result;
-            });
+            file.loading = true;
+            return api
+                .getInfo(file.path)
+                .then(result => {
+                    this.$emit('showInfoItem', result);
+                    file.loading = false;
+                })
+                .catch(() => {
+                    file.loading = false;
+                    this.$toasted.show(this.__('Error opening the file. Check your permissions'), {
+                        type: 'error',
+                    });
+                });
         },
 
         closePreview() {
@@ -248,7 +201,8 @@ export default {
 
         setDragAndDropEvents() {
             let self = this;
-            let filemanagerContainer = document.querySelector('#filemanager-manager');
+
+            let filemanagerContainer = document.querySelector('#filemanager-manager-container');
 
             filemanagerContainer.addEventListener('dragenter', function(e) {
                 e.preventDefault();
@@ -290,7 +244,8 @@ export default {
             });
 
             this.filesToUpload = arrayFiles;
-            this.$refs.uploader.uploadFiles(this.filesToUpload);
+
+            this.$emit('uploadFiles', arrayFiles);
         },
 
         getPreview(file) {
@@ -304,22 +259,19 @@ export default {
         isImage(file) {
             return file.type.includes('image'); //returns true or false
         },
-
-        removeFileFromUpload(uploadedFileId) {
-            let index = this.filesToUpload.map(item => item.id).indexOf(uploadedFileId);
-            this.$delete(this.filesToUpload, index);
-
-            if (this.filesToUpload.length === 0) {
-                this.$emit('refresh');
-            }
-        },
     },
 
     updated: function() {
+        //
+    },
+
+    mounted() {
         if (!this.eventsLoaded) {
             this.$nextTick(function() {
-                this.eventsLoaded = true;
-                this.setDragAndDropEvents();
+                setTimeout(() => {
+                    this.setDragAndDropEvents();
+                    this.eventsLoaded = true;
+                }, 500);
             });
         }
     },

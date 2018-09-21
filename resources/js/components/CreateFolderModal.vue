@@ -2,19 +2,19 @@
     <portal to="modals" name="Create Folder">
         <transition name="fade">
             <modal v-if="active">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 600px;">
+                <div class="bg-white rounded-lg shadow-lg " style="width: 600px;">
                     <div class="p-8">
-                        <heading :level="2" class="mb-6">Create Folder</heading>
-                        <input type="text" class="w-full h-full form-control form-input form-input-bordered py-3" placeholder="Write a folder name" v-model="folderName" autofocus required>
+                        <heading :level="2" class="mb-6">{{ __('Create folder') }}</heading>
+                        <input type="text" class="w-full h-full form-control form-input form-input-bordered py-3" :placeholder="__('Write a folder name')" v-model="folderName" autofocus required>
                         <p class="my-2 text-danger" v-if="error">{{ errorMsg }}</p>
                     </div>
 
                     <div class="bg-30 px-6 py-3 flex">
                         <div class="ml-auto">
-                            <button type="button" data-testid="cancel-button" @click.prevent="cancelCreate" class="btn text-80 font-normal h-9 px-3 mr-3 btn-link">Cancel</button>
+                            <button type="button" data-testid="cancel-button" @click.prevent="cancelCreate" class="btn text-80 font-normal h-9 px-3 mr-3 btn-link">{{ __('Cancel') }}</button>
                             <button ref="confirmButton" data-testid="confirm-button" :disabled="isSaving" @click.prevent="createFolder" class="btn btn-default btn-primary" :class="{ 'cursor-not-allowed': isSaving, 'opacity-50': isSaving }">
-                                <span v-if="isSaving">Saving</span>
-                                <span v-else>Create</span>
+                                <span v-if="isSaving">{{ __('Creating') }}</span>
+                                <span v-else>{{ __('Create') }}</span>
                             </button>
                         </div>
                     </div>
@@ -44,7 +44,7 @@ export default {
     data: () => ({
         folderName: null,
         error: false,
-        errorMsg: 'The folder name is required.',
+        errorMsg: '',
         showUpload: false,
         isSaving: false,
     }),
@@ -71,7 +71,7 @@ export default {
                             type: 'error',
                         });
                     } else {
-                        this.errorMsg = 'The folder name is required.';
+                        this.errorMsg = 'The folder name is required';
                         this.$toasted.show(this.__('Error creating the folder'), { type: 'error' });
                     }
                 }

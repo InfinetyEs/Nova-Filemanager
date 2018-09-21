@@ -43,4 +43,41 @@ trait FileFunctions
     {
         return preg_replace('/([^:])(\/{2,})/', '$1/', $str);
     }
+
+    /**
+     * Cleanup filename
+     *
+     * @param  string  $str
+     *
+     * @return string
+     */
+    public function fixFilename($str)
+    {
+        if (!mb_detect_encoding($str, 'UTF-8', true)) {
+            $str = utf8_encode($str);
+        }
+        if (function_exists('transliterator_transliterate')) {
+            $str = transliterator_transliterate('Any-Latin; Latin-ASCII', $str);
+        } else {
+            $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
+        }
+        $str = preg_replace("/[^a-zA-Z0-9\.\[\]_| -]/", '', $str);
+
+        $str = str_replace(array('"', "'", '/', '\\'), '', $str);
+        $str = strip_tags($str);
+
+        return trim($str);
+    }
+
+    /**
+     * Cleanup directory name
+     *
+     * @param  string  $str
+     *
+     * @return  string
+     */
+    public function fixDirname($str)
+    {
+        return str_replace(array('.', '~', '/', '\\'), '', $str);
+    }
 }

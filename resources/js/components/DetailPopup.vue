@@ -1,8 +1,9 @@
 <template>
-    <portal to="modals" name="File Preview">
+    <!-- Esto falla al hacer el mounted  -->
+    <portal to="modals" name="File Details">
         <transition name="fade">
             <modal v-if="active">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 900px;">
+                <div class="bg-white rounded-lg shadow-lg" style="width: 70vw;">
                     
                     <div class="bg-30 flex flex-wrap border-b border-70">
                         <div class="w-3/4 px-4 py-3 ">
@@ -16,18 +17,49 @@
                     </div>
 
                     <div class="flex flex-wrap">
-                        <div class="w-3/5 py-view box-preview flex justify-center">
+                        <div class="w-3/5 box-preview flex justify-center" :class="cssType">
 
                             <template v-if="info.type == 'image'">
                                 <ImageInfo :file="info" />
                             </template>
 
-                            <template v-else-if="info.type == 'others'">
-                                
-                                <audio controls>
+                            <template v-else-if="info.type == 'audio'">
+                                <audio ref="audio" controls>
                                     <source :src="info.src" :type="info.mime"/>
                                 </audio>
-                                
+                            </template>
+
+                            <template v-else-if="info.type == 'video'">
+                                <video ref="video" controls crossorigin playsinline>
+                                    <source :src="info.url" :type="info.mime"/>
+                                </video>
+                            </template>
+
+
+                            <template v-else-if="info.type == 'text'">
+                                <codemirror v-if="codeLoaded" ref="code" :value="info.source" :options="cmOptions" >
+                                </codemirror>
+                            </template>
+
+                            <template v-else-if="info.type == 'zip'">
+                                <TreeView v-if="zipLoaded" :json="info.source" :name="info.name">
+                                </TreeView>
+                            </template>
+
+                            <!-- <template v-else-if="info.type == 'word'">
+                                <iframe :src="'https://view.officeapps.live.com/op/embed.aspx?src='+info.url" width="100%" height="100%" style="border: none;">
+                                    <object class="no-preview" v-html="info.image"></object>
+                                </iframe>
+                            </template> -->
+
+                            <template v-else-if="info.type == 'pdf'">
+                                <object :data="info.url" type="application/pdf" width="100%" height="100%">
+                                    <iframe :src="info.url" width="100%" height="100%" style="border: none;">
+                                        <object class="no-preview" v-html="info.image">
+
+                                        </object>
+                                    </iframe>
+                                </object>
                             </template>
                             
                             <template v-else>
@@ -74,7 +106,7 @@
                                     <div class="flex flex-wrap items-stretch w-full mb-4 relative">
                                         <input type="text" class="flex-shrink flex-grow flex-auto text-xs leading-normal w-px flex-1 border border-70 rounded rounded-r-none px-1 relative" :value="info.url">
                                         <div class="flex -mr-px">
-                                            <button class="copy flex items-center leading-normal bg-50 rounded rounded-l-none border border-l-0 border-70 px-3 whitespace-no-wrap text-grey-dark text-xs" v-copy="info.url" v-copy:callback="onCopy">Copy</button>
+                                            <button class="copy flex items-center leading-normal bg-50 rounded rounded-l-none border border-l-0 border-70 px-3 whitespace-no-wrap text-grey-dark text-xs" v-copy="info.url" v-copy:callback="onCopy">{{ __('Copy') }}</button>
                                         </div>  
                                     </div>  
                                 </div>
@@ -113,7 +145,31 @@
 import api from '../api';
 import ImageInfo from '../modules/Image';
 import ConfirmationButton from './ConfirmationButton';
+import TreeView from './TreeView';
 import { copy } from 'v-copy';
+import Plyr from 'plyr';
+import 'plyr/dist/plyr.css';
+import { codemirror } from 'vue-codemirror';
+
+//themes
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/dracula.css';
+
+//modes
+import 'codemirror/mode/markdown/markdown';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/php/php';
+import 'codemirror/mode/sql/sql';
+import 'codemirror/mode/ruby/ruby';
+import 'codemirror/mode/shell/shell';
+import 'codemirror/mode/sass/sass';
+import 'codemirror/mode/yaml/yaml';
+import 'codemirror/mode/yaml-frontmatter/yaml-frontmatter';
+import 'codemirror/mode/nginx/nginx';
+import 'codemirror/mode/xml/xml';
+import 'codemirror/mode/vue/vue';
+import 'codemirror/mode/dockerfile/dockerfile';
+import 'codemirror/keymap/vim';
 
 export default {
     props: {
@@ -139,6 +195,8 @@ export default {
     components: {
         ImageInfo: ImageInfo,
         ConfirmationButton: ConfirmationButton,
+        codemirror: codemirror,
+        TreeView: TreeView,
     },
 
     directives: {
@@ -147,10 +205,16 @@ export default {
 
     data: () => ({
         messagesRemove: ['Remove File', 'Are you sure', 'Removing...'],
+        cssType: ' py-custom',
+        codeLoaded: false,
+        zipLoaded: false,
+        cmOptions: {
+            tabSize: 2,
+            theme: 'dracula',
+            lineNumbers: true,
+            line: true,
+        },
     }),
-    mounted() {
-        //
-    },
 
     methods: {
         closePreview() {
@@ -183,6 +247,16 @@ export default {
         },
     },
 
+    mounted() {
+        this.$nextTick(function() {
+            this.messagesRemove = [
+                this.__('Remove File'),
+                this.__('Are you sure?'),
+                this.__('Removing...'),
+            ];
+        });
+    },
+
     computed: {
         playerOptions() {
             if (this.info) {
@@ -202,6 +276,55 @@ export default {
             return {};
         },
     },
+
+    updated() {},
+
+    watch: {
+        'info.type': function(type) {
+            if (type == 'audio') {
+                this.$nextTick(function() {
+                    setTimeout(() => {
+                        this.cssType = ' py-custom items-center';
+                        new Plyr(this.$refs.audio);
+                    });
+                });
+            }
+
+            if (type == 'video') {
+                this.$nextTick(function() {
+                    setTimeout(() => {
+                        // this.cssType = 'items-center';
+                        new Plyr(this.$refs.video);
+                    });
+                });
+            }
+
+            if (type == 'text') {
+                this.$nextTick(function() {
+                    this.cssType = '';
+                    this.cmOptions.mode = this.info.mime;
+                    this.codeLoaded = true;
+                });
+            }
+
+            if (type == 'pdf') {
+                this.$nextTick(function() {
+                    this.cssType = 'mh400';
+                });
+            }
+
+            if (type == 'zip') {
+                this.$nextTick(function() {
+                    this.info.source = JSON.parse(this.info.source);
+                    this.zipLoaded = true;
+                });
+            }
+
+            this.cssType = '';
+            this.codeLoaded = false;
+            this.zipLoaded = false;
+        },
+    },
 };
 </script>
 
@@ -216,6 +339,10 @@ export default {
 
 .box-preview {
     max-height: 500px;
+}
+
+.py-custom {
+    padding: 2rem 0;
 }
 
 .info {
@@ -239,11 +366,22 @@ export default {
         }
     }
 }
+
+.vue-codemirror {
+    width: 100%;
+}
+
+.mh400 {
+    min-height: 400px;
+}
 </style>
 
 <style>
 .no-preview > .svg-mime {
     width: 150px;
     height: 100%;
+}
+.CodeMirror {
+    height: 400px !important;
 }
 </style>
