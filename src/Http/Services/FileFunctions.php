@@ -45,7 +45,7 @@ trait FileFunctions
     }
 
     /**
-     * Cleanup filename
+     * Cleanup filename.
      *
      * @param  string  $str
      *
@@ -53,7 +53,7 @@ trait FileFunctions
      */
     public function fixFilename($str)
     {
-        if (!mb_detect_encoding($str, 'UTF-8', true)) {
+        if (! mb_detect_encoding($str, 'UTF-8', true)) {
             $str = utf8_encode($str);
         }
         if (function_exists('transliterator_transliterate')) {
@@ -63,14 +63,14 @@ trait FileFunctions
         }
         $str = preg_replace("/[^a-zA-Z0-9\.\[\]_| -]/", '', $str);
 
-        $str = str_replace(array('"', "'", '/', '\\'), '', $str);
+        $str = str_replace(['"', "'", '/', '\\'], '', $str);
         $str = strip_tags($str);
 
         return trim($str);
     }
 
     /**
-     * Cleanup directory name
+     * Cleanup directory name.
      *
      * @param  string  $str
      *
@@ -78,6 +78,6 @@ trait FileFunctions
      */
     public function fixDirname($str)
     {
-        return str_replace(array('.', '~', '/', '\\'), '', $str);
+        return str_replace(['.', '~', '/', '\\'], '', $str);
     }
 }

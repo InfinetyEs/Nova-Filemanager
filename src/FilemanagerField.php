@@ -53,7 +53,7 @@ class FilemanagerField extends Field
     }
 
     /**
-     * FIx name label
+     * FIx name label.
      *
      * @param array $data
      *
