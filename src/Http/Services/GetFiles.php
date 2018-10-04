@@ -267,7 +267,7 @@ trait GetFiles
             // if ($folder) {
             //     return '/'.$folder.DIRECTORY_SEPARATOR.$file['basename'];
             // }
-            if ( env('FILEMANAGER_DISK_DRIVER', $this->disk)  == 's3') {
+            if (env('FILEMANAGER_DISK_DRIVER', $this->disk) == 's3') {
                 return $this->storage->url($file['path']);
             }
 
