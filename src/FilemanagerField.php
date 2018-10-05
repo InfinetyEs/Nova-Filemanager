@@ -36,6 +36,10 @@ class FilemanagerField extends Field
 
             $data = $service->getFileInfoAsArray($this->value);
 
+            if (empty($data)) {
+                return [];
+            }
+
             return $this->fixNameLabel($data);
         }
 
