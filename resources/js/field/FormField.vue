@@ -67,7 +67,7 @@ import ModalFileManager from '../components/ModalFileManager';
 import CreateFolderModal from '../components/CreateFolderModal';
 import DetailPopup from '../components/DetailPopup';
 import UploadProgress from '../components/UploadProgress';
-import ConfirmModalRemoveFile from '../components/ConfirmModalRemoveFile'
+import ConfirmModalRemoveFile from '../components/ConfirmModalRemoveFile';
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -96,7 +96,7 @@ export default {
         //uploader
         filesToUpload: {},
 
-        removeModalOpen: false
+        removeModalOpen: false,
     }),
 
     methods: {

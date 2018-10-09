@@ -26,17 +26,17 @@ export default {
      * Mount the component.
      */
     mounted() {
-        this.$refs.confirmButton.focus()
+        this.$refs.confirmButton.focus();
     },
 
     methods: {
         handleClose() {
-            this.$emit('close')
+            this.$emit('close');
         },
 
         handleConfirm() {
-            this.$emit('confirm')
+            this.$emit('confirm');
         },
     },
-}
+};
 </script>
