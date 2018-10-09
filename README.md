@@ -66,6 +66,16 @@ FilemanagerField::make('field')->displayAsImage();
 
 ```
 
+From version v1.1.1 you can also use the `folder` option to set a initial folder of your field.
+
+
+```php
+FilemanagerField::make('field')->folder('avatars');
+//or
+FilemanagerField::make('field')->displayAsImage()->folder('files/avatars');
+
+```
+
 ### Localization
 
 Set your translations in the corresponding xx.json file located in /resources/lang/vendor/nova
