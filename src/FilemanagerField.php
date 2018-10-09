@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager;
 
-use Infinety\Filemanager\Http\Services\FileManagerService;
 use Laravel\Nova\Fields\Field;
+use Infinety\Filemanager\Http\Services\FileManagerService;
 
 class FilemanagerField extends Field
 {
@@ -25,7 +25,7 @@ class FilemanagerField extends Field
     }
 
     /**
-     * Set current folder for the field
+     * Set current folder for the field.
      *
      * @param   string  $folderName
      *
