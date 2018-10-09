@@ -11,6 +11,15 @@ trait GetFiles
     use FileFunctions;
 
     /**
+     * Cloud disks
+     *
+     * @var array
+     */
+    protected $cloudDisks = [
+        's3', 'google', 's3-cached',
+    ];
+
+    /**
      * @param $folder
      * @param $order
      * @param $filter
@@ -34,6 +43,7 @@ trait GetFiles
             $files[] = $fileData;
         }
         $files = collect($files);
+
         if ($filter != false) {
             $files = $this->filterData($files, $filter);
         }
@@ -47,7 +57,7 @@ trait GetFiles
      */
     public function getFileData($file, $id)
     {
-        if (! $this->isDot($file) && ! $this->exceptExtensions->contains($file['extension']) && ! $this->exceptFolders->contains($file['basename']) && ! $this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
+        if (!$this->isDot($file) && !$this->exceptExtensions->contains($file['extension']) && !$this->exceptFolders->contains($file['basename']) && !$this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
             $fileInfo = [
                 'id'         => $id,
                 'name'       => trim($file['basename']),
@@ -68,7 +78,9 @@ trait GetFiles
 
             if ($fileInfo['mime'] == 'image') {
                 list($width, $height) = $this->getImageDimesions($file);
-                $fileInfo['dimensions'] = $width.'x'.$height;
+                if (!$width == false) {
+                    $fileInfo['dimensions'] = $width.'x'.$height;
+                }
             }
 
             return (object) $fileInfo;
@@ -156,7 +168,9 @@ trait GetFiles
             }
         }
 
-        return $folders->merge($items);
+        $result = $folders->merge($items);
+
+        return $result;
     }
 
     /**
@@ -173,6 +187,38 @@ trait GetFiles
         }
 
         return md5($this->disk.'_'.trim($file['basename']));
+    }
+
+    /**
+     * Set Relative Path.
+     *
+     * @param $folder
+     */
+    public function setRelativePath($folder)
+    {
+        $defaultPath = $this->storage->path('/');
+
+        $publicPath = str_replace($defaultPath, '', $folder);
+
+        if ($folder != '/') {
+            $this->currentPath = $this->getAppend().'/'.$publicPath;
+        } else {
+            $this->currentPath = $this->getAppend().$publicPath;
+        }
+    }
+
+    /**
+     * Get Append to url.
+     *
+     * @return mixed|string
+     */
+    public function getAppend()
+    {
+        if (in_array(env('FILEMANAGER_DISK_DRIVER', $this->disk), $this->cloudDisks)) {
+            return '';
+        }
+
+        return '/storage';
     }
 
     /**
@@ -267,7 +313,8 @@ trait GetFiles
             // if ($folder) {
             //     return '/'.$folder.DIRECTORY_SEPARATOR.$file['basename'];
             // }
-            if (env('FILEMANAGER_DISK_DRIVER', $this->disk) == 's3') {
+
+            if (in_array(env('FILEMANAGER_DISK_DRIVER', $this->disk), $this->cloudDisks)) {
                 return $this->storage->url($file['path']);
             }
 
@@ -290,7 +337,7 @@ trait GetFiles
             return getimagesize($this->storage->path($file['path']));
         }
 
-        if ($this->disk == 's3') {
+        if (in_array(env('FILEMANAGER_DISK_DRIVER', $this->disk), $this->cloudDisks)) {
             return false;
 
             return $this->getImageDimesionsFromCloud($file);
@@ -337,47 +384,15 @@ trait GetFiles
     public function normalizeFiles($files)
     {
         foreach ($files as $key => $file) {
-            if (! isset($file['extension'])) {
+            if (!isset($file['extension'])) {
                 $files[$key]['extension'] = null;
             }
-            if (! isset($file['size'])) {
+            if (!isset($file['size'])) {
                 $files[$key]['size'] = null;
             }
         }
 
         return $files;
-    }
-
-    /**
-     * Set Relative Path.
-     *
-     * @param $folder
-     */
-    public function setRelativePath($folder)
-    {
-        $defaultPath = $this->storage->path('/');
-
-        $publicPath = str_replace($defaultPath, '', $folder);
-
-        if ($folder != '/') {
-            $this->currentPath = $this->getAppend().'/'.$publicPath;
-        } else {
-            $this->currentPath = $this->getAppend().$publicPath;
-        }
-    }
-
-    /**
-     * Get Append to url.
-     *
-     * @return mixed|string
-     */
-    public function getAppend()
-    {
-        if (config('filemanager.appendUrl') != null) {
-            return config('filemanager.appendUrl');
-        } else {
-            return '/storage';
-        }
     }
 
     /**
@@ -413,6 +428,7 @@ trait GetFiles
     {
         $defaultPath = $this->cleanSlashes($this->storage->path('/'));
         $currentPath = $this->cleanSlashes($this->storage->path($currentFolder));
+
         $paths = $currentPath;
 
         if ($defaultPath != '/') {

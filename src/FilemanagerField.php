@@ -25,6 +25,18 @@ class FilemanagerField extends Field
     }
 
     /**
+     * Set current folder for the field
+     *
+     * @param   string  $folderName
+     *
+     * @return  $this
+     */
+    public function folder($folderName)
+    {
+        return $this->withMeta(['folder' => $folderName]);
+    }
+
+    /**
      * Resolve the thumbnail URL for the field.
      *
      * @return string|null

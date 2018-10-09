@@ -110,7 +110,12 @@ Set your translations in the corresponding xx.json file located in /resources/la
     "Select a file": "Selecciona un archivo",
     "Open FileManager": "Abrir Gestor de archivos",
     "This image": "Esta imagen",
-    "could not be found.": "no se encuentra."
+    "could not be found.": "no se encuentra.",
+    "Delete": "Eliminar",
+    "Deselect File": "Deseleccionar archivo",
+    "Are you sure you want to deselect this file?": "¿Estas seguro de querer deseleccionar este archivo?",
+    "Remember: The file will not be delete from your storage": "Recuerda: El archivo no será eliminado de tu disco",
+    "Deselect": "Deseleccionar"
 ```
 
 ### Testing

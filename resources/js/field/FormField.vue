@@ -4,7 +4,8 @@
 
             <modal-filemanager 
                 ref="filemanager"
-                :active="openModal" 
+                :active="openModal"
+                :currentPath="currentPath"
                 v-on:open-modal="openModalCreateFolder" 
                 v-on:close-modal="closeFilemanagerModal" 
                 v-on:update-current-path="updateCurrentPath"
@@ -32,6 +33,26 @@
 
             <file-select :id="field.name" :field="field" :css="errorClasses"  v-model="value" v-on:open-modal="openFilemanagerModal"></file-select>
 
+            <p class="mt-3 flex items-center text-sm" v-if="value">
+                <button type="button" class="cursor-pointer dim btn btn-link text-primary inline-flex items-center" @click="openRemoveModal">
+                    <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
+                    <span class="class ml-2 mt-1">
+                        {{__('Delete')}}
+                    </span>
+                </button>
+            </p>
+
+
+            <portal to="modals">
+                <transition name="fade">
+                    <confirm-modal-remove-file
+                        v-if="removeModalOpen"
+                        @confirm="removeFile"
+                        @close="closeRemoveModal"
+                    />
+                </transition>
+            </portal>
+
             <p v-if="hasError" class="my-2 text-danger">
                 {{ firstError }}
             </p>
@@ -46,6 +67,7 @@ import ModalFileManager from '../components/ModalFileManager';
 import CreateFolderModal from '../components/CreateFolderModal';
 import DetailPopup from '../components/DetailPopup';
 import UploadProgress from '../components/UploadProgress';
+import ConfirmModalRemoveFile from '../components/ConfirmModalRemoveFile'
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -58,6 +80,7 @@ export default {
         'create-folder': CreateFolderModal,
         DetailPopup: DetailPopup,
         UploadProgress: UploadProgress,
+        'confirm-modal-remove-file': ConfirmModalRemoveFile,
     },
 
     data: () => ({
@@ -72,6 +95,8 @@ export default {
 
         //uploader
         filesToUpload: {},
+
+        removeModalOpen: false
     }),
 
     methods: {
@@ -87,6 +112,7 @@ export default {
         },
 
         openFilemanagerModal() {
+            this.setCurrentPath();
             this.openModal = true;
         },
 
@@ -123,6 +149,27 @@ export default {
             }
         },
 
+        setCurrentPath() {
+            if (this.field.folder != null) {
+                this.currentPath = this.field.folder;
+            } else {
+                this.currentPath = '/';
+            }
+        },
+
+        removeFile() {
+            this.value = null;
+            this.removeModalOpen = false;
+        },
+
+        openRemoveModal() {
+            this.removeModalOpen = true;
+        },
+
+        closeRemoveModal() {
+            this.removeModalOpen = false;
+        },
+
         /*
          * Set the initial, internal value for the field.
          */
@@ -146,8 +193,8 @@ export default {
         },
     },
 
-    mounted() {
-        //
+    created() {
+        this.setCurrentPath();
     },
 };
 </script>

@@ -79,6 +79,10 @@ export default {
             type: String,
             required: true,
         },
+        currentPath: {
+            type: String,
+            required: true,
+        },
     },
 
     components: {
@@ -95,7 +99,7 @@ export default {
         backupStatusses: [],
         showUpload: false,
         showCreateFolder: false,
-        currentPath: '/',
+        // currentPath: '/',
         files: [],
         path: [],
         noFiles: false,
@@ -131,16 +135,16 @@ export default {
             // this.currentPath = this.currentPath + '/' + path;
             this.getData(path);
             this.currentPath = path;
-            history.pushState(null, null, '?path=' + path);
+            // history.pushState(null, null, '?path=' + path);
         },
 
         goToFolderNav(path) {
             this.getData(path);
             this.currentPath = path;
             if (this.currentPath == '/') {
-                history.pushState(null, null, '?path=' + path);
+                // history.pushState(null, null, '?path=' + path);
             } else {
-                history.pushState(null, null, '?path=' + path);
+                // history.pushState(null, null, '?path=' + path);
             }
         },
 

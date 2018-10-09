@@ -11,7 +11,7 @@
                 </div>
             </template>
             <template v-else>
-                <span>&mdash;</span>
+                <span class="pl-2">&mdash;</span>
             </template>
 			
     		

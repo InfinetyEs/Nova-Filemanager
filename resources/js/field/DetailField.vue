@@ -1,11 +1,14 @@
 <template>
+    <div>
+    <template v-if="field.value">
+        <panel-item  v-if="display == 'normal'" :field="field" />
+        <ImagePanel v-else :field="field" />
+    </template>
 
-    <panel-item  v-if="display == 'normal'" :field="field" />
-
-    <!-- <file-field v-else :field="field" /> -->
-
-    <ImagePanel v-else :field="field" />
-    
+    <template v-else>
+          <panel-item  :field="field" />
+    </template>
+    </div>
 </template>
 
 <script>
