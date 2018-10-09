@@ -36,6 +36,10 @@ class FilemanagerField extends Field
 
             $data = $service->getFileInfoAsArray($this->value);
 
+            if (empty($data)) {
+                return [];
+            }
+
             return $this->fixNameLabel($data);
         }
 
@@ -53,7 +57,7 @@ class FilemanagerField extends Field
     }
 
     /**
-     * FIx name label
+     * FIx name label.
      *
      * @param array $data
      *

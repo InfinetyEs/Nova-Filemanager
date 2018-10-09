@@ -2,13 +2,11 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Carbon\Carbon;
-use Illuminate\Filesystem\FilesystemAdapter;
-use Illuminate\Support\Collection;
-use Infinety\Filemanager\Http\Services\MimeTypes;
-use RarArchive;
-use SplFileInfo;
 use ZipArchive;
+use SplFileInfo;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class NormalizeFile
 {
@@ -28,6 +26,7 @@ class NormalizeFile
      * @var mixed
      */
     protected $storagePath;
+
     /**
      * @param string $path
      */
@@ -156,7 +155,7 @@ class NormalizeFile
         if (str_contains($mime, 'image')) {
             list($width, $height) = getimagesize($this->storage->path($this->storagePath));
 
-            if (!empty($width) && !empty($height)) {
+            if (! empty($width) && ! empty($height)) {
                 return $width.'x'.$height;
             }
         }
@@ -196,7 +195,7 @@ class NormalizeFile
     }
 
     /**
-     * Read zip files
+     * Read zip files.
      *
      * @return mixed
      */
@@ -219,7 +218,7 @@ class NormalizeFile
     }
 
     /**
-     * Read rar files
+     * Read rar files.
      *
      * @return mixed
      */
@@ -247,7 +246,7 @@ class NormalizeFile
      */
     private function buildTree($pathList)
     {
-        $data = array();
+        $data = [];
         foreach ($pathList as $path => $info) {
             $list = explode('/', trim($path, '/'));
             $last_dir = &$data;

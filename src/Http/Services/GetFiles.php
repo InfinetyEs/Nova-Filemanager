@@ -47,7 +47,7 @@ trait GetFiles
      */
     public function getFileData($file, $id)
     {
-        if (!$this->isDot($file) && !$this->exceptExtensions->contains($file['extension']) && !$this->exceptFolders->contains($file['basename']) && !$this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
+        if (! $this->isDot($file) && ! $this->exceptExtensions->contains($file['extension']) && ! $this->exceptFolders->contains($file['basename']) && ! $this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
             $fileInfo = [
                 'id'         => $id,
                 'name'       => trim($file['basename']),
@@ -160,9 +160,9 @@ trait GetFiles
     }
 
     /**
-     * Generates an id based on file
+     * Generates an id based on file.
      *
-     * @param   Array  $file
+     * @param   array  $file
      *
      * @return  string
      */
@@ -267,9 +267,7 @@ trait GetFiles
             // if ($folder) {
             //     return '/'.$folder.DIRECTORY_SEPARATOR.$file['basename'];
             // }
-            if ($this->disk == 's3') {
-                ;
-
+            if (env('FILEMANAGER_DISK_DRIVER', $this->disk) == 's3') {
                 return $this->storage->url($file['path']);
             }
 
@@ -282,7 +280,7 @@ trait GetFiles
     }
 
     /**
-     * Get image dimensions for files
+     * Get image dimensions for files.
      *
      * @param $file
      */
@@ -302,7 +300,7 @@ trait GetFiles
     }
 
     /**
-     * Get image dimensions from cloud
+     * Get image dimensions from cloud.
      *
      * @param $file
      */
@@ -339,10 +337,10 @@ trait GetFiles
     public function normalizeFiles($files)
     {
         foreach ($files as $key => $file) {
-            if (!isset($file['extension'])) {
+            if (! isset($file['extension'])) {
                 $files[$key]['extension'] = null;
             }
-            if (!isset($file['size'])) {
+            if (! isset($file['size'])) {
                 $files[$key]['size'] = null;
             }
         }
