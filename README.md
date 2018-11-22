@@ -18,13 +18,13 @@ A Filemanager Tool and Field for Laravel Nova
 
 ### Installation
 
-You can install the package in to a Laravel app that uses [Nova](https://nova.laravel.com) via composer:
+You can install the package in any Laravel app that uses [Nova](https://nova.laravel.com) via Composer:
 
 ```bash
 composer require infinety-es/nova-filemanager
 ```
 
-Next up, you must register the tool with Nova. This is typically done in the `tools` method of the `NovaServiceProvider`.
+Next, you must register the tool with Nova. This is typically done in the `tools` method of the `NovaServiceProvider`.
 
 ```php
 // in app/Providers/NovaServiceProvider.php
@@ -40,7 +40,7 @@ public function tools()
 }
 ```
 
-Nova Filemanager works with Laravel Flysystem. Default disk is `public`. You can change the Flysystem disk writing that line in your `env.` file:
+Nova Filemanager works with [Laravel Flysystem](https://github.com/GrahamCampbell/Laravel-Flysystem). The default disk is `public`. You can customize the Flysystem disk by setting the `FILEMANAGER_DISK` variable in your `.env` file:
 
 
 ```env
@@ -60,13 +60,13 @@ use Infinety\Filemanager\FilemanagerField;
 FilemanagerField::make('field');
 
 
-// You can set also if you want preview Images in Index and Detail views
+// You can also show preview images in Index and Detail views
 
 FilemanagerField::make('field')->displayAsImage();
 
 ```
 
-From version v1.1.1 you can also use the `folder` option to set a initial folder of your field.
+Starting in v1.1.1, you can use the `folder` option to set a initial folder for your field
 
 
 ```php
@@ -153,7 +153,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### Security
 
-If you discover any security related issues, please email :author_email instead of using the issue tracker.
+If you discover any security related issues, please email apps@infinety.es instead of using the issue tracker.
 
 ## Postcardware
 
