@@ -72,7 +72,7 @@ class FileManagerService
 
         $order = $request->get('sort');
         if (! $order) {
-            $order = 'mime';
+            $order = env('FILEMANAGER_ORDER', 'mime');
         }
         $filter = $request->get('filter');
         if (! $filter) {
