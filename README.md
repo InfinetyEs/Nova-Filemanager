@@ -47,6 +47,13 @@ Nova Filemanager works with [Laravel Flysystem](https://github.com/GrahamCampbel
 FILEMANAGER_DISK=public
 ```
 
+To change the order of directories customize `FILEMANAGER_ORDER` variable in your `.env` file:
+
+
+```env
+FILEMANAGER_ORDER=mime
+```
+
 ### Tool Usage
 
 Click on the "FileManager" menu item in your Nova app to see the Filemanager Tool
