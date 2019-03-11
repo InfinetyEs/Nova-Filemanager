@@ -7,6 +7,17 @@ export default {
             .then(response => response.data);
     },
 
+    getDataField(resource, attribute, pathToList) {
+        return window.axios
+            .get(
+                '/nova-vendor/infinety-es/nova-filemanager/' + resource + '/' + attribute + '/data',
+                {
+                    params: { folder: pathToList },
+                }
+            )
+            .then(response => response.data);
+    },
+
     uploadFile() {
         return window.axios
             .post('/nova-vendor/infinety-es/nova-filemanager/uploads/add')

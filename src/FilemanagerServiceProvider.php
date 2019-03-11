@@ -2,11 +2,11 @@
 
 namespace Infinety\Filemanager;
 
-use Laravel\Nova\Nova;
-use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Infinety\Filemanager\Http\Middleware\Authorize;
+use Laravel\Nova\Events\ServingNova;
+use Laravel\Nova\Nova;
 
 class FilemanagerServiceProvider extends ServiceProvider
 {
@@ -17,6 +17,10 @@ class FilemanagerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishes([
+            __DIR__.'/../config/config.php' => config_path('filemanager.php'),
+        ], 'filemanager-config');
+
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'nova-filemanager');
 
         $this->app->booted(function () {

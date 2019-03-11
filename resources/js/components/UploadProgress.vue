@@ -38,6 +38,10 @@ export default {
             default: '/',
             required: true,
         },
+        visibility: {
+            type: String,
+            default: 'public',
+        },
     },
 
     components: {
@@ -81,6 +85,7 @@ export default {
             let data = new FormData();
             data.append('file', file.file);
             data.append('current', this.current);
+            data.append('visibility', this.visibility);
 
             window.axios
                 .post('/nova-vendor/infinety-es/nova-filemanager/uploads/add', data, config)

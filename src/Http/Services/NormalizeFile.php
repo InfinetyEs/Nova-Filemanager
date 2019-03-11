@@ -2,11 +2,11 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use ZipArchive;
-use SplFileInfo;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Collection;
+use SplFileInfo;
+use ZipArchive;
 
 class NormalizeFile
 {
@@ -50,6 +50,7 @@ class NormalizeFile
             'size' => $this->getFileSize(),
             'url'  => $this->cleanSlashes($this->storage->url($this->storagePath)),
             'date' => $this->modificationDate(),
+            'ext'  => $this->file->getExtension(),
         ]);
 
         $data = $this->setExtras($data);
@@ -66,7 +67,7 @@ class NormalizeFile
         $mime = $this->storage->getMimetype($this->storagePath);
 
         // Image
-        if (str_contains($mime, 'image')) {
+        if (str_contains($mime, 'image') || $data['ext'] == 'svg') {
             $data->put('type', 'image');
             $data->put('dimensions', $this->getDimensions($this->storage->getMimetype($this->storagePath)));
         }
@@ -87,7 +88,14 @@ class NormalizeFile
         if ($this->availablesTextExtensions() && str_contains($mime, 'text')) {
             $data->put('type', 'text');
 
-            $data->put('source', $this->storage->get($this->storagePath));
+            if ($data['size']) {
+                $size = $this->file->getSize();
+                if ($size < 350000) {
+                    $data->put('source', $this->storage->get($this->storagePath));
+                } else {
+                    $data->put('source', __('Only files below 350 Kb will be shown'));
+                }
+            }
         }
 
         // text
@@ -113,7 +121,7 @@ class NormalizeFile
         //     $data->put('source', $this->readRar());
         // }
 
-        $data->put('image', $this->getImage($mime));
+        $data->put('image', $this->getImage($mime, $data['ext']));
 
         return $data;
     }
@@ -132,9 +140,9 @@ class NormalizeFile
      *
      * @return mixed
      */
-    private function getImage($mime)
+    private function getImage($mime, $extension = false)
     {
-        if (str_contains($mime, 'image')) {
+        if (str_contains($mime, 'image') || $extension == 'svg') {
             return $this->storage->url($this->storagePath);
         }
 
@@ -155,7 +163,7 @@ class NormalizeFile
         if (str_contains($mime, 'image')) {
             list($width, $height) = getimagesize($this->storage->path($this->storagePath));
 
-            if (! empty($width) && ! empty($height)) {
+            if (!empty($width) && !empty($height)) {
                 return $width.'x'.$height;
             }
         }
@@ -179,9 +187,10 @@ class NormalizeFile
     {
         $extension = $this->file->getExtension();
         $types = MimeTypes::checkMimeType($extension);
+
         $exist = false;
         for ($i = 0; $i < count($types); $i++) {
-            if (str_contains($types[$i], 'text')) {
+            if (str_contains($types[$i], 'text') || str_contains($types[$i], 'plain') || str_contains($types[$i], 'sql')) {
                 $exist = true;
                 break;
             }

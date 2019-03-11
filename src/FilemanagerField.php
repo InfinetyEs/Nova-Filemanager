@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager;
 
-use Laravel\Nova\Fields\Field;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Fields\Field;
 
 class FilemanagerField extends Field
 {
@@ -13,6 +13,21 @@ class FilemanagerField extends Field
      * @var string
      */
     public $component = 'filemanager-field';
+
+    /**
+     * Create a new field.
+     *
+     * @param  string  $name
+     * @param  string|null  $attribute
+     * @param  mixed|null  $resolveCallback
+     * @return void
+     */
+    public function __construct($name, $attribute = null, $resolveCallback = null)
+    {
+        parent::__construct($name, $attribute, $resolveCallback);
+
+        $this->withMeta(['visibility' => 'public']);
+    }
 
     /**
      * Set display in details and list as image or icon.
@@ -33,7 +48,41 @@ class FilemanagerField extends Field
      */
     public function folder($folderName)
     {
-        return $this->withMeta(['folder' => $folderName]);
+        return $this->withMeta(['folder' => $folderName, 'home' => $folderName]);
+    }
+
+    /**
+     * Set filter for the field
+     *
+     * @param   string  $folderName
+     *
+     * @return  $this
+     */
+    public function filterBy($filter)
+    {
+        $deafaultFilters = config('filemanager.filters', []);
+
+        if (count($deafaultFilters) > 0) {
+            $filters = array_change_key_case($deafaultFilters);
+
+            if (isset($filters[$filter])) {
+                $filteredExtensions = $filters[$filter];
+
+                return $this->withMeta(['filterBy' => $filter]);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set display in details and list as image or icon.
+     *
+     * @return $this
+     */
+    public function privateFiles()
+    {
+        return $this->withMeta(['visibility' => 'private']);
     }
 
     /**

@@ -1,8 +1,8 @@
 <template>
     <div ref="fileManagerContainer" id="filemanager-manager-container" class="p-3"  :class="cssFilemenagerContainer">
         <nav class="bg-grey-light rounded font-sans w-full m-4">
-            <ol class="list-reset flex text-grey-dark">
-                <li><span class="text-blue font-bold cursor-pointer" @click="goToFolderNav('/')">{{ __('Home') }}</span></li>
+            <ol class="list-reset flex text-grey-dark" >
+                <li><span class="text-blue font-bold cursor-pointer" @click="goToFolderNav(home)">{{ __('Home') }}</span></li>
                 <li v-if="pathsLength > 0"><span class="mx-2">/</span></li>
             
 
@@ -42,7 +42,7 @@
                         </div>
                     </template>
 
-                    <template v-if="!files.error" v-for="file in files">
+                    <template v-if="!files.error" v-for="file in fileteredFiles">
                         <div :class="filemanagerClass" v-bind:key="file.id">
                             <template v-if="view == 'grid'">
                                 <template v-if="file.type == 'file'">
@@ -131,6 +131,21 @@ export default {
             type: String,
             default: 'grid',
             required: false,
+        },
+        home: {
+            type: String,
+            required: false,
+            default: '/',
+        },
+        search: {
+            type: String,
+            required: false,
+            default: '',
+        },
+        filters: {
+            type: Array,
+            required: false,
+            default: () => [],
         },
     },
 
@@ -309,6 +324,24 @@ export default {
                 return '';
             }
             return '';
+        },
+
+        fileteredFiles() {
+            let filtered = this.files;
+            if (this.search) {
+                filtered = this.files.filter(m => m.name.toLowerCase().indexOf(this.search) > -1);
+            }
+
+            if (this.filters.length > 0) {
+                filtered = _.filter(filtered, file => {
+                    if (file.type == 'dir') {
+                        return true;
+                    }
+                    return _.includes(this.filters, file.ext);
+                });
+            }
+
+            return filtered;
         },
     },
 };

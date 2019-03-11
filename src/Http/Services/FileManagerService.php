@@ -4,6 +4,8 @@ namespace Infinety\Filemanager\Http\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Infinety\Filemanager\Exceptions\InvalidConfig;
+use InvalidArgumentException;
 
 class FileManagerService
 {
@@ -44,12 +46,18 @@ class FileManagerService
      */
     public function __construct()
     {
-        $this->disk = env('FILEMANAGER_DISK', 'public');
-        $this->storage = Storage::disk($this->disk);
+        $this->disk = config('filemanager.disk', 'public');
+
         $this->exceptFiles = collect([]);
         $this->exceptFolders = collect([]);
         $this->exceptExtensions = collect([]);
         $this->globalFilter = null;
+
+        try {
+            $this->storage = Storage::disk($this->disk);
+        } catch (InvalidArgumentException $e) {
+            throw InvalidConfig::driverNotSupported();
+        }
     }
 
     /**
@@ -59,11 +67,11 @@ class FileManagerService
      *
      * @return json
      */
-    public function ajaxGetFilesAndFolders(Request $request)
+    public function ajaxGetFilesAndFolders(Request $request, $filter = false)
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
-        if (! $this->storage->exists($folder)) {
+        if (!$this->storage->exists($folder)) {
             $folder = '/';
         }
 
@@ -71,17 +79,25 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (! $order) {
-            $order = env('FILEMANAGER_ORDER', 'mime');
-        }
-        $filter = $request->get('filter');
-        if (! $filter) {
-            $filter = false;
+        if (!$order) {
+            $order = config('filemanager.order', 'mime');
         }
 
-        $files = $this->getFiles($folder, $order, $filter);
+        $defaultFilter = config('filemanager.filter', false);
 
-        return response()->json(['files' => $files, 'path' => $this->getPaths($folder)]);
+        if ($filter != false) {
+            $defaultFilter = $filter;
+        }
+
+        $files = $this->getFiles($folder, $order, $defaultFilter);
+
+        $filters = $this->getAvailableFilters($files);
+
+        return response()->json([
+            'files'   => $files,
+            'path'    => $this->getPaths($folder),
+            'filters' => $filters,
+        ]);
     }
 
     /**
@@ -133,12 +149,12 @@ class FileManagerService
      *
      * @return  json
      */
-    public function uploadFile($file, $currentFolder)
+    public function uploadFile($file, $currentFolder, $visibility)
     {
         $fileName = $this->checkFileExists($currentFolder, $file);
 
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
-            $this->setVisibility($currentFolder, $fileName);
+            $this->setVisibility($currentFolder, $fileName, $visibility);
 
             return response()->json(['success' => true, 'name' => $fileName]);
         } else {
@@ -171,7 +187,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (! $this->storage->exists($file)) {
+        if (!$this->storage->exists($file)) {
             return [];
         }
 
@@ -219,11 +235,32 @@ class FileManagerService
      * @param $folder
      * @param $file
      */
-    private function setVisibility($folder, $file)
+    private function setVisibility($folder, $file, $visibility)
     {
         if ($folder != '/') {
             $folder .= '/';
         }
-        $this->storage->setVisibility($folder.$file, 'public');
+        $this->storage->setVisibility($folder.$file, $visibility);
+    }
+
+    /**
+     * @param $files
+     */
+    private function getAvailableFilters($files)
+    {
+        $filters = config('filemanager.filters', []);
+        if (count($filters) > 0) {
+            return collect($filters)->filter(function ($extensions) use ($files) {
+                foreach ($files as $file) {
+                    if (in_array($file->ext, $extensions)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            })->toArray();
+        }
+
+        return [];
     }
 }

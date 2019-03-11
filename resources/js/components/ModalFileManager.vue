@@ -19,17 +19,50 @@
                         <div class="card relative w-full">
 
 
-                            <div class="p-3 flex items-center border-b border-50">
-                                <label class="manual_upload cursor-pointer">
-                                    <div @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
-                                        {{ __('Upload') }}
-                                    </div>
-                                    <input type="file" multiple="true" @change="uploadFilesByButton"/>
-                                </label>
+                            <div class="p-3  flex flex-wrap items-center border-b border-50">
 
-                                <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
-                                    {{ __('Create folder') }}
-                                </button>
+                                <div class="w-1/3 flex flex-wrap justify-start">
+
+                                    <label class="manual_upload cursor-pointer">
+                                        <div @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
+                                            {{ __('Upload') }}
+                                        </div>
+                                        <input type="file" multiple="true" @change="uploadFilesByButton"/>
+                                    </label>
+
+                                    <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
+                                        {{ __('Create folder') }}
+                                    </button>
+
+                                </div>
+
+                                <!-- Search -->
+                                <div class="w-2/3 flex flex-wrap justify-end">
+
+                                    <div class="relative z-50  w-1/3 max-w-xs mr-3">
+                                        <div class="relative">
+                                            <div class="relative">
+
+                                                <template v-if="showFilters">
+                                                    <select class="pl-search form-control form-input form-input-bordered w-full" v-model="filterBy" @change="filterFiles">
+                                                        <option value="">{{ __('Filter by ...') }}</option>
+                                                        <option v-for="(filter, key) in filters" :key="'filter_' + key" :value="key">{{ key }}</option>
+                                                    </select>    
+                                                </template>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="relative z-50 w-1/2 max-w-xs">
+                                        <div class="relative">
+                                            <div class="relative">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="search" role="presentation" class="fill-current absolute search-icon-center ml-3 text-70"><path fill-rule="nonzero" d="M14.32 12.906l5.387 5.387a1 1 0 0 1-1.414 1.414l-5.387-5.387a8 8 0 1 1 1.414-1.414zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"></path></svg>
+                                                <input v-on:input="searchItems" v-model="search" dusk="filemanager-search" type="search" :placeholder="this.__('Search')" class="pl-search form-control form-input form-input-bordered w-full">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -37,6 +70,7 @@
 				            
                             <manager 
                                 ref="manager"
+                                :home="home"
                                 :files="files"
                                 :path="path"
                                 :current="currentPath"
@@ -44,6 +78,8 @@
                                 :selector="value"
                                 :popupLoaded="true"
                                 :loading="loadingfiles"
+                                :search="search"
+                                :filters="filteredExtensions"
                                 v-on:goToFolderManager="goToFolder"
                                 v-on:goToFolderManagerNav="goToFolderNav"
                                 v-on:refresh="refreshCurrent"
@@ -70,6 +106,14 @@ import UploadProgress from './UploadProgress';
 
 export default {
     props: {
+        resource: {
+            type: String,
+            required: true,
+        },
+        name: {
+            type: String,
+            required: true,
+        },
         active: {
             type: Boolean,
             default: false,
@@ -82,6 +126,16 @@ export default {
         currentPath: {
             type: String,
             required: true,
+        },
+        home: {
+            type: String,
+            required: false,
+            default: '/',
+        },
+        filter: {
+            type: String,
+            required: false,
+            default: '',
         },
     },
 
@@ -99,12 +153,17 @@ export default {
         backupStatusses: [],
         showUpload: false,
         showCreateFolder: false,
-        // currentPath: '/',
+        currentPathFolder: this.currentPath,
         files: [],
         path: [],
         noFiles: false,
         filesToUpload: [],
         firstTime: true,
+        search: '',
+        filters: [],
+        filterBy: '',
+        filteredExtensions: [],
+        showFilters: false,
     }),
 
     methods: {
@@ -113,14 +172,24 @@ export default {
             this.path = [];
             this.noFiles = false;
             this.loadingfiles = true;
-            api.getData(pathToList).then(result => {
-                if (_.size(result.files) == 0) {
-                    this.noFiles = true;
-                }
-                this.files = result.files;
-                this.path = result.path;
-                this.loadingfiles = false;
-            });
+            api.getDataField(this.resource, this.name, pathToList)
+                .then(result => {
+                    if (_.size(result.files) == 0) {
+                        this.noFiles = true;
+                    }
+                    this.files = result.files;
+                    this.path = result.path;
+                    this.filters = result.filters;
+                    this.loadingfiles = false;
+                })
+                .catch(() => {
+                    this.loadingfiles = false;
+                    this.filters = [];
+                    this.$toasted.show(
+                        this.__('Error reading the folder. Please check your logs'),
+                        { type: 'error' }
+                    );
+                });
         },
 
         showModalCreateFolder() {
@@ -128,20 +197,20 @@ export default {
         },
 
         refreshCurrent() {
-            this.getData(this.currentPath);
+            this.getData(this.currentPathFolder);
         },
 
         goToFolder(path) {
             // this.currentPath = this.currentPath + '/' + path;
             this.getData(path);
-            this.currentPath = path;
+            this.currentPathFolder = path;
             // history.pushState(null, null, '?path=' + path);
         },
 
         goToFolderNav(path) {
             this.getData(path);
-            this.currentPath = path;
-            if (this.currentPath == '/') {
+            this.currentPathFolder = path;
+            if (this.currentPathFolder == '/') {
                 // history.pushState(null, null, '?path=' + path);
             } else {
                 // history.pushState(null, null, '?path=' + path);
@@ -164,9 +233,26 @@ export default {
         showInfoItem(item) {
             this.$emit('showInfoItem', item);
         },
+
         uploadFiles(files) {
             this.$emit('uploadFiles', files);
         },
+
+        filterFiles() {
+            let extensions = _.get(this.filters, this.filterBy);
+
+            if (extensions == null) {
+                this.filteredExtensions = [];
+            }
+
+            if (extensions != null && extensions.length > 0) {
+                this.filteredExtensions = extensions;
+            }
+        },
+
+        searchItems: _.debounce(function(e) {
+            this.search = e.target.value;
+        }, 300),
     },
     watch: {
         active: function(val) {
@@ -180,8 +266,20 @@ export default {
                 this.getData(this.currentPath);
             }
         },
-        currentPath: function(val) {
+        currentPathFolder: function(val) {
             this.$emit('update-current-path', val);
+        },
+
+        filters() {
+            if (this.filters) {
+                let size = _.size(this.filters);
+                if (size > 1) {
+                    this.showFilters = true;
+                    return true;
+                }
+            }
+
+            this.showFilters = false;
         },
     },
 };

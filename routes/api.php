@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 Route::get('data', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getData');
+Route::get('{resource}/{attribute}/data', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getDataField');
 Route::post('actions/create-folder', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@createFolder');
 Route::post('actions/delete-folder', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@deleteFolder');
 Route::post('actions/get-info', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getInfo');

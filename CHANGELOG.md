@@ -2,6 +2,29 @@
 
 All notable changes to `nova-filemanager` will be documented in this file
 
+## 2.0 - 2019-03-11
+
+New config file and new options for tool and field to search and filter
+
+#### Improvements
+
+* New search option in tool and field modal https://github.com/InfinetyES/Nova-Filemanager/issues/34
+* New filters. You can create your own filters. You can set a default filter ny config or by field.
+* Visibility when upload. You can set the visibility of uploaded files now. https://github.com/InfinetyES/Nova-Filemanager/issues/26
+* New option to set cache by file. This is great for large folders or cloud providers
+* `displayAsImage` field option will show the preview also when editing.
+
+#### Fixes
+
+* File url preview fixed. This should fix https://github.com/InfinetyES/Nova-Filemanager/issues/19 https://github.com/InfinetyES/Nova-Filemanager/issues/23 https://github.com/InfinetyES/Nova-Filemanager/issues/36
+* When a folder is specified, Home will be the folder. https://github.com/InfinetyES/Nova-Filemanager/issues/28
+* SQL now shows the code in preview popup. FIles above 350 KB will not show in code editor.
+* SVG preview image fixed
+
+#### Tips
+* Json localization strings updated
+
+
 ## 1.1.1 - 2018-10-09
 
 Field new option folder | Remove value from field

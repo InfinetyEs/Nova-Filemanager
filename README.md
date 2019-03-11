@@ -24,7 +24,13 @@ You can install the package in any Laravel app that uses [Nova](https://nova.lar
 composer require infinety-es/nova-filemanager
 ```
 
-Next, you must register the tool with Nova. This is typically done in the `tools` method of the `NovaServiceProvider`.
+Next, publish config file: 
+
+```bash
+php artisan vendor:publish --tag=filemanager-config
+```
+
+Also, you must register the tool with Nova. This is typically done in the `tools` method of the `NovaServiceProvider`.
 
 ```php
 // in app/Providers/NovaServiceProvider.php
@@ -40,19 +46,11 @@ public function tools()
 }
 ```
 
-Nova Filemanager works with [Laravel Flysystem](https://github.com/GrahamCampbell/Laravel-Flysystem). The default disk is `public`. You can customize the Flysystem disk by setting the `FILEMANAGER_DISK` variable in your `.env` file:
+### Upgrade from v1
 
+Please publish thc config file after update.
 
-```env
-FILEMANAGER_DISK=public
-```
-
-To change the order of directories customize `FILEMANAGER_ORDER` variable in your `.env` file:
-
-
-```env
-FILEMANAGER_ORDER=mime
-```
+`Folder` option now limits the home. So now, when you set a initial folder, this will be the home. 
 
 ### Tool Usage
 
@@ -67,21 +65,114 @@ use Infinety\Filemanager\FilemanagerField;
 FilemanagerField::make('field');
 
 
-// You can also show preview images in Index and Detail views
+// You can also show preview images in Index, Detail and Edit views
 
 FilemanagerField::make('field')->displayAsImage();
 
+
+// You can set an initial folder
+
+FilemanagerField::make('field')->folder('avatars');
+
+
+// You can set the visibiility of your files private, using this method
+
+FilemanagerField::make('field')->privateFiles();
+
+// You can also filter all the files using next method. 
+// The given data should be a lowercase key of your filters in config/filemanager.php 
+
+FilemanagerField::make('field')->filterBy('images')
+
 ```
 
-Starting in v1.1.1, you can use the `folder` option to set a initial folder for your field
 
+### Config file
+
+Nova Filemanager works with [Laravel Flysystem](https://github.com/GrahamCampbell/Laravel-Flysystem). The default disk is `public`. You can customize the Flysystem disk and other options using config file:
 
 ```php
-FilemanagerField::make('field')->folder('avatars');
-//or
-FilemanagerField::make('field')->displayAsImage()->folder('files/avatars');
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filemanager Disk
+    |--------------------------------------------------------------------------
+    | This is the storage disk FileManager will use to put file uploads, you can use
+    | any of the disks defined in your config/filesystems.php file. Default to public.
+     */
+
+    'disk'      => env('FILEMANAGER_DISK', 'public'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filemanager default order
+    |--------------------------------------------------------------------------
+    | This will set the default order of the files and folders.
+    | You can use mime, name or size. Default to mime
+     */
+
+    'order'     => env('FILEMANAGER_ORDER', 'mime'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filemanager default order direction
+    |--------------------------------------------------------------------------
+    | This will set the default order direction of the files and folders.
+    | You can use mime, name or size. Default to asc
+     */
+
+    'direction' => env('FILEMANAGER_DIRECTION', 'asc'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filemanager cache
+    |--------------------------------------------------------------------------
+    | This will set the cache of filemenager. Filemanager creates a  md5 using file
+    | info. This is useful when s3 is being used or when needs to read a lot of files.
+    | Cache is set by file, not by folder. Default to false.
+     */
+
+    'cache'     => env('FILEMANAGER_CACHE', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filemanager  filters
+    |--------------------------------------------------------------------------
+    | This option let you to filter your files by extensions. You can create|modify|delete as you want.
+     */
+
+    'filters'   => [
+
+        'Images'     => ['jpg', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'tiff'],
+
+        'Documents'  => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pps', 'pptx', 'odt', 'rtf', 'md', 'txt'],
+
+        'Videos'     => ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', '3gp', 'h264'],
+
+        'Audios'     => ['mp3', 'ogg', 'wav', 'wma', 'midi'],
+
+        'Compressed' => ['zip', 'rar', 'tar', 'gz', '7z', 'pkg'],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filemanager  default filter
+    |--------------------------------------------------------------------------
+    | This will set the default filter for all your Filemanager. You shoulw use one
+    | of the keys used in filters in lowercase. If you have a key called Documents,
+    | use 'documents' as your default filter. Default to false
+     */
+
+    'filter'    => false,
+];
 
 ```
+
+
 
 ### Localization
 
@@ -132,7 +223,9 @@ Set your translations in the corresponding xx.json file located in /resources/la
     "Deselect File": "Deseleccionar archivo",
     "Are you sure you want to deselect this file?": "¿Estas seguro de querer deseleccionar este archivo?",
     "Remember: The file will not be delete from your storage": "Recuerda: El archivo no será eliminado de tu disco",
-    "Deselect": "Deseleccionar"
+    "Deselect": "Deseleccionar",
+    "Only files below 350 Kb will be shown": "Solo se mostraran archivos con un peso menor a 350 Kb"
+    "Filter by ...": "Filtrar por ..."
 ```
 
 ### Testing
@@ -148,7 +241,6 @@ yarn check-format
 * ~~AWS S3 support~~
 * ~~Different upload method~~
 * Grid / List views
-* FIles actions
 
 ### Changelog
 

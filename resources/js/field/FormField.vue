@@ -2,10 +2,27 @@
     <default-field :field="field">
         <template slot="field">
 
+            <template v-if="field.value && field.display == 'image'">
+                <div class="card relative card relative border-lg border-50 overflow-hidden px-0 py-0 max-w-xs mb-2">
+                    <template v-if="field.type == 'image'">
+                        <ImageDetail class="block w-full" :file="field" :css="''"></ImageDetail>
+                    </template>
+                
+                    <template v-else>
+                        <object class="no-preview" v-html="field.image">
+                        </object>
+                    </template>
+                </div>
+            </template>
+
             <modal-filemanager 
                 ref="filemanager"
+                :resource="resourceName"
+                :name="field.attribute"
+                :home="field.home"
                 :active="openModal"
                 :currentPath="currentPath"
+                :filter="field.filterBy"
                 v-on:open-modal="openModalCreateFolder" 
                 v-on:close-modal="closeFilemanagerModal" 
                 v-on:update-current-path="updateCurrentPath"
@@ -19,7 +36,7 @@
                 ref="detailPopup"
                 :info="info"
                 :active="activeInfo"
-                :popup="'true'"
+                :popup="true"
                 v-on:closePreview="closePreview" 
                 v-on:refresh="refreshCurrent"
                 v-on:selectFile="setValue"
@@ -29,7 +46,7 @@
 
             <create-folder ref="createFolderModal" :active="showCreateFolder" :current="currentPath" v-on:closeCreateFolderModal="closeModalCreateFolder" v-on:refresh="refreshCurrent" />
 
-            <UploadProgress ref="uploader" :current="currentPath" v-on:removeFile="removeFileFromUpload"></UploadProgress>
+            <UploadProgress ref="uploader" :current="currentPath" :visibility="field.visibility" v-on:removeFile="removeFileFromUpload"></UploadProgress>
 
             <file-select :id="field.name" :field="field" :css="errorClasses"  v-model="value" v-on:open-modal="openFilemanagerModal"></file-select>
 
@@ -68,6 +85,7 @@ import CreateFolderModal from '../components/CreateFolderModal';
 import DetailPopup from '../components/DetailPopup';
 import UploadProgress from '../components/UploadProgress';
 import ConfirmModalRemoveFile from '../components/ConfirmModalRemoveFile';
+import ImageDetail from '../modules/Image';
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -81,6 +99,7 @@ export default {
         DetailPopup: DetailPopup,
         UploadProgress: UploadProgress,
         'confirm-modal-remove-file': ConfirmModalRemoveFile,
+        ImageDetail: ImageDetail,
     },
 
     data: () => ({

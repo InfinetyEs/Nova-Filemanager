@@ -8,7 +8,7 @@
 
             <div class="p-3 flex items-center justify-between border-b border-50">
                 <div class="w-full flex flex-wrap">
-                    <div class="w-2/3 flex flex-wrap justify-start">
+                    <div class="w-1/2 flex flex-wrap justify-start">
                         <button @click="refreshCurrent" class="btn btn-default btn-small btn-primary text-white mr-3" :class="{'rotate': loadingfiles}">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M6 18.7V21a1 1 0 0 1-2 0v-5a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2H7.1A7 7 0 0 0 19 12a1 1 0 1 1 2 0 9 9 0 0 1-15 6.7zM18 5.3V3a1 1 0 0 1 2 0v5a1 1 0 0 1-1 1h-5a1 1 0 0 1 0-2h2.9A7 7 0 0 0 5 12a1 1 0 1 1-2 0 9 9 0 0 1 15-6.7z"/></svg>
                         </button>
@@ -25,16 +25,35 @@
                             {{ __('Create folder') }}
                         </button>
                     </div>
-                    <!-- <div class="w-1/3 flex flex-wrap justify-end">
-                        <div class="relative z-50 w-full max-w-xs">
+
+
+                    <!-- Search -->
+                    <div class="w-1/2 flex flex-wrap justify-end">
+
+                        <div class="relative z-50  w-1/3 max-w-xs mr-3">
                             <div class="relative">
                                 <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="search" role="presentation" class="fill-current absolute search-icon-center ml-3 text-70"><path fill-rule="nonzero" d="M14.32 12.906l5.387 5.387a1 1 0 0 1-1.414 1.414l-5.387-5.387a8 8 0 1 1 1.414-1.414zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"></path></svg>
-                                    <input v-on:input="searchItems" v-model="search" dusk="filemanager-search" type="search" placeholder="Search" class="pl-search form-control form-input form-input-bordered w-full">
+
+                                    <template v-if="showFilters">
+                                        <select class="pl-search form-control form-input form-input-bordered w-full" v-model="filterBy" @change="filterFiles">
+                                            <option value="">{{ __('Filter by ...') }}</option>
+                                            <option v-for="(filter, key) in filters" :key="'filter_' + key" :value="key">{{ key }}</option>
+                                        </select>    
+                                    </template>
+                                    
                                 </div>
                             </div>
                         </div>
-                    </div> -->
+
+                        <div class="relative z-50 w-2/3 max-w-xs">
+                            <div class="relative">
+                                <div class="relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="search" role="presentation" class="fill-current absolute search-icon-center ml-3 text-70"><path fill-rule="nonzero" d="M14.32 12.906l5.387 5.387a1 1 0 0 1-1.414 1.414l-5.387-5.387a8 8 0 1 1 1.414-1.414zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"></path></svg>
+                                    <input v-on:input="searchItems" v-model="search" dusk="filemanager-search" type="search" :placeholder="this.__('Search')" class="pl-search form-control form-input form-input-bordered w-full">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="flex flex-wrap">
@@ -64,6 +83,8 @@
                 :noFiles="noFiles"
                 :view="view"
                 :loading="loadingfiles"
+                :search="search"
+                :filters="filteredExtensions"
                 v-on:goToFolderManager="goToFolder"
                 v-on:goToFolderManagerNav="goToFolderNav"
                 v-on:refresh="refreshCurrent"
@@ -120,6 +141,10 @@ export default {
         filesToUpload: [],
         activeInfo: false,
         search: '',
+        filters: [],
+        filterBy: '',
+        filteredExtensions: [],
+        showFilters: false,
     }),
 
     async created() {
@@ -141,14 +166,25 @@ export default {
             this.path = [];
             this.noFiles = false;
             this.loadingfiles = true;
-            return api.getData(pathToList).then(result => {
-                if (_.size(result.files) == 0) {
-                    this.noFiles = true;
-                }
-                this.files = result.files;
-                this.path = result.path;
-                this.loadingfiles = false;
-            });
+            return api
+                .getData(pathToList)
+                .then(result => {
+                    if (_.size(result.files) == 0) {
+                        this.noFiles = true;
+                    }
+                    this.files = result.files;
+                    this.path = result.path;
+                    this.filters = result.filters;
+                    this.loadingfiles = false;
+                })
+                .catch(() => {
+                    this.loadingfiles = false;
+                    this.filters = [];
+                    this.$toasted.show(
+                        this.__('Error reading the folder. Please check your logs'),
+                        { type: 'error' }
+                    );
+                });
         },
 
         showModalCreateFolder() {
@@ -222,6 +258,18 @@ export default {
             this.$refs.manager.uploadFiles(e.target.files);
         },
 
+        filterFiles() {
+            let extensions = _.get(this.filters, this.filterBy);
+
+            if (extensions == null) {
+                this.filteredExtensions = [];
+            }
+
+            if (extensions != null && extensions.length > 0) {
+                this.filteredExtensions = extensions;
+            }
+        },
+
         searchItems: _.debounce(function(e) {
             this.search = e.target.value;
         }, 300),
@@ -237,6 +285,20 @@ export default {
                 return '';
             }
             return '';
+        },
+    },
+
+    watch: {
+        filters() {
+            if (this.filters) {
+                let size = _.size(this.filters);
+                if (size > 1) {
+                    this.showFilters = true;
+                    return true;
+                }
+            }
+
+            this.showFilters = false;
         },
     },
 };
