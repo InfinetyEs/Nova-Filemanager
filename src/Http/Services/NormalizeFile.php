@@ -2,11 +2,11 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Carbon\Carbon;
-use Illuminate\Filesystem\FilesystemAdapter;
-use Illuminate\Support\Collection;
-use SplFileInfo;
 use ZipArchive;
+use SplFileInfo;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class NormalizeFile
 {
@@ -163,7 +163,7 @@ class NormalizeFile
         if (str_contains($mime, 'image')) {
             list($width, $height) = getimagesize($this->storage->path($this->storagePath));
 
-            if (!empty($width) && !empty($height)) {
+            if (! empty($width) && ! empty($height)) {
                 return $width.'x'.$height;
             }
         }
