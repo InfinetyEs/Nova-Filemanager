@@ -177,7 +177,8 @@ export default {
         },
 
         removeFile() {
-            this.value = null;
+            this.field.value = null;
+            this.value = '';
             this.removeModalOpen = false;
         },
 
