@@ -21,12 +21,7 @@ class FilemanagerServiceProvider extends ServiceProvider
             __DIR__.'/../config/config.php' => config_path('filemanager.php'),
         ], 'filemanager-config');
 
-        $this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/nova-filemanager'),
-        ], 'filemanager-lang');
-
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'nova-filemanager');
-        $this->loadJsonTranslationsFrom(resource_path('lang/vendor/nova-filemanager'));
 
         $this->app->booted(function () {
             $this->routes();
