@@ -8,7 +8,7 @@ All notable changes to `nova-filemanager` will be documented in this file
 #### Improvements
 
 * Change view button. Grid or List
-* Rename option. You can now rename your files
+* Rename method. You can now rename your files
 * Detail and new folder modals close on click outside
 
 #### Fixes
