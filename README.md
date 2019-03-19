@@ -240,7 +240,7 @@ yarn check-format
 
 * ~~AWS S3 support~~
 * ~~Different upload method~~
-* Grid / List views
+* ~~Grid / List views~~
 
 ### Changelog
 
