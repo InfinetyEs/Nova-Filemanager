@@ -3,10 +3,9 @@
 namespace Infinety\Filemanager\Http\Services;
 
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Illuminate\Support\Facades\Storage;
 use Infinety\Filemanager\Exceptions\InvalidConfig;
-use Infinety\Filemanager\Http\Services\NormalizeFile;
-use InvalidArgumentException;
 
 class FileManagerService
 {
@@ -72,7 +71,7 @@ class FileManagerService
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
-        if (!$this->storage->exists($folder)) {
+        if (! $this->storage->exists($folder)) {
             $folder = '/';
         }
 
@@ -80,7 +79,7 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (!$order) {
+        if (! $order) {
             $order = config('filemanager.order', 'mime');
         }
 
@@ -213,7 +212,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (!$this->storage->exists($file)) {
+        if (! $this->storage->exists($file)) {
             return [];
         }
 
