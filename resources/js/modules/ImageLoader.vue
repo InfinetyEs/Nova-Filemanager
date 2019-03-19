@@ -92,14 +92,14 @@ export default {
             default: function() {
                 return { name: '' };
             },
-            required: true
+            required: true,
         },
 
         view: {
             type: String,
             default: 'grid',
-            required: false
-        }
+            required: false,
+        },
     },
 
     data: () => ({
@@ -108,7 +108,6 @@ export default {
     }),
 
     mounted() {
-
         if (this.file.mime == 'image') {
             Minimum(
                 window.axios.get(this.file.thumb, {

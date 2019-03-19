@@ -86,7 +86,7 @@ export default {
 
         handleClose() {
             this.cancelCreate();
-        }
+        },
     },
 };
 </script>

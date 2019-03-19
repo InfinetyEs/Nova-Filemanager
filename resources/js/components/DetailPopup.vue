@@ -9,6 +9,7 @@
                         <div class="w-3/4 px-4 py-3 ">
                             {{ __('Preview of') }} <span class="text-primary-70%">{{ info.name }}</span>
 
+
                         </div>
 
                         <div class="w-1/4 flex flex-wrap justify-end">
@@ -73,9 +74,25 @@
                         <div class="w-2/5 bg-30 box-info flex flex-wrap">
 
                             <div class="info-data w-full">
-                                <div class="info mx-4 my-3 flex flex-wrap">
+                                <div class="info mx-4 my-3 flex flex-wrap items-center">
                                     <span class="title bg-50 px-1 py-1 rounded-l">{{ __('Name') }}:</span>
-                                    <span class="value bg-white px-1 py-1 rounded-r">{{ info.name }}</span>
+                                    <span class="value bg-white px-1 py-1 rounded-r" v-if="!editingName">{{ info.name }}
+                                    </span>
+
+                                    <svg v-if="!editingName" @click="editName" class="ml-1 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="12" height="12"><path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"/></svg>
+
+                                    <template v-if="editingName">
+
+                                        <input type="text"  v-bind:ref="'inputName'" :style="{ 'width': nameWidth + 'px' }" v-model="nameNoExtension" class=" value px-1 py-1 rounded-r">
+                                    
+                                        <svg @click="rename" xmlns="http://www.w3.org/2000/svg" class="ml-1 cursor-pointer text-success fill-current" viewBox="0 0 20 20" width="12" height="12"><path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/></svg>
+
+                                        <svg @click="editingName = !editingName" xmlns="http://www.w3.org/2000/svg" class="ml-1 cursor-pointer" viewBox="0 0 20 20" width="12" height="12"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"/></svg>
+
+                                    </template>
+
+
+
                                 </div>
 
                                 <div class="info mx-4 my-3 flex flex-wrap" v-if="info.mime">
@@ -204,6 +221,8 @@ export default {
     },
 
     data: () => ({
+        loaded: false,
+        currentInfo: {},
         messagesRemove: ['Remove File', 'Are you sure', 'Removing...'],
         cssType: ' py-custom',
         codeLoaded: false,
@@ -214,10 +233,17 @@ export default {
             lineNumbers: true,
             line: true,
         },
+        editingName: false,
+        nameNoExtension: null,
+        nameWidth: null,
+        inputElement: null,
+        correctName: null,
     }),
 
     methods: {
         closePreview() {
+            this.correctName = null;
+            this.editingName = false;
             this.$emit('closePreview', true);
         },
 
@@ -241,6 +267,28 @@ export default {
             });
         },
 
+        rename() {
+            this.correctName = this.nameNoExtension + '.' + this.info.ext;
+
+            return api.renameFile(this.info.path, this.correctName).then(result => {
+                if (result.success == true) {
+                    this.editingName = false;
+                    this.$toasted.show(this.__('File renamed successfully'), { type: 'success' });
+                    this.$emit('rename', result.data);
+                    this.$emit('refresh');
+                } else {
+                    this.$toasted.show(
+                        this.__('Error renaming the file. Please check permissions'),
+                        { type: 'error' }
+                    );
+                }
+            });
+        },
+
+        editName() {
+            this.editingName = true;
+        },
+
         selectFile() {
             this.closePreview();
             this.$emit('selectFile', this.info);
@@ -248,10 +296,11 @@ export default {
 
         handleClose() {
             this.closePreview();
-        }
+        },
     },
 
     mounted() {
+        this.loaded = false;
         this.$nextTick(function() {
             this.messagesRemove = [
                 this.__('Remove File'),
@@ -280,8 +329,6 @@ export default {
             return {};
         },
     },
-
-    updated() {},
 
     watch: {
         'info.type': function(type) {
@@ -328,11 +375,30 @@ export default {
             this.codeLoaded = false;
             this.zipLoaded = false;
         },
+
+        'info.name': function(name) {
+            if (name) {
+                this.nameNoExtension = name
+                    .split('.')
+                    .slice(0, -1)
+                    .join('.');
+            }
+        },
+
+        nameNoExtension: function(name) {
+            if (name) {
+                this.nameWidth = (name.length + 1) * 7;
+            }
+        },
     },
 };
 </script>
 
 <style scoped lang="scss">
+input {
+    box-sizing: border-box !important;
+}
+
 .buttons-actions {
     padding-left: 1rem;
     padding-right: 1rem;

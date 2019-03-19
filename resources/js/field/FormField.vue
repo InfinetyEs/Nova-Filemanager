@@ -40,6 +40,7 @@
                 v-on:closePreview="closePreview" 
                 v-on:refresh="refreshCurrent"
                 v-on:selectFile="setValue"
+                v-on:rename="fileRenamed"
             >
             </DetailPopup>
 
@@ -180,6 +181,10 @@ export default {
             this.field.value = null;
             this.value = '';
             this.removeModalOpen = false;
+        },
+
+        fileRenamed(item) {
+            this.info = item;
         },
 
         openRemoveModal() {

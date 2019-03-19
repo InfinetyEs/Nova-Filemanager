@@ -77,12 +77,12 @@ export default {
             default: function() {
                 return { name: '' };
             },
-            required: true
+            required: true,
         },
         view: {
             type: String,
             default: 'grid',
-            required: false
+            required: false,
         },
     },
 

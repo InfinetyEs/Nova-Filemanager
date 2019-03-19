@@ -46,7 +46,7 @@
 
                         <template v-if="view == 'grid'">
                             <template v-if="!files.error" v-for="file in fileteredFiles">
-                                <div :class="filemanagerClass" v-bind:key="file.id" >
+                                <div :class="filemanagerClass" :key="file.id" >
                                     <template v-if="file.type == 'file'">
                                         <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
                                     </template>
@@ -56,7 +56,6 @@
                                 </div>
                             </template>
                             <template  v-if="!loading">
-                                <!-- <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
                             </template>
                         </template>
 
@@ -82,12 +81,11 @@
                                 <tbody>
                                     <template  v-for="file in fileteredFiles">
                                         <template v-if="file.type == 'dir'">
-                                            <Folder :file="file" :view="view" class="" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
+                                            <Folder :key="file.id" :file="file" :view="view" class="" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
                                         </template>
                                         <template v-if="file.type == 'file'">
-                                            <ImageLoader :file="file" :view="view" class="" :class="{'loading': loadingInfo}" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                            <ImageLoader :key="file.id" :file="file" :view="view" class="" :class="{'loading': loadingInfo}" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
                                         </template>
-                                        <!-- <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
                                     </template>
                                 </tbody>
                             </table>
@@ -185,7 +183,7 @@ export default {
         cssDragAndDrop: null,
         filesToUpload: [],
         loadingInfo: false,
-        busy: false
+        busy: false,
     }),
 
     methods: {
@@ -304,17 +302,6 @@ export default {
         isImage(file) {
             return file.type.includes('image'); //returns true or false
         },
-
-
-        infiniteHandler($state) {
-            console.log($state)
-            this.$emit('loadMoreItems');
-        },
-
-        loadMore: function() {
-            console.log("dada");
-            this.$emit('loadMoreItems');
-        }
     },
 
     updated: function() {
@@ -407,7 +394,7 @@ export default {
 }
 
 .h-16 {
-   height: 6rem;
+    height: 6rem;
 }
 
 .obfit-cover {
@@ -419,12 +406,11 @@ export default {
 }
 
 .custom-table {
-    
-    th{
+    th {
         position: sticky;
         top: 0;
         z-index: 10;
-    }    
+    }
 
     td {
         height: 3rem;
@@ -438,5 +424,4 @@ export default {
         }
     }
 }
-
 </style>

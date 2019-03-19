@@ -2,6 +2,20 @@
 
 All notable changes to `nova-filemanager` will be documented in this file
 
+
+## 2.1 - 2019-03-19
+
+#### Improvements
+
+* Change view button. Grid or List
+* Rename option. You can now rename your files
+* Detail and new folder modals close on click outside
+
+#### Fixes
+
+* Upload progress fix when name is very long
+
+
 ## 2.0 - 2019-03-11
 
 New config file and new options for tool and field to search and filter

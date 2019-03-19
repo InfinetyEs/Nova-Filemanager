@@ -3,9 +3,10 @@
 namespace Infinety\Filemanager\Http\Services;
 
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 use Illuminate\Support\Facades\Storage;
 use Infinety\Filemanager\Exceptions\InvalidConfig;
+use Infinety\Filemanager\Http\Services\NormalizeFile;
+use InvalidArgumentException;
 
 class FileManagerService
 {
@@ -71,7 +72,7 @@ class FileManagerService
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
-        if (! $this->storage->exists($folder)) {
+        if (!$this->storage->exists($folder)) {
             $folder = '/';
         }
 
@@ -79,7 +80,7 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (! $order) {
+        if (!$order) {
             $order = config('filemanager.order', 'mime');
         }
 
@@ -212,7 +213,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (! $this->storage->exists($file)) {
+        if (!$this->storage->exists($file)) {
             return [];
         }
 
@@ -234,6 +235,24 @@ class FileManagerService
     {
         if ($this->storage->delete($files)) {
             return response()->json(true);
+        } else {
+            return response()->json(false);
+        }
+    }
+
+    /**
+     * @param $file
+     */
+    public function renameFile($file, $newName)
+    {
+        $path = str_replace(basename($file), '', $file);
+
+        if ($this->storage->move($file, $path.$newName)) {
+            $fullPath = $this->storage->path($path.$newName);
+
+            $info = new NormalizeFile($this->storage, $fullPath, $path.$newName);
+
+            return response()->json(['success' => true, 'data' => $info->toArray()]);
         } else {
             return response()->json(false);
         }

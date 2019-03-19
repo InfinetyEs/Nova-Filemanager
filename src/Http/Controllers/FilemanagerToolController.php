@@ -4,8 +4,8 @@ namespace Infinety\Filemanager\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilemanagerToolController extends Controller
 {
@@ -78,6 +78,14 @@ class FilemanagerToolController extends Controller
     public function removeFile(Request $request)
     {
         return $this->service->removeFile($request->file);
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function renameFile(Request $request)
+    {
+        return $this->service->renameFile($request->file, $request->name);
     }
 
     /**

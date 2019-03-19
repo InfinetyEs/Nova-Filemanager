@@ -52,4 +52,13 @@ export default {
             .post('/nova-vendor/infinety-es/nova-filemanager/actions/remove-file', { file: file })
             .then(response => response.data);
     },
+
+    renameFile(file, name) {
+        return window.axios
+            .post('/nova-vendor/infinety-es/nova-filemanager/actions/rename-file', {
+                file: file,
+                name: name,
+            })
+            .then(response => response.data);
+    },
 };

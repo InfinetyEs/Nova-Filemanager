@@ -106,6 +106,7 @@
                 :active="activeInfo"
                 v-on:closePreview="closePreview" 
                 v-on:refresh="refreshCurrent"
+                v-on:rename="fileRenamed"
             >
             </DetailPopup>
 
@@ -166,11 +167,10 @@ export default {
         if (localStorage.getItem('nova-filemanager-view')) {
             let viewS = localStorage.getItem('nova-filemanager-view');
             if (['grid', 'list'].includes(viewS)) {
-                this.view = viewS;    
+                this.view = viewS;
             } else {
                 localStorage.setItem('nova-filemanager-view', 'grid');
             }
-            
         }
 
         await this.getData(this.currentPath);
@@ -257,6 +257,10 @@ export default {
             this.info = {};
             this.activeInfo = false;
             this.popupDetailsLoaded = false;
+        },
+
+        fileRenamed(item) {
+            this.info = item;
         },
 
         viewAs(type) {
