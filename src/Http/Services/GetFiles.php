@@ -61,7 +61,7 @@ trait GetFiles
      */
     public function getFileData($file, $id)
     {
-        if (!$this->isDot($file) && !$this->exceptExtensions->contains($file['extension']) && !$this->exceptFolders->contains($file['basename']) && !$this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
+        if (! $this->isDot($file) && ! $this->exceptExtensions->contains($file['extension']) && ! $this->exceptFolders->contains($file['basename']) && ! $this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
             $fileInfo = [
                 'id'         => $id,
                 'name'       => trim($file['basename']),
@@ -84,7 +84,7 @@ trait GetFiles
 
             if ($fileInfo['mime'] == 'image') {
                 list($width, $height) = $this->getImageDimesions($file);
-                if (!$width == false) {
+                if (! $width == false) {
                     $fileInfo['dimensions'] = $width.'x'.$height;
                 }
             }
@@ -373,10 +373,10 @@ trait GetFiles
     public function normalizeFiles($files)
     {
         foreach ($files as $key => $file) {
-            if (!isset($file['extension'])) {
+            if (! isset($file['extension'])) {
                 $files[$key]['extension'] = null;
             }
-            if (!isset($file['size'])) {
+            if (! isset($file['size'])) {
                 // $size = $this->storage->getSize($file['path']);
                 $files[$key]['size'] = null;
             }
