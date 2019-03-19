@@ -2,11 +2,12 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use ZipArchive;
-use SplFileInfo;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Collection;
+use RarArchive;
+use SplFileInfo;
+use ZipArchive;
 
 class NormalizeFile
 {
@@ -115,7 +116,7 @@ class NormalizeFile
             $data->put('source', $this->readZip());
         }
 
-        // // zip
+        // // rar
         // if (str_contains($mime, 'rar')) {
         //     $data->put('type', 'zip');
         //     $data->put('source', $this->readRar());
@@ -163,7 +164,7 @@ class NormalizeFile
         if (str_contains($mime, 'image')) {
             list($width, $height) = getimagesize($this->storage->path($this->storagePath));
 
-            if (! empty($width) && ! empty($height)) {
+            if (!empty($width) && !empty($height)) {
                 return $width.'x'.$height;
             }
         }
@@ -233,7 +234,7 @@ class NormalizeFile
      */
     private function readRar()
     {
-        $zip = new \RarArchive();
+        $zip = new RarArchive();
         $zip->open($this->storage->path($this->storagePath));
         $contents = [];
 

@@ -1,7 +1,7 @@
 <template>
     <portal to="modals" name="Create Folder">
         <transition name="fade">
-            <modal v-if="active">
+            <modal v-if="active" @modal-close="handleClose">
                 <div class="bg-white rounded-lg shadow-lg " style="width: 600px;">
                     <div class="p-8">
                         <heading :level="2" class="mb-6">{{ __('Create folder') }}</heading>
@@ -83,6 +83,10 @@ export default {
             this.folderName = null;
             this.$emit('closeCreateFolderModal', true);
         },
+
+        handleClose() {
+            this.cancelCreate();
+        }
     },
 };
 </script>

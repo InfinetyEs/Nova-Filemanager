@@ -4,8 +4,8 @@ namespace Infinety\Filemanager\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilemanagerToolController extends Controller
 {
@@ -87,7 +87,7 @@ class FilemanagerToolController extends Controller
     {
         $fields = $request->newResource()->fields($request);
         foreach ($fields as $field) {
-            if ($field->attribute == $attribute) {
+            if (isset($field->attribute) && $field->attribute == $attribute) {
                 if (isset($field->meta['filterBy'])) {
                     return $field->meta['filterBy'];
                 }

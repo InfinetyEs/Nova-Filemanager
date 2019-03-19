@@ -24,13 +24,21 @@
                         <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
                             {{ __('Create folder') }}
                         </button>
+
+                        <button v-if="view == 'list'" @click="viewAs('grid')" class="btn btn-default btn-small btn-primary text-white mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M5 3h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5h-4zM5 13h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4h-4z"/></svg>
+                        </button>
+
+                        <button v-if="view == 'grid'" @click="viewAs('list')" class="btn btn-default btn-small btn-primary text-white mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><path d="M1 4h2v2H1V4zm4 0h14v2H5V4zM1 9h2v2H1V9zm4 0h14v2H5V9zm-4 5h2v2H1v-2zm4 0h14v2H5v-2z"/></svg>
+                        </button>
                     </div>
 
 
                     <!-- Search -->
                     <div class="w-1/2 flex flex-wrap justify-end">
 
-                        <div class="relative z-50  w-1/3 max-w-xs mr-3">
+                        <div class="relative w-1/3 max-w-xs mr-3">
                             <div class="relative">
                                 <div class="relative">
 
@@ -45,7 +53,7 @@
                             </div>
                         </div>
 
-                        <div class="relative z-50 w-2/3 max-w-xs">
+                        <div class="relative w-2/3 max-w-xs">
                             <div class="relative">
                                 <div class="relative">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="search" role="presentation" class="fill-current absolute search-icon-center ml-3 text-70"><path fill-rule="nonzero" d="M14.32 12.906l5.387 5.387a1 1 0 0 1-1.414 1.414l-5.387-5.387a8 8 0 1 1 1.414-1.414zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"></path></svg>
@@ -155,6 +163,16 @@ export default {
             this.currentPath = params.path;
         }
 
+        if (localStorage.getItem('nova-filemanager-view')) {
+            let viewS = localStorage.getItem('nova-filemanager-view');
+            if (['grid', 'list'].includes(viewS)) {
+                this.view = viewS;    
+            } else {
+                localStorage.setItem('nova-filemanager-view', 'grid');
+            }
+            
+        }
+
         await this.getData(this.currentPath);
 
         this.loaded = true;
@@ -172,7 +190,8 @@ export default {
                     if (_.size(result.files) == 0) {
                         this.noFiles = true;
                     }
-                    this.files = result.files;
+
+                    this.files = _.merge(this.files, result.files);
                     this.path = result.path;
                     this.filters = result.filters;
                     this.loadingfiles = false;
@@ -238,6 +257,11 @@ export default {
             this.info = {};
             this.activeInfo = false;
             this.popupDetailsLoaded = false;
+        },
+
+        viewAs(type) {
+            this.view = type;
+            localStorage.setItem('nova-filemanager-view', type);
         },
 
         uploadFiles(files) {

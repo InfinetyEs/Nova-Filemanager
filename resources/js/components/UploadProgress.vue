@@ -16,7 +16,7 @@
                             <div class="text-danger">{{ __('Error on upload') }}</div>
                         </template>
                         <template v-else>
-                            {{ file.name }} <small v-if="file.progress == 100" class="text-success uppercase">{{ __('Success') }}</small>
+                            {{ file.name | truncate(15) }} <small v-if="file.progress == 100" class="text-success uppercase">{{ __('Success') }}</small>
                             <progress-module :file="file"></progress-module>
                         </template>
                     </div>
@@ -121,6 +121,12 @@ export default {
                         this.$emit('removeFile', file.id);
                     }, 1000);
                 });
+        },
+    },
+    
+    filters: {
+        truncate: function(text, stop, clamp) {
+            return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '');
         },
     },
 };

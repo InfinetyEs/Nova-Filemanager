@@ -18,7 +18,7 @@
             </ol>
         </nav>
         <transition name="fade">
-            <div class="px-2 overflow-y-auto files" v-cloak>
+            <div class="px-2 overflow-y-auto files">
                 <div class="flex flex-wrap -mx-2">
 
                     <template v-if="files.error">
@@ -42,29 +42,58 @@
                         </div>
                     </template>
 
-                    <template v-if="!files.error" v-for="file in fileteredFiles">
-                        <div :class="filemanagerClass" v-bind:key="file.id">
-                            <template v-if="view == 'grid'">
-                                <template v-if="file.type == 'file'">
-                                    <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
-                                </template>
-                                <template v-if="file.type == 'dir'">
-                                    <Folder :file="file" class="h-40" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
-                                </template>
-                            </template>
+                    <template v-if="!files.error">
 
-                            <template v-else>
-                                <template v-if="file.type == 'file'">
-                                    <ImageLoader :file="file" :view="view" class="h-8" :class="{'loading': loadingInfo}" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
-                                </template>
-                                <template v-if="file.type == 'dir'">
-                                    <Folder :file="file" :view="view" class="h-8" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
-                                </template>
+                        <template v-if="view == 'grid'">
+                            <template v-if="!files.error" v-for="file in fileteredFiles">
+                                <div :class="filemanagerClass" v-bind:key="file.id" >
+                                    <template v-if="file.type == 'file'">
+                                        <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                    </template>
+                                    <template v-if="file.type == 'dir'">
+                                        <Folder :file="file" class="h-40" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
+                                    </template>
+                                </div>
                             </template>
-                            
-                        </div>
+                            <template  v-if="!loading">
+                                <!-- <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
+                            </template>
+                        </template>
+
+                        <template v-if="view == 'list'">
+
+                            <table class="table custom-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th class="w-16">
+                                            {{ __('Type') }}
+                                        </th>
+                                        <th class="text-left">
+                                            {{ __('Name') }}
+                                        </th>
+                                        <th class="text-left">
+                                            {{ __('Size') }}
+                                        </th>
+                                        <th class="text-left">
+                                            {{ __('Last Modification') }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template  v-for="file in fileteredFiles">
+                                        <template v-if="file.type == 'dir'">
+                                            <Folder :file="file" :view="view" class="" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
+                                        </template>
+                                        <template v-if="file.type == 'file'">
+                                            <ImageLoader :file="file" :view="view" class="" :class="{'loading': loadingInfo}" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                        </template>
+                                        <!-- <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
+                                    </template>
+                                </tbody>
+                            </table>
+                        </template>
+
                     </template>
-
 
                 </div>
                  
@@ -156,6 +185,7 @@ export default {
         cssDragAndDrop: null,
         filesToUpload: [],
         loadingInfo: false,
+        busy: false
     }),
 
     methods: {
@@ -274,6 +304,17 @@ export default {
         isImage(file) {
             return file.type.includes('image'); //returns true or false
         },
+
+
+        infiniteHandler($state) {
+            console.log($state)
+            this.$emit('loadMoreItems');
+        },
+
+        loadMore: function() {
+            console.log("dada");
+            this.$emit('loadMoreItems');
+        }
     },
 
     updated: function() {
@@ -304,7 +345,7 @@ export default {
             if (this.view == 'grid') {
                 return 'w-1/6 h-40  px-2 mb-3';
             } else {
-                return 'w-full h-8  px-2 mb-3';
+                return 'w-full h-16  px-2 mb-3';
             }
         },
 
@@ -312,7 +353,7 @@ export default {
             if (this.view == 'grid') {
                 return 'h-40';
             } else {
-                return 'h-8';
+                return '';
             }
         },
         cssFilemenagerContainer() {
@@ -347,17 +388,26 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 /* Scoped Styles */
 .w-1\/8 {
     width: 12.5%;
 }
+
+.w-1\/10 {
+    width: 9%;
+}
+
 .w-40 {
     width: 10rem;
 }
 
 .h-40 {
     height: 10rem;
+}
+
+.h-16 {
+   height: 6rem;
 }
 
 .obfit-cover {
@@ -367,4 +417,26 @@ export default {
 .files {
     max-height: 60vh;
 }
+
+.custom-table {
+    
+    th{
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }    
+
+    td {
+        height: 3rem;
+    }
+
+    tr {
+        white-space: nowrap;
+
+        td {
+            white-space: nowrap;
+        }
+    }
+}
+
 </style>

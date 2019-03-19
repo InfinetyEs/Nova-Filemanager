@@ -1,36 +1,80 @@
 <template>
     <transition name="fade">
+        <template v-if="view == 'grid'">
 
-        <div @click="showInfo"
-             ref="card"
-             :loading="loading"
-             class="card relative flex flex-wrap justify-center border border-lg border-50 overflow-hidden px-0 py-0 cursor-pointer"
-        >
-            <template v-if="loading">
-                <div class="rounded-lg flex items-center justify-center absolute pin z-50">
-                    <loader class="text-60" />
+            <div @click="showInfo"
+                 ref="card"
+                 :loading="loading"
+                 class="card relative flex flex-wrap justify-center border border-lg border-50 overflow-hidden px-0 py-0 cursor-pointer"
+            >
+                <template v-if="loading">
+                    <div class="rounded-lg flex items-center justify-center absolute pin z-50">
+                        <loader class="text-60" />
+                    </div>
+                </template>
+
+                <div v-if="file.mime != 'image'" v-html="file.thumb" class="mime-icon flex items-center justify-center  h-5/6">
+
                 </div>
-            </template>
 
-            <div v-if="file.mime != 'image'" v-html="file.thumb" class="mime-icon flex items-center justify-center  h-5/6">
+                <div  v-if="file.mime == 'image'" ref="image" class="image-block block w-full h-5/6">
 
+                </div>
+
+                <div class="missing p-8" v-if="missing">
+                    <p class="text-center leading-normal">
+                        <a :href="file.name" class="text-primary dim" target="_blank">{{__('This image')}}</a> {{__('could not be found.')}}
+                    </p>
+                </div>
+
+                <div class="h-1/6 w-full text-center text-xs  border-t border-30 bg-50 flex items-center justify-center">
+                    {{ file.name | truncate(25) }}
+                </div>
             </div>
+        </template>
 
-            <div  v-if="file.mime == 'image'" ref="image" class="image-block block w-full h-5/6">
+        <template v-if="view == 'list'">
 
-            </div>
+            <tr @click="showInfo" :loading="loading" v-bind:key="file.id" class="cursor-pointer">
+                <td>
+                    <template v-if="loading">
+                        <div class="rounded-lg flex items-center justify-center absolute pin z-50">
+                            <loader class="text-60" />
+                        </div>
+                    </template>
 
-            <div class="missing p-8" v-if="missing">
-                <p class="text-center leading-normal">
-                    <a :href="file.name" class="text-primary dim" target="_blank">{{__('This image')}}</a> {{__('could not be found.')}}
-                </p>
-            </div>
+                    <div class="w-full h-full flex justify-center items-center">
+                        <div v-if="file.mime != 'image'" v-html="file.thumb" class="mime-icon flex items-center justify-center w-1/3 h-full">
 
-            <div class="h-1/6 w-full text-center text-xs  border-t border-30 bg-50 flex items-center justify-center">
-                {{ file.name | truncate(30) }}
-            </div>
+                        </div>
 
-        </div>
+                        <div  v-if="file.mime == 'image'" ref="image" class="image-block block w-full h-full">
+
+                        </div>
+                    </div>
+
+                    <div class="w-full missing p-8" v-if="missing">
+                        <p class="text-center leading-normal">
+                            <a :href="file.name" class="text-primary dim" target="_blank">{{__('This image')}}</a> {{__('could not be found.')}}
+                        </p>
+                    </div>
+                </td>
+
+                <td>
+                    {{ file.name }}
+                </td>
+
+                <td>
+                    {{ file.size_human }}
+                </td>
+
+                <td>
+                    {{ file.date }}
+                </td>
+            </tr>
+
+        </template>
+
     </transition>
 </template>
 
@@ -48,8 +92,14 @@ export default {
             default: function() {
                 return { name: '' };
             },
-            required: true,
+            required: true
         },
+
+        view: {
+            type: String,
+            default: 'grid',
+            required: false
+        }
     },
 
     data: () => ({
@@ -58,6 +108,7 @@ export default {
     }),
 
     mounted() {
+
         if (this.file.mime == 'image') {
             Minimum(
                 window.axios.get(this.file.thumb, {
@@ -71,7 +122,7 @@ export default {
 
                     imageBlog = window.URL.createObjectURL(blob);
                     imageDiv.style.backgroundImage = "url('" + imageBlog + "')";
-                    imageDiv.className = 'block w-full h-full bg-center bg-cover h-2/3';
+                    imageDiv.className = this.getClassContainer();
                     imageDiv.draggable = false;
                     this.$refs.image.appendChild(imageDiv);
                     this.loading = false;
@@ -81,7 +132,7 @@ export default {
                         //defaulImage
                         let imageDiv = document.createElement('div');
                         imageDiv.style.backgroundImage = "url('" + this.file.thumb + "')";
-                        imageDiv.className = 'block w-full h-full bg-center bg-cover h-2/3';
+                        imageDiv.className = this.getClassContainer();
                         imageDiv.draggable = false;
                         this.$refs.image.appendChild(imageDiv);
                         this.loading = false;
@@ -94,6 +145,14 @@ export default {
     methods: {
         showInfo() {
             this.$emit('showInfo', this.file);
+        },
+
+        getClassContainer() {
+            if (this.view == 'list') {
+                return 'block w-full h-full bg-center bg-cover h-2/3';
+            }
+
+            return 'block w-full h-full bg-center bg-cover h-2/3';
         },
     },
     filters: {

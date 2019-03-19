@@ -2,7 +2,7 @@
     <!-- Esto falla al hacer el mounted  -->
     <portal to="modals" name="File Details">
         <transition name="fade">
-            <modal v-if="active">
+            <modal v-if="active" @modal-close="handleClose">
                 <div class="bg-white rounded-lg shadow-lg" style="width: 70vw;">
                     
                     <div class="bg-30 flex flex-wrap border-b border-70">
@@ -245,6 +245,10 @@ export default {
             this.closePreview();
             this.$emit('selectFile', this.info);
         },
+
+        handleClose() {
+            this.closePreview();
+        }
     },
 
     mounted() {
