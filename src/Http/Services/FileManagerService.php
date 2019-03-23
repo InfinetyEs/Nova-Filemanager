@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\Storage;
 use Infinety\Filemanager\Exceptions\InvalidConfig;
-use Infinety\Filemanager\Http\Services\AbstractNamingStrategy;
 
 class FileManagerService
 {

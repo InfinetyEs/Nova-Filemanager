@@ -13,6 +13,6 @@ abstract class AbstractNamingStrategy
     {
         $this->storage = $storage;
     }
-    
+
     abstract public function name($currentFolder, $file) : string;
 }
