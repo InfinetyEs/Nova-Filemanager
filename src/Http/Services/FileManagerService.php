@@ -42,6 +42,11 @@ class FileManagerService
     protected $exceptExtensions;
 
     /**
+     * @var AbstractNamingStrategy
+     */
+    protected $namingStrategy;
+
+    /**
      * @param Storage $storage
      */
     public function __construct()
@@ -58,6 +63,11 @@ class FileManagerService
         } catch (InvalidArgumentException $e) {
             throw InvalidConfig::driverNotSupported();
         }
+
+        $this->namingStrategy = app()->makeWith(
+            config('filemanager.naming', DefaultNamingStrategy::class),
+            ['storage' => $this->storage]
+        );
     }
 
     /**
@@ -176,7 +186,7 @@ class FileManagerService
      */
     public function uploadFile($file, $currentFolder, $visibility)
     {
-        $fileName = $this->checkFileExists($currentFolder, $file);
+        $fileName = $this->namingStrategy->name($currentFolder, $file);
 
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
             $this->setVisibility($currentFolder, $fileName, $visibility);
@@ -255,21 +265,6 @@ class FileManagerService
         } else {
             return response()->json(false);
         }
-    }
-
-    /**
-     * @param $filePath
-     */
-    private function checkFileExists($currentFolder, $file)
-    {
-        if ($this->storage->has($currentFolder.'/'.$file->getClientOriginalName())) {
-            $random = str_random(7);
-            $newName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.mb_strtolower($random);
-
-            return $newName.'.'.$file->getClientOriginalExtension();
-        }
-
-        return $file->getClientOriginalName();
     }
 
     /**
