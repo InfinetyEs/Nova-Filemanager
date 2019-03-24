@@ -66,7 +66,7 @@ class FileManagerService
 
         $this->namingStrategy = app()->makeWith(
             config('filemanager.naming', DefaultNamingStrategy::class),
-            $this->storage
+            ['storage' => $this->storage]
         );
     }
 

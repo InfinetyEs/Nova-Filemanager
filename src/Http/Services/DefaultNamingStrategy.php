@@ -2,9 +2,11 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
+use Illuminate\Http\UploadedFile;
+
 class DefaultNamingStrategy extends AbstractNamingStrategy
 {
-    public function name($currentFolder, $file) : string
+    public function name(string $currentFolder, UploadedFile $file) : string
     {
         $filename = $file->getClientOriginalName();
 
