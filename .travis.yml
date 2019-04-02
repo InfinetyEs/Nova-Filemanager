@@ -24,7 +24,7 @@ deploy:
     skip-cleanup: true
     local_dir: docs/.vuepress/dist
     github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
-    repo: Krato/ImageHelpers
+    repo: InfinetyEs/Nova-Filemanager
     keep-history: true
     target-branch: gh-pages
     on:
