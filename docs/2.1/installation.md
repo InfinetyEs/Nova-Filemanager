@@ -122,5 +122,4 @@ return [
      */
     'naming'    => Infinety\Filemanager\Http\Services\DefaultNamingStrategy::class,
 ];
-
 ```

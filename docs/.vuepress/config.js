@@ -4,7 +4,6 @@ module.exports = {
   base: '/Nova-Filemanager/',
   serviceWorker: true,
   toc: { includeLevel: [1, 2] },
-  theme: 'yuu',
   themeConfig: {
   	nav: [
       { text: 'Home', link: '/' },
@@ -18,9 +17,9 @@ module.exports = {
     serviceWorker: {
       updatePopup: true
     },
-    yuu: {
-        colorThemes: ['blue', 'red'],
-    },
+    repo: 'InfinetyEs/Nova-Filemanager',
+    repoLabel: 'Contribute!',
+    editLinks: true,
   },
   markdown: {
       lineNumbers: true
