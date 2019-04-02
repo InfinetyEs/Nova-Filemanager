@@ -19,9 +19,10 @@ module.exports = {
     },
     repo: 'InfinetyEs/Nova-Filemanager',
     repoLabel: 'Contribute!',
+    docsDir: 'docs',
     editLinks: true,
   },
   markdown: {
-      lineNumbers: true
+      lineNumbers: false
   }
 }
