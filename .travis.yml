@@ -11,6 +11,7 @@ addons:
             - g++-4.8
 install:
     - yarn global add vuepress
+    - yarn global add vuepress-theme-yuu
 script:
     - yarn docs:build
 cache:
