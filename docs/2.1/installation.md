@@ -1,3 +1,45 @@
+# Getting Started
+
+
+## Installation
+
+You can install the package in any Laravel app that uses [Nova](https://nova.laravel.com) via Composer:
+
+```bash
+composer require infinety-es/nova-filemanager
+```
+
+Next, publish config file: 
+
+```bash
+php artisan vendor:publish --tag=filemanager-config
+```
+
+Also, you must register the tool with Nova. This is typically done in the `tools` method of the `NovaServiceProvider`.
+
+```php
+// in app/Providers/NovaServiceProvider.php
+
+// ...
+
+public function tools()
+{
+    return [
+        // ...
+        new \Infinety\Filemanager\FilemanagerTool(),
+    ];
+}
+```
+
+## Upgrade from v1
+
+Please publish the config file after update.
+
+`Folder` option now limits the home. So now, when you set a initial folder, this will be the home. 
+
+## Configuration File
+
+```php
 <?php
 
 return [
@@ -25,7 +67,7 @@ return [
     | Filemanager default order direction
     |--------------------------------------------------------------------------
     | This will set the default order direction of the files and folders.
-    | You can use asc or desc. Default to asc
+    | You can use mime, name or size. Default to asc
      */
     'direction' => env('FILEMANAGER_DIRECTION', 'asc'),
 
@@ -43,7 +85,7 @@ return [
     |--------------------------------------------------------------------------
     | Filemanager  filters
     |--------------------------------------------------------------------------
-    | This option let you to filter your files by extensions.
+    | This option let you to filter your files by extensions. 
     | You can create|modify|delete as you want.
      */
 
@@ -80,3 +122,5 @@ return [
      */
     'naming'    => Infinety\Filemanager\Http\Services\DefaultNamingStrategy::class,
 ];
+
+```

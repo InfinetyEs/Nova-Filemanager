@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager;
 
-use Laravel\Nova\Fields\Field;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Fields\Field;
 
 class FilemanagerField extends Field
 {
@@ -48,7 +48,9 @@ class FilemanagerField extends Field
      */
     public function folder($folderName)
     {
-        return $this->withMeta(['folder' => $folderName, 'home' => $folderName]);
+        $folder = is_callable($folderName) ? call_user_func($folderName) : $folderName;
+
+        return $this->withMeta(['folder' => $folder, 'home' => $folder]);
     }
 
     /**

@@ -48,7 +48,7 @@ public function tools()
 
 ### Upgrade from v1
 
-Please publish thc config file after update.
+Please publish the config file after update.
 
 `Folder` option now limits the home. So now, when you set a initial folder, this will be the home. 
 
