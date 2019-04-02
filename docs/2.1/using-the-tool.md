@@ -4,7 +4,7 @@ To use the tool just enter in your nova installation and click on `Filemanager` 
 
 The Filemanager will shown.
 
-![Filemanager](/home.png)
+![Filemanager](/Nova-Filemanager/home.png)
 
 
 ## Storage disk
@@ -116,7 +116,7 @@ You can search in your current files using the search box.
 
 You can view file details clicking on a file. This will throw a popup with the file details.
 
-![Preview](/preview.png)
+![Preview](/Nova-Filemanager/preview.png)
 
 Our Filemanager is able to show the preview of a lot of types so far:
 

@@ -2,6 +2,9 @@
 
 All notable changes to `nova-filemanager` will be documented in this file
 
+## 2.1 - 2019-04-02
+
+Updated documentation with vuepress.
 
 ## 2.1 - 2019-03-19
 
