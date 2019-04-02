@@ -13,6 +13,7 @@ module.exports = {
     sidebar: {
       '/2.1/': require('./2.1'),
     },
+    sidebarDepth: 2,
     lastUpdated: 'Last Updated',
     serviceWorker: {
       updatePopup: true
