@@ -21,23 +21,23 @@ importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox
 self.__precacheManifest = [
   {
     "url": "2.1/customization.html",
-    "revision": "092de879a1903e4e6c0520da72b3c74d"
+    "revision": "314d41e7ddb1b01c6a0433c2242234d4"
   },
   {
     "url": "2.1/installation.html",
-    "revision": "e427793709ac3500f37532f285e4e3e4"
+    "revision": "482e325dae5c8361cf4571397d28cbdf"
   },
   {
     "url": "2.1/using-the-field.html",
-    "revision": "09f5e721a1c990e20a6fdbe6f368a772"
+    "revision": "b1bff30dbc7d0aefdef40e39bf4b181e"
   },
   {
     "url": "2.1/using-the-tool.html",
-    "revision": "c4d2ff5a913fb3c8775186b42196ac82"
+    "revision": "8bbd09d8b30fdf94ffd9a96acf17e018"
   },
   {
     "url": "404.html",
-    "revision": "b378aa5903dd6bdc26ec291053d0654f"
+    "revision": "69b13ae2cb8d55fb0cd109b29be76f54"
   },
   {
     "url": "assets/css/0.styles.acbcc131.css",
@@ -76,8 +76,8 @@ self.__precacheManifest = [
     "revision": "96e584c7b994a13aa55791c93c33f368"
   },
   {
-    "url": "assets/js/app.4d8a3e95.js",
-    "revision": "6f775594b64616512db493fa565da5f7"
+    "url": "assets/js/app.adbbda11.js",
+    "revision": "c760e02a13f07b12063e2dcaa4885195"
   },
   {
     "url": "home.png",
@@ -117,7 +117,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.html",
-    "revision": "0750d46a016274d83d8530f1d852ef2e"
+    "revision": "cec9911cc9a665bc01f743da66c7e224"
   },
   {
     "url": "preview.png",
