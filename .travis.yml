@@ -19,6 +19,9 @@ cache:
         - "node_modules"
 notifications:
     email: false
+branches:
+    only:
+        - docs
 deploy:
     provider: pages
     skip-cleanup: true
