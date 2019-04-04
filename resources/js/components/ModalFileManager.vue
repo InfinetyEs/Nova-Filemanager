@@ -290,7 +290,6 @@ export default {
     padding-left: 1rem;
     padding-right: 1rem;
     border-left: 1px solid rgb(221, 221, 221);
-    // border-bottom: 1px solid rgb(221, 221, 221);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 

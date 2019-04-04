@@ -126,6 +126,8 @@ import UploadProgress from './UploadProgress';
 import Manager from './Manager';
 
 export default {
+    name: 'Filemanager',
+    
     components: {
         'create-folder': CreateFolderModal,
         manager: Manager,

@@ -107,7 +107,7 @@
 <script>
 import _ from 'lodash';
 import filesize from 'filesize';
-import MD5 from '../tools/md5';
+import MD5 from 'md5';
 import api from '../api';
 import ImageLoader from '../modules/ImageLoader';
 import Folder from '../modules/Folder';

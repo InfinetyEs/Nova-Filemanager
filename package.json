@@ -20,8 +20,7 @@
         "eslint-config-prettier": "^2.9.0",
         "eslint-plugin-vue": "^4.4.0",
         "laravel-mix": "^1.0",
-        "prettier": "^1.14.0",
-        "vuepress": "^0.14.10"
+        "prettier": "^1.14.0"
     },
     "dependencies": {
         "animated-scroll-to": "^1.2.2",
@@ -30,16 +29,13 @@
         "filesize": "^3.6.1",
         "laravel-nova": "^1.0.2",
         "liquor-tree": "^0.2.32",
+        "md5": "^2.2.1",
         "plyr": "^3.4.3",
         "urijs": "^1.19.1",
         "v-copy": "^0.1.0",
         "vue": "^2.5.0",
         "vue-codemirror": "^4.0.5",
         "vue-plyr": "^4.0.0",
-        "vue2-dropzone": "^3.2.2",
-        "vuepress-theme-yuu": "^1.0.0"
-    },
-    "resolutions": {
-        "webpack-dev-middleware": "3.6.0"
+        "vue2-dropzone": "^3.2.2"
     }
 }
