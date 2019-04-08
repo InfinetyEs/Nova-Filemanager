@@ -2,22 +2,13 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 trait GetFiles
 {
     use FileFunctions;
-
-    /**
-     * Cloud disks.
-     *
-     * @var array
-     */
-    protected $cloudDisks = [
-        's3', 'google', 's3-cached',
-    ];
 
     /**
      * @param $folder
@@ -31,18 +22,14 @@ trait GetFiles
 
         $files = [];
 
-        $cacheTime = config('filemanager.cache', false);
+        $minutes = env('FILEMANAGER_CACHE', 5);
 
         foreach ($filesData as $file) {
             $id = $this->generateId($file);
 
-            if ($cacheTime) {
-                $fileData = cache()->remember($id, $cacheTime, function () use ($file, $id) {
-                    return $this->getFileData($file, $id);
-                });
-            } else {
-                $fileData = $this->getFileData($file, $id);
-            }
+            $fileData = Cache::remember($id, $minutes, function () use ($file, $id) {
+                return $this->getFileData($file, $id);
+            });
 
             $files[] = $fileData;
         }
@@ -52,7 +39,7 @@ trait GetFiles
             $files = $this->filterData($files, $filter);
         }
 
-        return $this->orderData($files, $order, config('filemanager.direction', 'asc'));
+        return $this->orderData($files, $order);
     }
 
     /**
@@ -61,17 +48,21 @@ trait GetFiles
      */
     public function getFileData($file, $id)
     {
-        if (! $this->isDot($file) && ! $this->exceptExtensions->contains($file['extension']) && ! $this->exceptFolders->contains($file['basename']) && ! $this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
+        if (!$this->isDot($file) && !$this->exceptExtensions->contains($file['extension']) && !$this->exceptFolders->contains($file['basename']) && !$this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
+
             $fileInfo = [
                 'id'         => $id,
                 'name'       => trim($file['basename']),
                 'path'       => $this->cleanSlashes($file['path']),
                 'type'       => $file['type'],
                 'mime'       => $this->getFileType($file),
-                'ext'        => (isset($file['extension'])) ? $file['extension'] : false,
                 'size'       => ($file['size'] != 0) ? $file['size'] : 0,
                 'size_human' => ($file['size'] != 0) ? $this->formatBytes($file['size'], 0) : 0,
                 'thumb'      => $this->getThumbFile($file),
+
+
+
+
                 'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
                 'can'        => true,
                 'loading'    => false,
@@ -79,12 +70,11 @@ trait GetFiles
 
             if (isset($file['timestamp'])) {
                 $fileInfo['last_modification'] = $file['timestamp'];
-                $fileInfo['date'] = $this->modificationDate($file['timestamp']);
             }
 
             if ($fileInfo['mime'] == 'image') {
                 list($width, $height) = $this->getImageDimesions($file);
-                if (! $width == false) {
+                if (!$width == false) {
                     $fileInfo['dimensions'] = $width.'x'.$height;
                 }
             }
@@ -105,21 +95,33 @@ trait GetFiles
     {
         $folders = $files->where('type', 'dir');
         $items = $files->where('type', 'file');
-
-        $filters = config('filemanager.filters', []);
-        if (count($filters) > 0) {
-            $filters = array_change_key_case($filters);
-
-            if (isset($filters[$filter])) {
-                $filteredExtensions = $filters[$filter];
-
-                $filtered = $items->filter(function ($item) use ($filteredExtensions) {
-                    if (in_array($item->ext, $filteredExtensions)) {
+        $filtered = $items->filter(function ($item) use ($filter) {
+            switch ($filter) {
+                case 'image':
+                    if (str_contains($item->mime, 'image')) {
                         return $item;
                     }
-                });
+                    break;
+                case 'audio':
+                    if (str_contains($item->mime, 'audio')) {
+                        return $item;
+                    }
+                    break;
+                case 'video':
+                    if (str_contains($item->mime, 'video')) {
+                        return $item;
+                    }
+                    break;
+                case 'documents':
+                    if (str_contains($item->mime, 'word') || str_contains($item->mime, 'excel') || str_contains($item->mime, 'pdf') || str_contains($item->mime, 'plain') || str_contains($item->mime, 'rtf') || str_contains($item->mime, 'text')) {
+                        return $item;
+                    }
+                    break;
+                case 'all':
+                    return $item;
+                    break;
             }
-        }
+        });
 
         return $folders->merge($filtered);
     }
@@ -208,11 +210,11 @@ trait GetFiles
      */
     public function getAppend()
     {
-        if (in_array(config('filemanager.disk'), $this->cloudDisks)) {
-            return '';
+        if ($this->disk == 'public') {
+            return '/storage';
         }
 
-        return '/storage';
+        return '';
     }
 
     /**
@@ -223,13 +225,12 @@ trait GetFiles
     public function getFileType($file)
     {
         $mime = $this->storage->getMimetype($file['path']);
-        $extension = $file['extension'];
 
         if (str_contains($mime, 'directory')) {
             return 'dir';
         }
 
-        if (str_contains($mime, 'image') || $extension == 'svg') {
+        if (str_contains($mime, 'image')) {
             return 'image';
         }
 
@@ -298,18 +299,19 @@ trait GetFiles
     public function getThumb($file, $folder = false)
     {
         $mime = $this->storage->getMimetype($file['path']);
-        $extension = $file['extension'];
 
         if (str_contains($mime, 'directory')) {
             return false;
         }
 
-        if (str_contains($mime, 'image') || $extension == 'svg') {
-            if (method_exists($this->storage, 'put')) {
-                return $this->storage->url($file['path']);
+        if (str_contains($mime, 'image')) {
+            try {
+                $thumb = $this->storage->url($file['path']);
+            } catch (\Exception $e) {
+                $thumb = $folder.'/'.$file['basename'];
             }
 
-            return $folder.'/'.$file['basename'];
+            return $thumb;
         }
 
         $fileType = new FileTypesImages();
@@ -328,11 +330,7 @@ trait GetFiles
             return getimagesize($this->storage->path($file['path']));
         }
 
-        if (in_array(config('filemanager.disk'), $this->cloudDisks)) {
-            return false;
-        }
-
-        return false;
+        return $this->getImageDimesionsFromCloud($file);
     }
 
     /**
@@ -373,11 +371,10 @@ trait GetFiles
     public function normalizeFiles($files)
     {
         foreach ($files as $key => $file) {
-            if (! isset($file['extension'])) {
+            if (!isset($file['extension'])) {
                 $files[$key]['extension'] = null;
             }
-            if (! isset($file['size'])) {
-                // $size = $this->storage->getSize($file['path']);
+            if (!isset($file['size'])) {
                 $files[$key]['size'] = null;
             }
         }
@@ -442,17 +439,5 @@ trait GetFiles
     public function recursivePaths($name, $pathCollection)
     {
         return str_before($pathCollection->implode('/'), $name).$name;
-    }
-
-    /**
-     * @param $timestamp
-     */
-    public function modificationDate($time)
-    {
-        try {
-            return Carbon::createFromTimestamp($time)->format('Y-m-d H:i:s');
-        } catch (\Exception $e) {
-            return false;
-        }
     }
 }
