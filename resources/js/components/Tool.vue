@@ -88,6 +88,7 @@
                 :files="files"
                 :path="path"
                 :current="currentPath"
+                :parent="parent"
                 :noFiles="noFiles"
                 :view="view"
                 :loading="loadingfiles"
@@ -127,7 +128,7 @@ import Manager from './Manager';
 
 export default {
     name: 'Filemanager',
-    
+
     components: {
         'create-folder': CreateFolderModal,
         manager: Manager,
@@ -145,6 +146,7 @@ export default {
         showCreateFolder: false,
         currentPath: '/',
         files: [],
+        parent: {},
         path: [],
         noFiles: false,
         view: 'grid',
@@ -183,6 +185,7 @@ export default {
     methods: {
         getData(pathToList) {
             this.files = [];
+            this.parent = {};
             this.path = [];
             this.noFiles = false;
             this.loadingfiles = true;
@@ -196,6 +199,7 @@ export default {
                     this.files = _.merge(this.files, result.files);
                     this.path = result.path;
                     this.filters = result.filters;
+                    this.parent = result.parent;
                     this.loadingfiles = false;
                 })
                 .catch(() => {
@@ -343,7 +347,7 @@ export default {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     padding-top: 0.3rem;
-    fill: #fff;
+    fill: currentColor;
 }
 
 .rotate {

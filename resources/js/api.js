@@ -24,6 +24,15 @@ export default {
             .then(response => response.data);
     },
 
+    moveFile(oldPath, newPath) {
+        return window.axios
+            .post('/nova-vendor/infinety-es/nova-filemanager/actions/move', {
+                old: oldPath,
+                path: newPath,
+            })
+            .then(response => response.data);
+    },
+
     createFolder(folderName, currentFolder) {
         return window.axios
             .post('/nova-vendor/infinety-es/nova-filemanager/actions/create-folder', {

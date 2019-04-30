@@ -3,9 +3,9 @@
 namespace Infinety\Filemanager\Http\Services;
 
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 use Illuminate\Support\Facades\Storage;
 use Infinety\Filemanager\Exceptions\InvalidConfig;
+use InvalidArgumentException;
 
 class FileManagerService
 {
@@ -81,7 +81,7 @@ class FileManagerService
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
-        if (! $this->storage->exists($folder)) {
+        if (!$this->storage->exists($folder)) {
             $folder = '/';
         }
 
@@ -89,7 +89,7 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (! $order) {
+        if (!$order) {
             $order = config('filemanager.order', 'mime');
         }
 
@@ -103,35 +103,23 @@ class FileManagerService
 
         $filters = $this->getAvailableFilters($files);
 
-        // $paginate = config('filemanager.paginate', false);
+        $parent = (object) [];
 
-        // if ($paginate != false) {
-        //     $filesData = collect($files);
-        //     $page = (int) $request->input('page') ?: 1;
+        if ($files->count() > 0) {
+            $folders = $files->filter(function ($file) {
+                return $file->type == 'dir';
+            });
 
-        //     $slice = $filesData->slice(($page - 1) * $paginate, $paginate);
-        //     $paginator = new LengthAwarePaginator($slice, $files->count(), $paginate);
-
-        //     $parameters = collect(request()->query())->reject(function ($value, $key) {
-        //         if ($key == 'folder' || $key == 'filter') {
-        //             return false;
-        //         }
-
-        //         return true;
-        //     })->toArray();
-
-        //     $paginator->appends($parameters);
-        //     $files = $paginator->items();
-
-        //     $paginate = $paginator->toArray();
-        //     unset($paginate['data']);
-        // }
+            if ($folder !== '/') {
+                $parent = $this->generateParent($folder);
+            }
+        }
 
         return response()->json([
             'files'   => $files,
             'path'    => $this->getPaths($folder),
             'filters' => $filters,
-            // 'pagination' => ($paginate) ? $paginate : false,
+            'parent'  => $parent,
         ]);
     }
 
@@ -222,7 +210,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (! $this->storage->exists($file)) {
+        if (!$this->storage->exists($file)) {
             return [];
         }
 
@@ -265,6 +253,23 @@ class FileManagerService
         } else {
             return response()->json(false);
         }
+    }
+
+    /**
+     * Move file
+     *
+     * @param   string  $oldPath
+     * @param   string  $newPath
+     *
+     * @return  json
+     */
+    public function moveFile($oldPath, $newPath)
+    {
+        if ($this->storage->move($oldPath, $newPath)) {
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(false);
     }
 
     /**

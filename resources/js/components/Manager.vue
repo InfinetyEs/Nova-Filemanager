@@ -1,5 +1,5 @@
 <template>
-    <div ref="fileManagerContainer" id="filemanager-manager-container" class="p-3"  :class="cssFilemenagerContainer">
+    <div ref="fileManagerContainer" id="filemanager-manager-container" class="p-3"  :class="cssFilemenagerContainer" v-cloak>
         <nav class="bg-grey-light rounded font-sans w-full m-4">
             <ol class="list-reset flex text-grey-dark" >
                 <li><span class="text-blue font-bold cursor-pointer" @click="goToFolderNav(home)">{{ __('Home') }}</span></li>
@@ -18,8 +18,21 @@
             </ol>
         </nav>
         <transition name="fade">
-            <div class="px-2 overflow-y-auto files">
+
+            <template v-if="uploadingFiles">
+                <div class="px-2 overflow-y-auto files">
+                    <div class="drop-files flex flex-wrap items-center border-2 border-primary border-dashed -mx-2">
+                        <div class="w-full text-lg text-center my-4">
+                            {{ __('Drop your files here!') }}
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <div v-else class="px-2 overflow-y-auto files">
                 <div class="flex flex-wrap -mx-2">
+
+                    
 
                     <template v-if="files.error">
                         <div class="w-full text-lg text-center my-4">
@@ -45,16 +58,31 @@
                     <template v-if="!files.error">
 
                         <template v-if="view == 'grid'">
-                            <template v-if="!files.error" v-for="file in fileteredFiles">
-                                <div :class="filemanagerClass" :key="file.id" >
-                                    <template v-if="file.type == 'file'">
-                                        <ImageLoader :file="file" class="h-40" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
-                                    </template>
-                                    <template v-if="file.type == 'dir'">
-                                        <Folder :file="file" class="h-40" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
-                                    </template>
-                                </div>
+
+                            <template v-if="!files.error">
+
+                                <template v-if="parent.id">
+                                    <div :class="filemanagerClass" :key="parent.id" >
+                                        <Folder v-drag-and-drop:folder :ref="'folder_' + parent.id" :file="parent" :data-key="parent.id" class="h-40 folder-item" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
+                                    </div>
+                                </template>
+
+                                <template v-for="file in filteredFiles">
+                                    <div :class="filemanagerClass" :key="file.id" >
+                                        <template v-if="file.type == 'file'">
+                                            <ImageLoader v-drag-and-drop:file :ref="'file_' + file.id" :file="file" :data-key="file.id" class="h-40 file-item" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                        </template>
+                                        <template v-if="file.type == 'dir'">
+                                            <Folder v-drag-and-drop:folder :ref="'folder_' + file.id" :file="file" :data-key="file.id" class="h-40 folder-item" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
+                                        </template>
+                                    </div>
+                                </template>
+
                             </template>
+
+                            
+
+                            
                             <template  v-if="!loading">
                             </template>
                         </template>
@@ -79,12 +107,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template  v-for="file in fileteredFiles">
+                                    <template  v-for="file in filteredFiles">
                                         <template v-if="file.type == 'dir'">
-                                            <Folder :key="file.id" :file="file" :view="view" class="" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
+                                            <Folder :key="file.id" :data-key="file.id" :file="file" :view="view" class="folder-item" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
                                         </template>
                                         <template v-if="file.type == 'file'">
-                                            <ImageLoader :key="file.id" :file="file" :view="view" class="" :class="{'loading': loadingInfo}" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                            <ImageLoader :key="file.id" :data-key="file.id" :file="file" :view="view" class="file-item" :class="{'loading': loadingInfo}" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
                                         </template>
                                     </template>
                                 </tbody>
@@ -112,9 +140,13 @@ import api from '../api';
 import ImageLoader from '../modules/ImageLoader';
 import Folder from '../modules/Folder';
 import Loading from './Loading';
+import { DragAndDrop } from '../tools/DragAndDrop';
+
 let arrayFiles = [];
 
 export default {
+    name: 'Manager',
+
     components: {
         ImageLoader: ImageLoader,
         Folder: Folder,
@@ -137,6 +169,10 @@ export default {
         current: {
             type: String,
             default: '/',
+            required: true,
+        },
+        parent: {
+            type: Object,
             required: true,
         },
         noFiles: {
@@ -184,7 +220,13 @@ export default {
         filesToUpload: [],
         loadingInfo: false,
         busy: false,
+        currentDraggedFile: null,
+        uploadingFiles: false,
     }),
+
+    directives: {
+        'drag-and-drop': DragAndDrop,
+    },
 
     methods: {
         goToFolder(path) {
@@ -203,7 +245,7 @@ export default {
             return api.removeDirectory(this.current).then(result => {
                 if (result == true) {
                     this.$toasted.show(this.__('Folder removed successfully'), { type: 'success' });
-                    this.$emit('goToFolderManager', '/');
+                    this.$emit('goToFolderManager', this.getParentFolder());
                 } else {
                     this.$toasted.show(
                         this.__('Error removing the folder. Please check permissions'),
@@ -243,32 +285,50 @@ export default {
         },
 
         setDragAndDropEvents() {
-            let self = this;
-
             let filemanagerContainer = document.querySelector('#filemanager-manager-container');
 
-            filemanagerContainer.addEventListener('dragenter', function(e) {
+            filemanagerContainer.addEventListener('dragenter', e => {
                 e.preventDefault();
-                self.cssDragAndDrop = 'inside';
+                if (this.currentDraggedFile === null) {
+                    this.uploadingFiles = true;
+                    this.cssDragAndDrop = 'inside';
+
+                    let dropperContainer = document.querySelector('.drop-files');
+                    this.droppedListener(dropperContainer);
+                }
             });
 
-            filemanagerContainer.addEventListener('dragleave', function(e) {
+            filemanagerContainer.addEventListener('dragleave', e => {
                 e.preventDefault();
-                self.cssDragAndDrop = 'outside';
+                this.uploadingFiles = false;
+                this.cssDragAndDrop = 'outside';
             });
 
-            filemanagerContainer.addEventListener('dragover', function(e) {
+            filemanagerContainer.addEventListener('dragover', e => {
                 e.preventDefault();
-                self.cssDragAndDrop = 'inside';
+                if (this.currentDraggedFile === null) {
+                    this.uploadingFiles = true;
+                    this.cssDragAndDrop = 'inside';
+                    let dropperContainer = document.querySelector('.drop-files');
+                    this.droppedListener(dropperContainer);
+                }
             });
+        },
 
-            filemanagerContainer.addEventListener('drop', function(e) {
-                e.preventDefault();
-                self.cssDragAndDrop = 'drop';
+        droppedListener(element) {
+            if (element) {
+                element.removeEventListener('drop', this.droppedListener);
+                element.addEventListener('drop', this.dropNewFiles, false);
+            }
+        },
 
-                let files = e.dataTransfer.files;
-                self.uploadFiles(files);
-            });
+        dropNewFiles(e) {
+            e.preventDefault();
+            this.cssDragAndDrop = 'drop';
+            this.uploadingFiles = false;
+
+            let files = e.dataTransfer.files;
+            this.uploadFiles(files);
         },
 
         uploadFiles(files) {
@@ -302,6 +362,53 @@ export default {
         isImage(file) {
             return file.type.includes('image'); //returns true or false
         },
+
+        moveFile(oldPath, newPath) {
+            return api
+                .moveFile(oldPath, newPath)
+                .then(result => {
+                    if (result.success == true) {
+                        this.refresh();
+                        this.$toasted.show(this.__('File moved successfully'), {
+                            type: 'success',
+                            duration: 2000,
+                        });
+                    } else {
+                        this.$toasted.show(
+                            this.__('Error opening the file. Check your permissions'),
+                            {
+                                type: 'error',
+                                duration: 3000,
+                            }
+                        );
+                    }
+                })
+                .catch(error => {
+                    this.$toasted.show(error.response.data.message, {
+                        type: 'error',
+                        duration: 3000,
+                    });
+                });
+        },
+
+        getFileById(type, id) {
+            if (id == 'folder_back') {
+                return this.$refs[type + '_' + id];
+            }
+
+            let found = this.files.find(file => file.id == id);
+
+            if (found) {
+                return this.$refs[type + '_' + id][0];
+            }
+        },
+
+        getParentFolder() {
+            let pathData = this.current.split('/');
+            pathData.pop();
+
+            return pathData.join('/');
+        },
     },
 
     updated: function() {
@@ -313,6 +420,7 @@ export default {
             this.$nextTick(function() {
                 setTimeout(() => {
                     this.setDragAndDropEvents();
+                    // this.dragFilesEvents();
                     this.eventsLoaded = true;
                 }, 500);
             });
@@ -343,6 +451,7 @@ export default {
                 return '';
             }
         },
+
         cssFilemenagerContainer() {
             if (this.cssDragAndDrop == 'inside') {
                 return 'bg-20';
@@ -354,7 +463,7 @@ export default {
             return '';
         },
 
-        fileteredFiles() {
+        filteredFiles() {
             let filtered = this.files;
             if (this.search) {
                 filtered = this.files.filter(m => m.name.toLowerCase().indexOf(this.search) > -1);
@@ -403,6 +512,10 @@ export default {
 
 .files {
     max-height: 60vh;
+}
+
+.drop-files {
+    min-height: 40vh;
 }
 
 .custom-table {

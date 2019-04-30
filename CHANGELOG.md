@@ -2,11 +2,15 @@
 
 All notable changes to `nova-filemanager` will be documented in this file
 
-## 2.1 - 2019-04-02
+## v2.1.2 - 2019-04-30
+
+New way to move files between folders with drag and drop
+
+## v2.1 - 2019-04-02
 
 Updated documentation with vuepress.
 
-## 2.1 - 2019-03-19
+## v2.1 - 2019-03-19
 
 #### Improvements
 
@@ -19,7 +23,7 @@ Updated documentation with vuepress.
 * Upload progress fix when name is very long
 
 
-## 2.0 - 2019-03-11
+## v2.0 - 2019-03-11
 
 New config file and new options for tool and field to search and filter
 
@@ -42,7 +46,7 @@ New config file and new options for tool and field to search and filter
 * Json localization strings updated
 
 
-## 1.1.1 - 2018-10-09
+## v1.1.1 - 2018-10-09
 
 Field new option folder | Remove value from field
 
@@ -62,7 +66,7 @@ Field new option folder | Remove value from field
 
 -----
 
-## 1.1.0 - 2018-09-21
+## v1.1.0 - 2018-09-21
 
 Major update v1
 
@@ -89,13 +93,13 @@ Major update v1
 
 -----
 
-## 0.0.1 - 2018-08-29
+## v1.0.1 - 2018-08-29
 
 Beta release for some tests
 
 -----
 
-## 1.0.0 - 2018-08-30 
+## v1.0.0 - 2018-08-30 
 
 Filemanager ready for Production with version 1.0.0
 

@@ -22,6 +22,7 @@
                 :home="field.home"
                 :active="openModal"
                 :currentPath="currentPath"
+                :defaultFolder="defaultFolder"
                 :filter="field.filterBy"
                 v-on:open-modal="openModalCreateFolder" 
                 v-on:close-modal="closeFilemanagerModal" 
@@ -106,6 +107,7 @@ export default {
     data: () => ({
         openModal: false,
         showCreateFolder: false,
+        defaultFolder: null,
         currentPath: '/',
 
         //modalFile
@@ -171,8 +173,10 @@ export default {
 
         setCurrentPath() {
             if (this.field.folder != null) {
+                this.defaultFolder = this.field.folder;
                 this.currentPath = this.field.folder;
             } else {
+                this.defaultFolder = '/';
                 this.currentPath = '/';
             }
         },

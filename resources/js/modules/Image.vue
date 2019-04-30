@@ -70,7 +70,7 @@ export default {
                 this.loading = false;
             })
             .catch(error => {
-                if (error) {
+                if (error && this.file.image) {
                     // this.missing = true;
                     // this.$emit('missing', true);
                     // this.loading = false;

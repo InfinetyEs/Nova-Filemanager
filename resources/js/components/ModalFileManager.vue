@@ -74,6 +74,7 @@
                                 :files="files"
                                 :path="path"
                                 :current="currentPath"
+                                :parent="parent"
                                 :noFiles="noFiles"
                                 :selector="value"
                                 :popupLoaded="true"
@@ -127,6 +128,10 @@ export default {
             type: String,
             required: true,
         },
+        defaultFolder: {
+            type: String,
+            required: true,
+        },
         home: {
             type: String,
             required: false,
@@ -155,6 +160,7 @@ export default {
         showCreateFolder: false,
         currentPathFolder: this.currentPath,
         files: [],
+        parent: {},
         path: [],
         noFiles: false,
         filesToUpload: [],
@@ -169,6 +175,7 @@ export default {
     methods: {
         getData(pathToList) {
             this.files = [];
+            this.parent = {};
             this.path = [];
             this.noFiles = false;
             this.loadingfiles = true;
@@ -180,6 +187,11 @@ export default {
                     this.files = result.files;
                     this.path = result.path;
                     this.filters = result.filters;
+
+                    if (pathToList != this.defaultFolder) {
+                        this.parent = result.parent;
+                    }
+
                     this.loadingfiles = false;
                 })
                 .catch(() => {
@@ -201,10 +213,15 @@ export default {
         },
 
         goToFolder(path) {
-            // this.currentPath = this.currentPath + '/' + path;
-            this.getData(path);
-            this.currentPathFolder = path;
-            // history.pushState(null, null, '?path=' + path);
+            let pathDefault = this.defaultFolder.split('/');
+
+            if (path == pathDefault[0]) {
+                this.getData(this.defaultFolder);
+                this.currentPathFolder = this.defaultFolder;
+            } else {
+                this.getData(path);
+                this.currentPathFolder = path;
+            }
         },
 
         goToFolderNav(path) {

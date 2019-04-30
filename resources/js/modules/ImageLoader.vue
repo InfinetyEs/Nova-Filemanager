@@ -127,7 +127,7 @@ export default {
                     this.loading = false;
                 })
                 .catch(error => {
-                    if (error) {
+                    if (error && this.$refs.image) {
                         //defaulImage
                         let imageDiv = document.createElement('div');
                         imageDiv.style.backgroundImage = "url('" + this.file.thumb + "')";

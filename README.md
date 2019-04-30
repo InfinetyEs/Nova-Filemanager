@@ -23,10 +23,15 @@ A Filemanager Tool and Field for Laravel Nova
 ### Testing
 
 ``` bash
-composer test
 yarn lint
 yarn check-format
 ```
+
+### Last Changelog
+
+> **v2.1.2 - 2019-04-30**      
+   New way to move files between folders with drag and drop
+
 
 ### Changelog
 
