@@ -87,8 +87,9 @@ For example to translate this tool to spanish, you can use this json.
 "Are you sure you want to deselect this file?": "¿Estas seguro de querer deseleccionar este archivo?",
 "Remember: The file will not be delete from your storage": "Recuerda: El archivo no será eliminado de tu disco",
 "Deselect": "Deseleccionar",
-"Only files below 350 Kb will be shown": "Solo se mostraran archivos con un peso menor a 350 Kb"
-"Filter by ...": "Filtrar por ..."
+"Only files below 350 Kb will be shown": "Solo se mostraran archivos con un peso menor a 350 Kb",
+"Filter by ...": "Filtrar por ...",
+"Go up": "Arriba"
 ```
 
 

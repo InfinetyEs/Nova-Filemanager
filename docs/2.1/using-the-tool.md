@@ -130,6 +130,9 @@ Our Filemanager is able to show the preview of a lot of types so far:
 | Zips   | Tree view listing all files | All files with zip mime type                    | 
 | PDFs   | Google previews             | All files pdf mime type                         | 
 
+## Move files between folders
+
+You can move files between folders using drag an drop
 
 ## Rename
 
