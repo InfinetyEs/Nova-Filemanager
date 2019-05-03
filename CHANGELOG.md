@@ -2,6 +2,19 @@
 
 All notable changes to `nova-filemanager` will be documented in this file
 
+## v2.2 - 2019-05-03
+
+First release for Nova v2
+
+#### Improvements
+
+ * Search image: FilemanagerField now implements Cover contract. So now when you search your resources it will show like Avatar field
+
+
+## v2.1.3 - 2019-05-03
+
+Release for Nova v1
+
 ## v2.1.2 - 2019-04-30
 
 New way to move files between folders with drag and drop
