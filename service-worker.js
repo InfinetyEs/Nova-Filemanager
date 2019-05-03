@@ -21,43 +21,43 @@ importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox
 self.__precacheManifest = [
   {
     "url": "2.1/customization.html",
-    "revision": "229e7e4edd0d079ea81b3e27ab2f29a8"
+    "revision": "68a36485358c02428d3330403a19cd3f"
   },
   {
     "url": "2.1/installation.html",
-    "revision": "49e1e393eed975979297136af3661caa"
+    "revision": "a42014e555d641d223da8eb707139959"
   },
   {
     "url": "2.1/using-the-field.html",
-    "revision": "7aeabe3b911be0007b2b29a0f7a9f46a"
+    "revision": "5d7aae36e59ae4ec73a06ddcd0f8f0c7"
   },
   {
     "url": "2.1/using-the-tool.html",
-    "revision": "1a893843345903c2bc05c4a3792fba13"
+    "revision": "49ebb71fbc6e3c8e2d767f386848afda"
   },
   {
     "url": "2.2/changelog.html",
-    "revision": "82fb8e4cad72e392a29eb75a3d1ba41e"
+    "revision": "9d4f6fa5729764f7bbe7fb6ade358769"
   },
   {
     "url": "2.2/customization.html",
-    "revision": "c7e6b6f7843a967fae854b82163590b1"
+    "revision": "075c87600df397c65e8c43768fd9cc55"
   },
   {
     "url": "2.2/installation.html",
-    "revision": "3dd4ca2fb43aa5771b3ab14b6e6de767"
+    "revision": "52bfabd758f55096d948aa17c5818846"
   },
   {
     "url": "2.2/using-the-field.html",
-    "revision": "ce029dc803c28ce5844715610af2f08e"
+    "revision": "e8cad17a35d8bf5a08ebe1802c297567"
   },
   {
     "url": "2.2/using-the-tool.html",
-    "revision": "0d8891c8322aa03dd872ab9fd5128330"
+    "revision": "a5cdc2088bc89c676d4d5ebb962a92e5"
   },
   {
     "url": "404.html",
-    "revision": "aecc4a7d8c7e5b6a4b5853cf6c301171"
+    "revision": "d00c08629965aaa89073bc16c306a442"
   },
   {
     "url": "assets/css/0.styles.90ce6159.css",
@@ -104,8 +104,8 @@ self.__precacheManifest = [
     "revision": "6d98ec08090aa358a68e93e2f31fa760"
   },
   {
-    "url": "assets/js/7.803f1807.js",
-    "revision": "e4895b82f20f4cb21d86174cb80b27f0"
+    "url": "assets/js/7.5cb94aa7.js",
+    "revision": "c4b82cfb83dffeee7d94e9d695f6725d"
   },
   {
     "url": "assets/js/8.0371b3ba.js",
@@ -116,8 +116,8 @@ self.__precacheManifest = [
     "revision": "2a65919c7589212ad84520949e1d5536"
   },
   {
-    "url": "assets/js/app.d9caed40.js",
-    "revision": "b062c0f587748cf81f5036d329a884d7"
+    "url": "assets/js/app.c558aa88.js",
+    "revision": "2ca459503acf9a9d33b39a3abc2cbd27"
   },
   {
     "url": "home.png",
@@ -157,7 +157,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.html",
-    "revision": "3018e07b19cd4f28ae8d22a1697155dd"
+    "revision": "43401086c3b421daefbfcee8afdb8e5f"
   },
   {
     "url": "preview.png",
