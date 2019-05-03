@@ -44,8 +44,9 @@ yarn check-format
 
 ### Last Changelog
 
-> **v2.1.2 - 2019-04-30**      
-   New way to move files between folders with drag and drop
+> **v2.2 - 2019-05-03**      
+   First release for Nova v2.     
+   Improvements: Image on global search
 
 
 ### Changelog
