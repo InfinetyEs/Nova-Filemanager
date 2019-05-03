@@ -2,10 +2,11 @@
 
 namespace Infinety\Filemanager;
 
-use Laravel\Nova\Fields\Field;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Contracts\Cover;
+use Laravel\Nova\Fields\Field;
 
-class FilemanagerField extends Field
+class FilemanagerField extends Field implements Cover
 {
     /**
      * The field's component.
@@ -107,6 +108,28 @@ class FilemanagerField extends Field
         }
 
         return [];
+    }
+
+    /**
+     * Resolve the thumbnail URL for the field.
+     *
+     * @return string|null
+     */
+    public function resolveThumbnailUrl()
+    {
+        if ($this->value) {
+            $service = new FileManagerService();
+
+            $data = $service->getFileInfoAsArray($this->value);
+
+            if (empty($data)) {
+                return null;
+            }
+
+            return $data['url'];
+        }
+
+        return null;
     }
 
     /**

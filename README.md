@@ -16,9 +16,24 @@ A Filemanager Tool and Field for Laravel Nova
 ![FileManager Field](https://user-images.githubusercontent.com/42798230/44864362-5f9cd700-ac77-11e8-9e0f-330d18a81598.gif)
 
 
+### Installation
+
+#### Nova v2
+
+```bash
+composer require "infinety-es/nova-filemanager"
+```
+
+#### Nova v1
+
+```bash
+composer require "infinety-es/nova-filemanager:2.1.*"
+```
+
 ### Docs
 
 [https://infinetyes.github.io/Nova-Filemanager/](https://infinetyes.github.io/Nova-Filemanager)
+
 
 ### Testing
 
