@@ -6,13 +6,7 @@
         "nova",
         "filemanager"
     ],
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../../nova"
-        }
-    ],
-    "homepage": "https://github.com/krato/nova-filemanager",
+    "homepage": "https://github.com/InfinetyEs/nova-filemanager",
     "license": "MIT",
     "authors": [
         {
@@ -28,7 +22,7 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "laravel/nova": "*"
+        "laravel/nova": "~1.0"
     },
     "require-dev": {
         "orchestra/testbench": "^3.6",
