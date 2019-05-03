@@ -6,7 +6,7 @@
 You can install the package in any Laravel app that uses [Nova](https://nova.laravel.com) via Composer:
 
 ```bash
-composer require "infinety-es/nova-filemanager:2.1.*"
+composer require infinety-es/nova-filemanager
 ```
 
 Next, publish config file: 
@@ -29,13 +29,7 @@ public function tools()
         new \Infinety\Filemanager\FilemanagerTool(),
     ];
 }
-```
-
-## Upgrade from v1
-
-Please publish the config file after update.
-
-`Folder` option now limits the home. So now, when you set a initial folder, this will be the home. 
+``` 
 
 ## Configuration File
 
