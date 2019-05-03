@@ -2,9 +2,9 @@
 
 namespace Infinety\Filemanager;
 
-use Infinety\Filemanager\Http\Services\FileManagerService;
-use Laravel\Nova\Contracts\Cover;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Contracts\Cover;
+use Infinety\Filemanager\Http\Services\FileManagerService;
 
 class FilemanagerField extends Field implements Cover
 {
@@ -123,13 +123,11 @@ class FilemanagerField extends Field implements Cover
             $data = $service->getFileInfoAsArray($this->value);
 
             if (empty($data)) {
-                return null;
+                return;
             }
 
             return $data['url'];
         }
-
-        return null;
     }
 
     /**
