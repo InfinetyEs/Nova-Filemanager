@@ -419,30 +419,31 @@ trait GetFiles
         $paths = collect(explode('/', $folder))->filter();
         $paths->pop();
 
-        if ($paths) {
+        $folderPath=$folder;
+        if ($paths->count()) {
             $folderPath = $paths->implode('/');
 
             if ($folderPath == $folder) {
                 $folderPath = '/';
             }
-
-            return [
-                'id'                => 'folder_back',
-                'name'              => __('Go up'),
-                'path'              => $this->cleanSlashes($folderPath),
-                'type'              => 'dir',
-                'mime'              => 'dir',
-                'ext'               => false,
-                'size'              => 0,
-                'size_human'        => 0,
-                'thumb'             => '',
-                'asset'             => $this->cleanSlashes($this->storage->url($folderPath)),
-                'can'               => true,
-                'loading'           => false,
-                'last_modification' => false,
-                'date'              => false,
-            ];
         }
+
+        return [
+            'id'                => 'folder_back',
+            'name'              => __('Go up'),
+            'path'              => $this->cleanSlashes($folderPath),
+            'type'              => 'dir',
+            'mime'              => 'dir',
+            'ext'               => false,
+            'size'              => 0,
+            'size_human'        => 0,
+            'thumb'             => '',
+            'asset'             => $this->cleanSlashes($this->storage->url($folderPath)),
+            'can'               => true,
+            'loading'           => false,
+            'last_modification' => false,
+            'date'              => false,
+        ];
     }
 
     /**
