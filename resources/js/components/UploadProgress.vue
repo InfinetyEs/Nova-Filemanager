@@ -29,6 +29,7 @@
 <script>
 import _ from 'lodash';
 import Progress from '../modules/Progress';
+
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
 export default {
@@ -82,9 +83,13 @@ export default {
                 },
             };
 
+            let filePath = file.file.webkitRelativePath
+                ? '/' + file.file.webkitRelativePath.replace('/' + file.file.name, '')
+                : '';
+
             let data = new FormData();
             data.append('file', file.file);
-            data.append('current', this.current);
+            data.append('current', this.current + filePath);
             data.append('visibility', this.visibility);
 
             window.axios

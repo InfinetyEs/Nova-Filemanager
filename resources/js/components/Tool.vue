@@ -20,6 +20,13 @@
                             <input type="file" multiple="true" @change="uploadFilesByButton"/>
                         </label>
 
+                        <label class="manual_upload cursor-pointer">
+                            <div @click="showUploadFolder = !showUploadFolder" class="btn btn-default btn-primary mr-3">
+                                {{ __('Upload Folder') }}
+                            </div>
+                            <input type="file" multiple="true" @change="uploadFilesByButton" webkitdirectory mozdirectory/>
+                        </label>
+
 
                         <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
                             {{ __('Create folder') }}
@@ -46,9 +53,9 @@
                                         <select class="pl-search form-control form-input form-input-bordered w-full" v-model="filterBy" @change="filterFiles">
                                             <option value="">{{ __('Filter by ...') }}</option>
                                             <option v-for="(filter, key) in filters" :key="'filter_' + key" :value="key">{{ key }}</option>
-                                        </select>    
+                                        </select>
                                     </template>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -81,7 +88,7 @@
                     </button> -->
 
                 </div>
-                
+
             </div>
             <manager
                 ref="manager"
@@ -101,18 +108,18 @@
                 v-on:showInfoItem="showInfoItem"
             />
 
-            <DetailPopup 
+            <DetailPopup
                 ref="detailPopup"
                 :info="info"
                 :active="activeInfo"
-                v-on:closePreview="closePreview" 
+                v-on:closePreview="closePreview"
                 v-on:refresh="refreshCurrent"
                 v-on:rename="fileRenamed"
             >
             </DetailPopup>
 
             <UploadProgress ref="uploader" :current="currentPath" v-on:removeFile="removeFileFromUpload"></UploadProgress>
-            
+
         </div>
     </div>
 </template>
@@ -143,6 +150,7 @@ export default {
         activeDiskBackups: [],
         backupStatusses: [],
         showUpload: false,
+        showUploadFolder: false,
         showCreateFolder: false,
         currentPath: '/',
         files: [],
