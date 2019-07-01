@@ -61,7 +61,7 @@ class FilemanagerToolController extends Controller
      */
     public function upload(Request $request)
     {
-        return $this->service->uploadFile($request->file, $request->current, $request->visibility);
+        return $this->service->uploadFile($request->file, $request->current ?? '', $request->visibility);
     }
 
     /**
