@@ -2,7 +2,7 @@
 home: true
 heroImage: /home.png
 actionText: Get Started →
-actionLink: /2.2/installation
+actionLink: /2.3/installation
 features:
 - title: Easy file management
   details: Easy Handle your files in a smooth, pretty and Vue based visual interface.
