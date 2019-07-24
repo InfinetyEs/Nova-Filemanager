@@ -44,9 +44,16 @@ yarn check-format
 
 ### Last Changelog
 
-> **v2.2 - 2019-05-03**      
-   First release for Nova v2.     
-   Improvements: Image on global search
+> **v2.3 - 2019-07-24**      
+>	##### Improvements    
+>	Folder upload.    
+	New events added for file and folders.    
+	New jobs config option to Post Processing.    
+	Delete and rename buttons in grid and list views.    
+	Images previews now uses v-viewer.
+	Possibility to exclude Folders using `.hide` file
+>	##### Fixes    
+>	File cannot be uploaded when navigated back to root directory
 
 
 ### Changelog

@@ -2,7 +2,22 @@
 
 All notable changes to `nova-filemanager` will be documented in this file
 
-## v2.2 - 2019-05-03
+## v2.3 - 2019-07-24
+
+#### Improvements
+
+* Folder upload
+* New events added for file and folders.
+* New jobs config option to Post Processing.
+* Delete and rename buttons in grid and list views.
+* Images previews now uses [v-viewer](https://github.com/mirari/v-viewer).
+* Possibility to exclude Folders using `.hide` file (#65)
+
+#### Fixes
+
+* File cannot be uploaded when navigated back to root directory (#56)
+
+### v2.2 - 2019-05-03
 
 First release for Nova v2
 
@@ -11,19 +26,19 @@ First release for Nova v2
  * Search image: FilemanagerField now implements Cover contract. So now when you search your resources it will show like Avatar field
 
 
-## v2.1.3 - 2019-05-03
+### v2.1.3 - 2019-05-03
 
 Release for Nova v1
 
-## v2.1.2 - 2019-04-30
+### v2.1.2 - 2019-04-30
 
 New way to move files between folders with drag and drop
 
-## v2.1 - 2019-04-02
+### v2.1 - 2019-04-02
 
 Updated documentation with vuepress.
 
-## v2.1 - 2019-03-19
+### v2.1 - 2019-03-19
 
 #### Improvements
 
@@ -36,7 +51,7 @@ Updated documentation with vuepress.
 * Upload progress fix when name is very long
 
 
-## v2.0 - 2019-03-11
+### v2.0 - 2019-03-11
 
 New config file and new options for tool and field to search and filter
 
@@ -59,7 +74,11 @@ New config file and new options for tool and field to search and filter
 * Json localization strings updated
 
 
-## v1.1.1 - 2018-10-09
+-----
+
+
+
+### v1.1.1 - 2018-10-09
 
 Field new option folder | Remove value from field
 
@@ -79,7 +98,7 @@ Field new option folder | Remove value from field
 
 -----
 
-## v1.1.0 - 2018-09-21
+### v1.1.0 - 2018-09-21
 
 Major update v1
 
@@ -106,13 +125,13 @@ Major update v1
 
 -----
 
-## v1.0.1 - 2018-08-29
+### v1.0.1 - 2018-08-29
 
 Beta release for some tests
 
 -----
 
-## v1.0.0 - 2018-08-30 
+### v1.0.0 - 2018-08-30 
 
 Filemanager ready for Production with version 1.0.0
 
