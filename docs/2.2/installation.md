@@ -6,7 +6,7 @@
 You can install the package in any Laravel app that uses [Nova](https://nova.laravel.com) via Composer:
 
 ```bash
-composer require infinety-es/nova-filemanager
+composer require "infinety-es/nova-filemanager:2.2"
 ```
 
 Next, publish config file: 

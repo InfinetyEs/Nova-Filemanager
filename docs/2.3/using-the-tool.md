@@ -136,9 +136,9 @@ You can move files between folders using drag an drop
 
 ## Rename
 
-In file preview you can rename the file
+You can rename files and folders hovering the item or in the `options` column. Also In file preview.
 
 ## Delete
 
-In file preview you're able to delete the file
+You can delete files and folders hovering the item or in the `options` column. In file preview you're able to delete the file
 
