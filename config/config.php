@@ -86,9 +86,7 @@ return [
     |--------------------------------------------------------------------------
     | You can set post upload jobs for each file uploaded. You should use one
     | of the keys used in filters in lowercase. If you have a key called Documents,
-    | use 'documents' as your default filter. Default to false
+    | use 'documents' as your default filter.
      */
-    'jobs'      => [
-        'images' => null, //App\Jobs\YourOwnJob::class,
-    ],
+    'jobs'      => [],
 ];
