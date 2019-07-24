@@ -89,7 +89,19 @@ For example to translate this tool to spanish, you can use this json.
 "Deselect": "Deseleccionar",
 "Only files below 350 Kb will be shown": "Solo se mostraran archivos con un peso menor a 350 Kb",
 "Filter by ...": "Filtrar por ...",
-"Go up": "Arriba"
+"Go up": "Arriba",
+"Rename folder": "Renombrar carpeta",
+"Rename file": "Renombrar archivo",
+"Rename": "Renombrar",
+"Remove folder": "Eliminar carpeta",
+"Remove file": "Eliminar archivo",
+"Are you sure you want to remove this folder?": "¿Estás seguro de querer eliminar esta carpeta?",
+"Remember: The folder and all his contents will be delete from your storage": "Recuerda: La carpeta y todos sus contenidos seran eliminados por completo",
+"Are you sure you want to remove this file?": "¿Estás seguro de querer eliminar este archivo?",
+"Remember: The file will be delete from your storage": "Recuerda: El archivo será eliminado completamente",
+"Uploading Folder": "Subiendo carpeta",
+"Deleted successfully": "Eliminado correctamente",
+"Renamed successfully": "Renombrado correctamente"
 ```
 
 

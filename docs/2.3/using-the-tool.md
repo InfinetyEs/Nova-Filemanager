@@ -47,6 +47,8 @@ Cache is **set by file**, not by folder
 
 Just `Drag&Drop` into the Filemanager to start uploading. Or click the `Upload` button.
 
+You can `upload folders` also by dropping into the Filemanager.
+
 
 ### Naming strategy
 
