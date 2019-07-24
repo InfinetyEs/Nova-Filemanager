@@ -2,12 +2,12 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use RarArchive;
-use ZipArchive;
-use SplFileInfo;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Collection;
+use RarArchive;
+use SplFileInfo;
+use ZipArchive;
 
 class NormalizeFile
 {
@@ -46,7 +46,7 @@ class NormalizeFile
     {
         $data = collect([
             'name' => $this->file->getFilename(),
-            'mime' => $this->storage->getMimetype($this->storagePath),
+            'mime' => $this->getCorrectMimeFileType(),
             'path' => $this->storagePath,
             'size' => $this->getFileSize(),
             'url'  => $this->cleanSlashes($this->storage->url($this->storagePath)),
@@ -164,7 +164,7 @@ class NormalizeFile
         if (str_contains($mime, 'image')) {
             list($width, $height) = getimagesize($this->storage->path($this->storagePath));
 
-            if (! empty($width) && ! empty($height)) {
+            if (!empty($width) && !empty($height)) {
                 return $width.'x'.$height;
             }
         }
@@ -184,6 +184,23 @@ class NormalizeFile
         }
     }
 
+    /**
+     * @return mixed
+     */
+    private function getCorrectMimeFileType()
+    {
+        $extension = $this->file->getExtension();
+        $types = MimeTypes::checkMimeType($extension);
+
+        if (count($types) > 0) {
+            return reset($types);
+        }
+
+        //If no type
+
+        return $this->storage->getMimetype($this->storagePath);
+    }
+
     private function availablesTextExtensions()
     {
         $extension = $this->file->getExtension();
@@ -191,7 +208,7 @@ class NormalizeFile
 
         $exist = false;
         for ($i = 0; $i < count($types); $i++) {
-            if (str_contains($types[$i], 'text') || str_contains($types[$i], 'plain') || str_contains($types[$i], 'sql')) {
+            if (str_contains($types[$i], 'text') || str_contains($types[$i], 'plain') || str_contains($types[$i], 'sql') || str_contains($types[$i], 'javascript')) {
                 $exist = true;
                 break;
             }

@@ -21,7 +21,7 @@
                         <div class="w-3/5 box-preview flex justify-center" :class="cssType">
 
                             <template v-if="info.type == 'image'">
-                                <ImageInfo :file="info" />
+                                <ImageInfo :file="info" :preview="true" :css="'card relative w-full flex flex-wrap justify-center items-center overflow-hidden px-0 py-0'"/>
                             </template>
 
                             <template v-else-if="info.type == 'audio'">

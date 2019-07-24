@@ -12,9 +12,20 @@
                 </div>
             </template>
 
-            <div ref="imageDiv" class="image-block flex justify-center w-full h-5/6">
+            <div v-if="!this.preview" ref="imageDiv" class="image-block flex justify-center w-full h-5/6">
 
             </div>
+
+            <viewer :options="voptions" :images="images"
+                    @inited="inited"
+                    class="viewer" ref="viewer"
+                    v-if="preview"
+                    @keydown.esc="closePreview"
+            >
+                <template slot-scope="scope">
+                    <img :src="file.image" :key="file.id">
+                </template>
+            </viewer>
 
             <div class="missing p-8" v-if="missing">
                 <p class="text-center leading-normal">
@@ -28,9 +39,12 @@
 <script>
 import { Minimum } from 'laravel-nova';
 
+import Viewer from 'v-viewer/src/component.vue';
+import 'viewerjs/dist/viewer.css';
+
 export default {
     components: {
-        //
+        Viewer,
     },
 
     props: {
@@ -47,42 +61,84 @@ export default {
                 'card relative w-2/3 flex flex-wrap justify-center items-center overflow-hidden px-0 py-0',
             required: false,
         },
+        preview: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
     },
 
     data: () => ({
         loading: true,
         missing: false,
+        voptions: {
+            inline: true,
+            button: true,
+            navbar: false,
+            loading: true,
+            title: false,
+            toolbar: false,
+            tooltip: false,
+            movable: false,
+            zoomable: false,
+            rotatable: false,
+            scalable: true,
+            transition: true,
+            fullscreen: true,
+            keyboard: true,
+            toggleOnDblclick: true,
+            url: 'data-source',
+        },
+        $viewer: null,
+        images: [],
     }),
 
-    mounted() {
-        Minimum(
-            window.axios.get(this.file.image, {
-                responseType: 'blob',
-            })
-        )
-            .then(({ headers, data }) => {
-                const blob = new Blob([data], { type: headers['content-type'] });
-                let newImage = new Image();
-                newImage.src = window.URL.createObjectURL(blob);
-                newImage.className = 'image block w-full self-center';
-                newImage.draggable = false;
-                this.$refs.imageDiv.appendChild(newImage);
-                this.loading = false;
-            })
-            .catch(error => {
-                if (error && this.file.image) {
-                    // this.missing = true;
-                    // this.$emit('missing', true);
-                    // this.loading = false;
+    methods: {
+        inited(viewer) {
+            this.$viewer = viewer;
+            this.loading = false;
+            this.$viewer.show();
+        },
 
+        closePreview(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        },
+    },
+
+    mounted() {
+        if (this.preview) {
+            this.images.push(this.file.image);
+        } else {
+            Minimum(
+                window.axios.get(this.file.image, {
+                    responseType: 'blob',
+                })
+            )
+                .then(({ headers, data }) => {
+                    const blob = new Blob([data], { type: headers['content-type'] });
                     let newImage = new Image();
-                    newImage.src = this.file.image;
+                    newImage.src = window.URL.createObjectURL(blob);
                     newImage.className = 'image block w-full self-center';
                     newImage.draggable = false;
                     this.$refs.imageDiv.appendChild(newImage);
                     this.loading = false;
-                }
-            });
+                })
+                .catch(error => {
+                    if (error && this.file.image) {
+                        // this.missing = true;
+                        // this.$emit('missing', true);
+                        // this.loading = false;
+
+                        let newImage = new Image();
+                        newImage.src = this.file.image;
+                        newImage.className = 'image block w-full self-center';
+                        newImage.draggable = false;
+                        this.$refs.imageDiv.appendChild(newImage);
+                        this.loading = false;
+                    }
+                });
+        }
     },
 };
 </script>

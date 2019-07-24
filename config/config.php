@@ -51,7 +51,7 @@ return [
 
         'Images'     => ['jpg', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'tiff'],
 
-        'Documents'  => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pps', 'pptx', 'odt', 'rtf', 'md', 'txt'],
+        'Documents'  => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pps', 'pptx', 'odt', 'rtf', 'md', 'txt', 'css'],
 
         'Videos'     => ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', '3gp', 'h264'],
 
@@ -79,4 +79,16 @@ return [
     | Infinety\Filemanager\Http\Services\AbstractNamingStrategy
      */
     'naming'    => Infinety\Filemanager\Http\Services\DefaultNamingStrategy::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Post Processing jobs of files
+    |--------------------------------------------------------------------------
+    | You can set post upload jobs for each file uploaded. You should use one
+    | of the keys used in filters in lowercase. If you have a key called Documents,
+    | use 'documents' as your default filter. Default to false
+     */
+    'jobs'      => [
+        'images' => null, //App\Jobs\YourOwnJob::class,
+    ],
 ];

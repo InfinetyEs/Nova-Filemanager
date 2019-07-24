@@ -89,6 +89,11 @@ import UploadProgress from '../components/UploadProgress';
 import ConfirmModalRemoveFile from '../components/ConfirmModalRemoveFile';
 import ImageDetail from '../modules/Image';
 
+import ConfirmModalDelete from '../components/ConfirmModalDelete';
+import RenameModal from '../components/RenameModal';
+
+import api from '../api';
+
 export default {
     mixins: [FormField, HandlesValidationErrors],
 
@@ -102,6 +107,8 @@ export default {
         UploadProgress: UploadProgress,
         'confirm-modal-remove-file': ConfirmModalRemoveFile,
         ImageDetail: ImageDetail,
+        'rename-modal': RenameModal,
+        'confirm-modal-delete': ConfirmModalDelete,
     },
 
     data: () => ({
@@ -117,6 +124,8 @@ export default {
 
         //uploader
         filesToUpload: {},
+        uploadType: null,
+        folderUploadedName: null,
 
         removeModalOpen: false,
     }),
@@ -157,9 +166,11 @@ export default {
             this.popupDetailsLoaded = false;
         },
 
-        uploadFiles(files) {
+        uploadFiles(files, type, firstFolderName) {
             this.filesToUpload = files;
-            this.$refs.uploader.startUploadingFiles(files);
+            this.uploadType = type;
+            this.folderUploadedName = firstFolderName;
+            this.$refs.uploader.startUploadingFiles(files, type);
         },
 
         removeFileFromUpload(uploadedFileId) {
@@ -167,6 +178,13 @@ export default {
 
             this.$delete(this.filesToUpload, index);
             if (this.filesToUpload.length === 0) {
+                if (this.uploadType == 'folders') {
+                    this.callFolderEvent(this.folderUploadedName);
+                }
+
+                this.folderUploadedName = null;
+                this.uploadType = null;
+
                 this.refreshCurrent();
             }
         },
@@ -197,6 +215,10 @@ export default {
 
         closeRemoveModal() {
             this.removeModalOpen = false;
+        },
+
+        callFolderEvent(path) {
+            api.eventFolderUploaded(this.currentPathFolder + '/' + path);
         },
 
         /*

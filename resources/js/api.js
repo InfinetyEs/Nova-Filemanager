@@ -70,4 +70,19 @@ export default {
             })
             .then(response => response.data);
     },
+
+    rename(path, name) {
+        return window.axios
+            .post('/nova-vendor/infinety-es/nova-filemanager/actions/rename', {
+                path: path,
+                name: name,
+            })
+            .then(response => response.data);
+    },
+
+    eventFolderUploaded(path) {
+        return window.axios
+            .post('/nova-vendor/infinety-es/nova-filemanager/events/folder', { path: path })
+            .then(response => response.data);
+    },
 };

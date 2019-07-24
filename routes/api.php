@@ -12,14 +12,17 @@ use Illuminate\Support\Facades\Route;
 | by your tool's "Authorize" middleware by default. Now, go build!
 |
  */
-Route::get('data', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getData');
-Route::get('{resource}/{attribute}/data', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getDataField');
-Route::post('actions/move', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@move');
-Route::post('actions/create-folder', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@createFolder');
-Route::post('actions/delete-folder', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@deleteFolder');
-Route::post('actions/get-info', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@getInfo');
-Route::post('actions/remove-file', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@removeFile');
-Route::any('actions/rename-file', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@renameFile');
+Route::get('data', FilemanagerToolController::class.'@getData');
+Route::get('{resource}/{attribute}/data', FilemanagerToolController::class.'@getDataField');
+Route::post('actions/move', FilemanagerToolController::class.'@move');
+Route::post('actions/create-folder', FilemanagerToolController::class.'@createFolder');
+Route::post('actions/delete-folder', FilemanagerToolController::class.'@deleteFolder');
+Route::post('actions/get-info', FilemanagerToolController::class.'@getInfo');
+Route::post('actions/remove-file', FilemanagerToolController::class.'@removeFile');
+Route::post('actions/rename-file', FilemanagerToolController::class.'@renameFile');
+Route::post('actions/rename', FilemanagerToolController::class.'@rename');
 
-Route::post('uploads/add', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@upload');
-Route::get('uploads/update', \Infinety\Filemanager\Http\Controllers\FilemanagerToolController::class.'@updateFile');
+Route::post('events/folder', FilemanagerToolController::class.'@folderUploadedEvent');
+
+Route::post('uploads/add', FilemanagerToolController::class.'@upload');
+Route::get('uploads/update', FilemanagerToolController::class.'@updateFile');

@@ -6,7 +6,12 @@ use Illuminate\Http\UploadedFile;
 
 class DefaultNamingStrategy extends AbstractNamingStrategy
 {
-    public function name(string $currentFolder, UploadedFile $file) : string
+    /**
+     * @param string $currentFolder
+     * @param UploadedFile $file
+     * @return mixed
+     */
+    public function name(string $currentFolder, UploadedFile $file): string
     {
         $filename = $file->getClientOriginalName();
 

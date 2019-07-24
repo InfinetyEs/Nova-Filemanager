@@ -5,7 +5,7 @@
                 <div class="bg-white rounded-lg shadow-lg " style="width: 600px;">
                     <div class="p-8">
                         <heading :level="2" class="mb-6">{{ __('Create folder') }}</heading>
-                        <input type="text" class="w-full h-full form-control form-input form-input-bordered py-3" :placeholder="__('Write a folder name')" v-model="folderName" autofocus required>
+                        <input type="text" class="w-full h-full form-control form-input form-input-bordered py-3" :placeholder="__('Write a folder name')" v-model="folderName" autofocus required v-on:keyup.enter="createFolder">
                         <p class="my-2 text-danger" v-if="error">{{ errorMsg }}</p>
                     </div>
 
@@ -52,6 +52,7 @@ export default {
     methods: {
         createFolder() {
             if (this.folderName == null) {
+                this.errorMsg = this.__('The folder name is required');
                 this.error = true;
                 return false;
             }
@@ -71,7 +72,7 @@ export default {
                             type: 'error',
                         });
                     } else {
-                        this.errorMsg = 'The folder name is required';
+                        this.errorMsg = this.__('The folder name is required');
                         this.$toasted.show(this.__('Error creating the folder'), { type: 'error' });
                     }
                 }

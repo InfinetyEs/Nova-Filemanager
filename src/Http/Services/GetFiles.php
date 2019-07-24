@@ -28,7 +28,6 @@ trait GetFiles
     {
         $filesData = $this->storage->listContents($folder);
         $filesData = $this->normalizeFiles($filesData);
-
         $files = [];
 
         $cacheTime = config('filemanager.cache', false);
@@ -61,7 +60,7 @@ trait GetFiles
      */
     public function getFileData($file, $id)
     {
-        if (! $this->isDot($file) && ! $this->exceptExtensions->contains($file['extension']) && ! $this->exceptFolders->contains($file['basename']) && ! $this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
+        if (!$this->isDot($file) && !$this->exceptExtensions->contains($file['extension']) && !$this->exceptFolders->contains($file['basename']) && !$this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
             $fileInfo = [
                 'id'         => $id,
                 'name'       => trim($file['basename']),
@@ -84,8 +83,14 @@ trait GetFiles
 
             if ($fileInfo['mime'] == 'image') {
                 list($width, $height) = $this->getImageDimesions($file);
-                if (! $width == false) {
+                if (!$width == false) {
                     $fileInfo['dimensions'] = $width.'x'.$height;
+                }
+            }
+
+            if ($fileInfo['type'] == 'dir') {
+                if (!$this->checkShouldHideFolder($fileInfo['path'])) {
+                    return false;
                 }
             }
 
@@ -222,6 +227,10 @@ trait GetFiles
      */
     public function getFileType($file)
     {
+        if ($file['type'] == 'dir') {
+            return 'dir';
+        }
+
         $mime = $this->storage->getMimetype($file['path']);
         $extension = $file['extension'];
 
@@ -297,6 +306,10 @@ trait GetFiles
      */
     public function getThumb($file, $folder = false)
     {
+        if ($file['type'] == 'dir') {
+            return false;
+        }
+
         $mime = $this->storage->getMimetype($file['path']);
         $extension = $file['extension'];
 
@@ -373,10 +386,10 @@ trait GetFiles
     public function normalizeFiles($files)
     {
         foreach ($files as $key => $file) {
-            if (! isset($file['extension'])) {
+            if (!isset($file['extension'])) {
                 $files[$key]['extension'] = null;
             }
-            if (! isset($file['size'])) {
+            if (!isset($file['size'])) {
                 // $size = $this->storage->getSize($file['path']);
                 $files[$key]['size'] = null;
             }
@@ -488,5 +501,22 @@ trait GetFiles
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * Hide folders with .hide file
+     * @param $oath
+     */
+    private function checkShouldHideFolder($path)
+    {
+        $filesData = $this->storage->listContents($path);
+
+        $key = array_search('.hide', array_column($filesData, 'basename'));
+
+        if ($key === false) {
+            return true;
+        }
+
+        return false;
     }
 }

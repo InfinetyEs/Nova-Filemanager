@@ -4,6 +4,10 @@
 
         <create-folder :active="showCreateFolder" :current="currentPath" v-on:closeCreateFolderModal="closeModalCreateFolder" v-on:refresh="refreshCurrent" />
 
+        <rename-modal ref="renameModal" v-on:refresh="refreshCurrent" />
+
+        <confirm-modal-delete ref="confirmDelete" v-on:refresh="refreshCurrent" />
+
         <div class="card relative" id="filemanager-manager">
 
             <div class="p-3 flex items-center justify-between border-b border-50">
@@ -19,7 +23,6 @@
                             </div>
                             <input type="file" multiple="true" @change="uploadFilesByButton"/>
                         </label>
-
 
                         <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
                             {{ __('Create folder') }}
@@ -46,9 +49,9 @@
                                         <select class="pl-search form-control form-input form-input-bordered w-full" v-model="filterBy" @change="filterFiles">
                                             <option value="">{{ __('Filter by ...') }}</option>
                                             <option v-for="(filter, key) in filters" :key="'filter_' + key" :value="key">{{ key }}</option>
-                                        </select>    
+                                        </select>
                                     </template>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -81,7 +84,7 @@
                     </button> -->
 
                 </div>
-                
+
             </div>
             <manager
                 ref="manager"
@@ -99,20 +102,22 @@
                 v-on:refresh="refreshCurrent"
                 v-on:uploadFiles="uploadFiles"
                 v-on:showInfoItem="showInfoItem"
+                v-on:rename="openRenameModal"
+                v-on:delete="openDeleteModal"
             />
 
-            <DetailPopup 
+            <DetailPopup
                 ref="detailPopup"
                 :info="info"
                 :active="activeInfo"
-                v-on:closePreview="closePreview" 
+                v-on:closePreview="closePreview"
                 v-on:refresh="refreshCurrent"
                 v-on:rename="fileRenamed"
             >
             </DetailPopup>
 
             <UploadProgress ref="uploader" :current="currentPath" v-on:removeFile="removeFileFromUpload"></UploadProgress>
-            
+
         </div>
     </div>
 </template>
@@ -122,6 +127,8 @@ import URI from 'urijs';
 import _ from 'lodash';
 import api from '../api';
 import CreateFolderModal from './CreateFolderModal';
+import ConfirmModalDelete from './ConfirmModalDelete';
+import RenameModal from './RenameModal';
 import DetailPopup from './DetailPopup';
 import UploadProgress from './UploadProgress';
 import Manager from './Manager';
@@ -131,6 +138,8 @@ export default {
 
     components: {
         'create-folder': CreateFolderModal,
+        'rename-modal': RenameModal,
+        'confirm-modal-delete': ConfirmModalDelete,
         manager: Manager,
         DetailPopup: DetailPopup,
         UploadProgress: UploadProgress,
@@ -152,6 +161,8 @@ export default {
         view: 'grid',
         info: {},
         filesToUpload: [],
+        uploadType: null,
+        folderUploadedName: null,
         activeInfo: false,
         search: '',
         filters: [],
@@ -196,10 +207,11 @@ export default {
                         this.noFiles = true;
                     }
 
-                    this.files = _.merge(this.files, result.files);
+                    this.files = result.files;
                     this.path = result.path;
                     this.filters = result.filters;
                     this.parent = result.parent;
+
                     this.loadingfiles = false;
                 })
                 .catch(() => {
@@ -274,9 +286,11 @@ export default {
             localStorage.setItem('nova-filemanager-view', type);
         },
 
-        uploadFiles(files) {
+        uploadFiles(files, type, firstFolderName) {
             this.filesToUpload = files;
-            this.$refs.uploader.startUploadingFiles(files);
+            this.uploadType = type;
+            this.folderUploadedName = firstFolderName;
+            this.$refs.uploader.startUploadingFiles(files, type);
         },
 
         removeFileFromUpload(uploadedFileId) {
@@ -284,12 +298,30 @@ export default {
 
             this.$delete(this.filesToUpload, index);
             if (this.filesToUpload.length === 0) {
+                if (this.uploadType == 'folders') {
+                    this.callFolderEvent(this.folderUploadedName);
+                }
+
+                this.folderUploadedName = null;
+                this.uploadType = null;
                 this.refreshCurrent();
             }
         },
 
         uploadFilesByButton(e) {
-            this.$refs.manager.uploadFiles(e.target.files);
+            this.$refs.manager.uploadFiles(e.target.files, 'files');
+        },
+
+        openRenameModal(type, path) {
+            this.$refs.renameModal.openModal(type, path);
+        },
+
+        openDeleteModal(type, path) {
+            this.$refs.confirmDelete.openModal(type, path);
+        },
+
+        callFolderEvent(path) {
+            api.eventFolderUploaded(this.currentPath + '/' + path);
         },
 
         filterFiles() {

@@ -2,11 +2,11 @@
 
 namespace Infinety\Filemanager;
 
-use Laravel\Nova\Nova;
-use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Infinety\Filemanager\Http\Middleware\Authorize;
+use Laravel\Nova\Events\ServingNova;
+use Laravel\Nova\Nova;
 
 class FilemanagerServiceProvider extends ServiceProvider
 {
@@ -45,6 +45,7 @@ class FilemanagerServiceProvider extends ServiceProvider
         }
 
         Route::middleware(['nova', Authorize::class])
+            ->namespace('Infinety\Filemanager\Http\Controllers')
             ->prefix('nova-vendor/infinety-es/nova-filemanager')
             ->group(__DIR__.'/../routes/api.php');
     }

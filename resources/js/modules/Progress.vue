@@ -1,18 +1,31 @@
 <template>
     <div class="progress mt-2 w-5/6">
-        <div class="progress-bar" :style="progressPercent"></div>
+        <div class="progress-bar file" :style="{ width: progressByFile}" v-if="type == 'files'"></div>
+        <div class="progress-bar percent" :style="{ width: progressByPercent}" v-else></div>
     </div>
 </template>
 
 <script>
 export default {
     props: {
+        type: {
+            type: String,
+            default: 'files',
+            required: false,
+        },
+
         file: {
             type: Object,
             default: function() {
                 return {};
             },
-            required: true,
+            required: false,
+        },
+
+        percent: {
+            type: Number,
+            default: 0,
+            required: false,
         },
     },
 
@@ -21,15 +34,28 @@ export default {
     }),
 
     mounted() {},
+
     methods: {
-        //
+        getCorrectPercent(percent) {
+            if (!percent) {
+                percent = 0;
+            }
+
+            if (percent != 0) {
+                percent += '%';
+            }
+
+            return percent;
+        },
     },
 
     computed: {
-        progressPercent() {
-            return {
-                width: this.file.progress + '%',
-            };
+        progressByFile() {
+            return this.getCorrectPercent(this.file.progress);
+        },
+
+        progressByPercent() {
+            return this.getCorrectPercent(this.percent);
         },
     },
 };

@@ -4,7 +4,6 @@
             <ol class="list-reset flex text-grey-dark" >
                 <li><span class="text-blue font-bold cursor-pointer" @click="goToFolderNav(home)">{{ __('Home') }}</span></li>
                 <li v-if="pathsLength > 0"><span class="mx-2">/</span></li>
-            
 
                 <template v-for="(folder ,index) in path">
                     <template v-if="checkIsLastItem(index)">
@@ -46,8 +45,6 @@
                         </div>
                     </template> 
 
-                    
-
                     <template v-if="noFiles">
                         <div class="w-full text-lg text-center my-4">
                             {{ __('No files or folders in current directory') }}<br><br>
@@ -70,18 +67,35 @@
                                 <template v-for="file in filteredFiles">
                                     <div :class="filemanagerClass" :key="file.id" >
                                         <template v-if="file.type == 'file'">
-                                            <ImageLoader v-drag-and-drop:file :ref="'file_' + file.id" :file="file" :data-key="file.id" class="h-40 file-item" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                            <ImageLoader 
+                                                v-drag-and-drop:file
+                                                :ref="'file_' + file.id"
+                                                :file="file"
+                                                :data-key="file.id"
+                                                class="h-40 file-item"
+                                                @missing="(value) => missing = value"
+                                                v-on:showInfo="showInfo"
+                                                v-on:rename="rename"
+                                                v-on:delete="deleteData" 
+                                            />
                                         </template>
                                         <template v-if="file.type == 'dir'">
-                                            <Folder v-drag-and-drop:folder :ref="'folder_' + file.id" :file="file" :data-key="file.id" class="h-40 folder-item" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
+                                            <Folder 
+                                                v-drag-and-drop:folder 
+                                                :ref="'folder_' + file.id"
+                                                :file="file"
+                                                :data-key="file.id"
+                                                class="h-40 folder-item"
+                                                :class="{'loading': loadingInfo}"
+                                                v-on:goToFolderEvent="goToFolder"
+                                                v-on:rename="rename"
+                                                v-on:delete="deleteData"
+                                            />
                                         </template>
                                     </div>
                                 </template>
 
                             </template>
-
-                            
-
                             
                             <template  v-if="!loading">
                             </template>
@@ -104,29 +118,62 @@
                                         <th class="text-left">
                                             {{ __('Last Modification') }}
                                         </th>
+                                        <th class="text-left">
+                                            {{ __('Options') }}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
+
+                                    <template v-if="parent.id">
+                                        
+                                        <Folder 
+                                            :ref="'folder_' + parent.id"
+                                            :key="parent.id" 
+                                            :file="parent"
+                                            :view="view"
+                                            class="folder-item"
+                                            :class="{'loading': loadingInfo}"
+                                            v-on:goToFolderEvent="goToFolder"
+                                        />
+                                        
+                                    </template>
+
+
                                     <template  v-for="file in filteredFiles">
                                         <template v-if="file.type == 'dir'">
-                                            <Folder :key="file.id" :data-key="file.id" :file="file" :view="view" class="folder-item" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
+                                            <Folder :key="file.id" 
+                                                    :data-key="file.id"
+                                                    :file="file"
+                                                    :view="view"
+                                                    class="folder-item"
+                                                    :class="{'loading': loadingInfo}"
+                                                    v-on:goToFolderEvent="goToFolder"
+                                                    v-on:rename="rename"
+                                                    v-on:delete="deleteData"
+                                            />
                                         </template>
                                         <template v-if="file.type == 'file'">
-                                            <ImageLoader :key="file.id" :data-key="file.id" :file="file" :view="view" class="file-item" :class="{'loading': loadingInfo}" @missing="(value) => missing = value" v-on:showInfo="showInfo" />
+                                            <ImageLoader
+                                                :key="file.id"
+                                                :data-key="file.id"
+                                                :file="file"
+                                                :view="view"
+                                                class="file-item"
+                                                :class="{'loading': loadingInfo}"
+                                                @missing="(value) => missing = value"
+                                                v-on:showInfo="showInfo"
+                                                v-on:rename="rename"
+                                                v-on:delete="deleteData"
+                                            />
                                         </template>
                                     </template>
                                 </tbody>
                             </table>
                         </template>
-
                     </template>
-
                 </div>
-                 
-
             </div>
-
-            
         </transition>
         
     </div>
@@ -141,8 +188,6 @@ import ImageLoader from '../modules/ImageLoader';
 import Folder from '../modules/Folder';
 import Loading from './Loading';
 import { DragAndDrop } from '../tools/DragAndDrop';
-
-let arrayFiles = [];
 
 export default {
     name: 'Manager',
@@ -218,10 +263,13 @@ export default {
         eventsLoaded: false,
         cssDragAndDrop: null,
         filesToUpload: [],
+        filesFromDrop: [],
+        filesDropProcessed: false,
         loadingInfo: false,
         busy: false,
         currentDraggedFile: null,
         uploadingFiles: false,
+        firstUploadFolder: null,
     }),
 
     directives: {
@@ -263,9 +311,14 @@ export default {
                     this.$emit('showInfoItem', result);
                     file.loading = false;
                 })
-                .catch(() => {
+                .catch(error => {
                     file.loading = false;
-                    this.$toasted.show(this.__('Error opening the file. Check your permissions'), {
+                    let errorMessage = this.__('Error opening the file. Check your logs');
+                    if (error.response.data) {
+                        errorMessage = error.response.data.message;
+                    }
+
+                    this.$toasted.show(errorMessage, {
                         type: 'error',
                     });
                 });
@@ -322,33 +375,125 @@ export default {
             }
         },
 
-        dropNewFiles(e) {
+        async dropNewFiles(e) {
             e.preventDefault();
             this.cssDragAndDrop = 'drop';
             this.uploadingFiles = false;
 
-            let files = e.dataTransfer.files;
+            let files = await this.getFilesAsync(e.dataTransfer);
+
             this.uploadFiles(files);
         },
 
-        uploadFiles(files) {
-            Array.from(files).forEach(file => {
-                arrayFiles.push({
-                    id: MD5(file.name),
-                    preview: this.getPreview(file),
-                    type: file.type,
-                    name: file.name,
-                    size: filesize(file.size),
-                    upload: true,
-                    progress: 0,
-                    error: false,
-                    file: file,
-                });
+        async getFilesAsync(dataTransfer) {
+            const files = [];
+            const folders = [];
+
+            this.firstUploadFolder = null;
+            for (let i = 0; i < dataTransfer.items.length; i++) {
+                let item = dataTransfer.items[i];
+                let entry = item.webkitGetAsEntry();
+
+                if (entry.isDirectory) {
+                    if (this.firstUploadFolder == null) {
+                        this.firstUploadFolder = entry.name;
+                    }
+
+                    if (item.kind === 'file') {
+                        if (typeof item.webkitGetAsEntry === 'function') {
+                            let entryContent = await this.readEntryContentAsync(entry);
+                            folders.push(...entryContent);
+                        }
+                        let file = item.getAsFile();
+                        if (file) {
+                            files.push(file);
+                        }
+                    }
+                } else {
+                    let file = item.getAsFile();
+                    if (file) {
+                        files.push(file);
+                    }
+                }
+            }
+
+            return { files: files, folders: folders };
+        },
+
+        readEntryContentAsync(entry) {
+            return new Promise(resolve => {
+                let reading = 0;
+                const contents = [];
+                readEntry(entry);
+                function readEntry(entry) {
+                    if (isFile(entry)) {
+                        reading++;
+                        entry.file(file => {
+                            reading--;
+                            file.filepath = entry.fullPath.replace('/' + entry.name, '');
+                            contents.push(file);
+                            if (reading === 0) {
+                                resolve(contents);
+                            }
+                        });
+                    } else if (isDirectory(entry)) {
+                        readReaderContent(entry.createReader());
+                    }
+                }
+                function readReaderContent(reader) {
+                    reading++;
+                    reader.readEntries(function(entries) {
+                        reading--;
+                        for (const entry of entries) {
+                            readEntry(entry);
+                        }
+                        if (reading === 0) {
+                            resolve(contents);
+                        }
+                    });
+                }
+                function isDirectory(entry) {
+                    return entry.isDirectory;
+                }
+                function isFile(entry) {
+                    return entry.isFile;
+                }
+            });
+        },
+
+        uploadFiles(data) {
+            let files = this.formatFiles(data.files);
+            let folders = this.formatFiles(data.folders);
+
+            if (files.length > 0) {
+                this.$emit('uploadFiles', files, 'files');
+            }
+
+            if (folders.length > 0) {
+                this.$emit('uploadFiles', folders, 'folders', this.firstUploadFolder);
+            }
+        },
+
+        formatFiles(files) {
+            let arrayFiles = [];
+
+            files.forEach(file => {
+                if (file.name != '.DS_Store') {
+                    arrayFiles.push({
+                        id: MD5(file.name),
+                        preview: this.getPreview(file),
+                        type: file.type,
+                        name: file.name,
+                        size: filesize(file.size),
+                        upload: true,
+                        progress: 0,
+                        error: false,
+                        file: file,
+                    });
+                }
             });
 
-            this.filesToUpload = arrayFiles;
-
-            this.$emit('uploadFiles', arrayFiles);
+            return arrayFiles;
         },
 
         getPreview(file) {
@@ -408,6 +553,14 @@ export default {
             pathData.pop();
 
             return pathData.join('/');
+        },
+
+        rename(type, path) {
+            this.$emit('rename', type, path);
+        },
+
+        deleteData(type, path) {
+            this.$emit('delete', type, path);
         },
     },
 
@@ -474,7 +627,8 @@ export default {
                     if (file.type == 'dir') {
                         return true;
                     }
-                    return _.includes(this.filters, file.ext);
+
+                    return _.includes(this.filters, file.ext.toLowerCase());
                 });
             }
 

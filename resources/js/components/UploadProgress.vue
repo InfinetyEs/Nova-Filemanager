@@ -1,6 +1,27 @@
 <template>
     <div class="stack-uploads fixed pin-b bg-white shadow" v-if="files.length > 0">
-        <div class="files p-4" v-for="(file, indexFiles) in files" v-bind:key="indexFiles">
+
+        <div class="files p-4" v-if="type == 'folders'">
+            <transition name="fade" >
+                <div class="flex flex-wrap w-full items-center">
+                    <div class="preview w-1/3 text-70">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-12 h-12 flex justify-center items-center fill-current"><path d="M20 6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2h7.41l2 2H20zM4 6v12h16V8h-7.41l-2-2H4z"/></svg>
+                    </div>
+                    <div class="w-2/3 text-xs">
+                        <template v-if="error">
+                            <div class="text-danger">{{ __('Error on upload') }}</div>
+                        </template>
+                        <template v-else>
+                            {{ __('Uploading Folder') }} <small v-if="totalPercent == 100" class="text-success uppercase">{{ __('Success') }}</small>
+                            <progress-module :percent="totalPercent" type="folder"></progress-module>
+                        </template>
+                    </div>
+                </div>
+            </transition>
+        </div>
+
+
+        <div class="files p-4" v-for="(file, indexFiles) in files" v-bind:key="indexFiles" v-else>
             <transition name="fade" >
                 <div class="flex flex-wrap w-full items-center"  v-bind:key="indexFiles" v-if="file.upload == true">
                     <div class="preview w-1/3">
@@ -29,6 +50,7 @@
 <script>
 import _ from 'lodash';
 import Progress from '../modules/Progress';
+
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
 export default {
@@ -52,6 +74,9 @@ export default {
         token: token.content,
         files: [],
         filesUploaded: [],
+        type: 'files',
+        totalPercent: 0,
+        error: false,
     }),
 
     methods: {
@@ -63,8 +88,14 @@ export default {
             return Math.random() * (max - min) + min;
         },
 
-        startUploadingFiles(files) {
+        startUploadingFiles(files, type) {
             this.files = files;
+            this.type = type;
+            this.filesUploaded = [];
+            this.processFiles();
+        },
+
+        async processFiles() {
             Array.from(this.files).forEach(file => {
                 this.startUpload(file);
             });
@@ -82,11 +113,29 @@ export default {
                 },
             };
 
+            let filePath;
+
+            if (file.file.webkitRelativePath) {
+                filePath = file.file.webkitRelativePath.replace('/' + file.file.name, '');
+            } else if (file.file.filepath) {
+                filePath = file.file.filepath;
+            } else {
+                filePath = '/';
+            }
+
             let data = new FormData();
             data.append('file', file.file);
-            data.append('current', this.current);
+            data.append('current', this.current + filePath);
             data.append('visibility', this.visibility);
 
+            if (this.type == 'files') {
+                this.uploadFileToServer(file, data, config);
+            } else {
+                this.uploadFolderToServer(file, data, config);
+            }
+        },
+
+        uploadFileToServer(file, data, config) {
             window.axios
                 .post('/nova-vendor/infinety-es/nova-filemanager/uploads/add', data, config)
                 .then(response => {
@@ -117,6 +166,47 @@ export default {
                         { type: 'error' }
                     );
 
+                    setTimeout(() => {
+                        this.$emit('removeFile', file.id);
+                    }, 1000);
+                });
+        },
+
+        uploadFolderToServer(file, data, config) {
+            data.append('folder', true);
+
+            window.axios
+                .post('/nova-vendor/infinety-es/nova-filemanager/uploads/add', data, config)
+                .then(response => {
+                    if (response.data.success == true) {
+                        _.forEach(this.files, fileUpload => {
+                            if (fileUpload.name == response.data.name) {
+                                fileUpload.upload = true;
+                            }
+                        });
+
+                        this.filesUploaded.push(file.id);
+
+                        this.totalPercent = (100 * this.filesUploaded.length) / this.files.length;
+
+                        setTimeout(() => {
+                            this.$emit('removeFile', file.id);
+                        }, 2000);
+                    } else {
+                        this.$toasted.show(
+                            this.__(
+                                'Error uploading the file. Check your MaxFilesize or permissions'
+                            ),
+                            { type: 'error' }
+                        );
+                    }
+                })
+                .catch(() => {
+                    this.error = true;
+                    this.$toasted.show(
+                        this.__('Error uploading the file. Check your MaxFilesize or permissions'),
+                        { type: 'error' }
+                    );
                     setTimeout(() => {
                         this.$emit('removeFile', file.id);
                     }, 1000);

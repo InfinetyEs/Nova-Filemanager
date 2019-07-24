@@ -21,7 +21,7 @@
 
                             <div class="p-3  flex flex-wrap items-center border-b border-50">
 
-                                <div class="w-1/3 flex flex-wrap justify-start">
+                                <div class="w-auto flex flex-wrap justify-start">
 
                                     <label class="manual_upload cursor-pointer">
                                         <div @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
@@ -34,10 +34,20 @@
                                         {{ __('Create folder') }}
                                     </button>
 
+                                    <button v-if="view == 'list'" @click="viewAs('grid')" class="btn btn-default btn-small btn-primary text-white mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M5 3h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5h-4zM5 13h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4h-4z"/></svg>
+                                    </button>
+
+                                    <button v-if="view == 'grid'" @click="viewAs('list')" class="btn btn-default btn-small btn-primary text-white mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><path d="M1 4h2v2H1V4zm4 0h14v2H5V4zM1 9h2v2H1V9zm4 0h14v2H5V9zm-4 5h2v2H1v-2zm4 0h14v2H5v-2z"/></svg>
+                                    </button>
+
                                 </div>
 
+
+
                                 <!-- Search -->
-                                <div class="w-2/3 flex flex-wrap justify-end">
+                                <div class="w-auto flex flex-1 flex-wrap justify-end">
 
                                     <div class="relative w-1/3 max-w-xs mr-3">
                                         <div class="relative">
@@ -67,7 +77,6 @@
                             </div>
 
                             
-				            
                             <manager 
                                 ref="manager"
                                 :home="home"
@@ -76,6 +85,7 @@
                                 :current="currentPath"
                                 :parent="parent"
                                 :noFiles="noFiles"
+                                :view="view"
                                 :selector="value"
                                 :popupLoaded="true"
                                 :loading="loadingfiles"
@@ -87,7 +97,13 @@
                                 v-on:selectFile="setFileValue"
                                 v-on:showInfoItem="showInfoItem"
                                 v-on:uploadFiles="uploadFiles"
+                                v-on:rename="openRenameModal"
+                                v-on:delete="openDeleteModal"
                             />
+
+                            <rename-modal ref="renameModal" v-on:refresh="refreshCurrent" />
+
+                            <confirm-modal-delete ref="confirmDelete" v-on:refresh="refreshCurrent" />
 				            
                         </div>
                     </div>
@@ -104,6 +120,9 @@ import api from '../api';
 import Manager from './Manager';
 import Upload from './Upload';
 import UploadProgress from './UploadProgress';
+
+import ConfirmModalDelete from './ConfirmModalDelete';
+import RenameModal from './RenameModal';
 
 export default {
     props: {
@@ -148,6 +167,8 @@ export default {
         upload: Upload,
         manager: Manager,
         UploadProgress: UploadProgress,
+        'rename-modal': RenameModal,
+        'confirm-modal-delete': ConfirmModalDelete,
     },
 
     data: () => ({
@@ -163,6 +184,7 @@ export default {
         parent: {},
         path: [],
         noFiles: false,
+        view: 'grid',
         filesToUpload: [],
         firstTime: true,
         search: '',
@@ -238,6 +260,11 @@ export default {
             this.$emit('close-modal');
         },
 
+        viewAs(type) {
+            this.view = type;
+            localStorage.setItem('nova-filemanager-view', type);
+        },
+
         setFileValue(file) {
             this.closeModal();
             this.$emit('setFileValue', file);
@@ -251,8 +278,16 @@ export default {
             this.$emit('showInfoItem', item);
         },
 
-        uploadFiles(files) {
-            this.$emit('uploadFiles', files);
+        uploadFiles(files, type) {
+            this.$emit('uploadFiles', files, type);
+        },
+
+        openRenameModal(type, path) {
+            this.$refs.renameModal.openModal(type, path);
+        },
+
+        openDeleteModal(type, path) {
+            this.$refs.confirmDelete.openModal(type, path);
         },
 
         filterFiles() {
@@ -299,6 +334,17 @@ export default {
             this.showFilters = false;
         },
     },
+
+    created() {
+        if (localStorage.getItem('nova-filemanager-view')) {
+            let viewS = localStorage.getItem('nova-filemanager-view');
+            if (['grid', 'list'].includes(viewS)) {
+                this.view = viewS;
+            } else {
+                localStorage.setItem('nova-filemanager-view', 'grid');
+            }
+        }
+    },
 };
 </script>
 
@@ -308,6 +354,13 @@ export default {
     padding-right: 1rem;
     border-left: 1px solid rgb(221, 221, 221);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-small {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.3rem;
+    fill: currentColor;
 }
 
 .manual_upload > input[type='file'] {

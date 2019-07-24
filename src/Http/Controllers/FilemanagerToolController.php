@@ -4,8 +4,8 @@ namespace Infinety\Filemanager\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilemanagerToolController extends Controller
 {
@@ -61,7 +61,9 @@ class FilemanagerToolController extends Controller
      */
     public function upload(Request $request)
     {
-        return $this->service->uploadFile($request->file, $request->current, $request->visibility);
+        $uploadingFolder = $request->folder ?? false;
+
+        return $this->service->uploadFile($request->file, $request->current ?? '', $request->visibility, $uploadingFolder);
     }
 
     /**
@@ -85,7 +87,7 @@ class FilemanagerToolController extends Controller
      */
     public function removeFile(Request $request)
     {
-        return $this->service->removeFile($request->file);
+        return $this->service->removeFile($request->file, $request->type);
     }
 
     /**
@@ -94,6 +96,22 @@ class FilemanagerToolController extends Controller
     public function renameFile(Request $request)
     {
         return $this->service->renameFile($request->file, $request->name);
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function rename(Request $request)
+    {
+        return $this->service->renameFile($request->path, $request->name);
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function folderUploadedEvent(Request $request)
+    {
+        return $this->service->folderUploadedEvent($request->path);
     }
 
     /**
