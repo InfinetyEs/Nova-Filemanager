@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager\Events;
 
-use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class FolderUploaded
 {
@@ -24,7 +24,7 @@ class FolderUploaded
      *
      * @return void
      */
-    public function __construct(FilesystemAdapter $storage, String $folderPath)
+    public function __construct(FilesystemAdapter $storage, string $folderPath)
     {
         $this->storage = $storage;
         $this->folderPath = $folderPath;
