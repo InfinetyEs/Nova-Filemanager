@@ -2,15 +2,15 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Infinety\Filemanager\Events\FileRemoved;
 use Infinety\Filemanager\Events\FileUploaded;
 use Infinety\Filemanager\Events\FolderRemoved;
 use Infinety\Filemanager\Events\FolderUploaded;
 use Infinety\Filemanager\Exceptions\InvalidConfig;
-use InvalidArgumentException;
 
 class FileManagerService
 {
@@ -86,7 +86,7 @@ class FileManagerService
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
-        if (!$this->folderExists($folder)) {
+        if (! $this->folderExists($folder)) {
             $folder = '/';
         }
 
@@ -98,7 +98,7 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (!$order) {
+        if (! $order) {
             $order = config('filemanager.order', 'mime');
         }
 
@@ -190,7 +190,7 @@ class FileManagerService
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
             $this->setVisibility($currentFolder, $fileName, $visibility);
 
-            if (!$uploadingFolder) {
+            if (! $uploadingFolder) {
                 $this->checkJobs($this->storage, $currentFolder.$fileName);
                 event(new FileUploaded($this->storage, $currentFolder.$fileName));
             }
@@ -229,7 +229,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (!$this->storage->exists($file)) {
+        if (! $this->storage->exists($file)) {
             return [];
         }
 
@@ -299,7 +299,7 @@ class FileManagerService
     }
 
     /**
-     * Folder uploaded event
+     * Folder uploaded event.
      *
      * @param   string  $path
      *
