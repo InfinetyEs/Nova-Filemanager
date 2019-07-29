@@ -462,8 +462,8 @@ export default {
         },
 
         uploadFiles(data) {
-            let files = this.formatFiles(data.files);
-            let folders = this.formatFiles(data.folders);
+            let files = this.formatFiles(data.files || []);
+            let folders = this.formatFiles(data.folders || []);
 
             if (files.length > 0) {
                 this.$emit('uploadFiles', files, 'files');
