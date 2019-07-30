@@ -195,7 +195,7 @@ trait GetFiles
      */
     public function setRelativePath($folder)
     {
-        $defaultPath = $this->storage->path('/');
+        $defaultPath = $this->storage->getDriver()->getAdapter()->getPathPrefix();
 
         $publicPath = str_replace($defaultPath, '', $folder);
 
@@ -463,7 +463,7 @@ trait GetFiles
      */
     public function getPaths($currentFolder)
     {
-        $defaultPath = $this->cleanSlashes($this->storage->path('/'));
+        $defaultPath = $this->cleanSlashes($this->storage->getDriver()->getAdapter()->getPathPrefix());
         $currentPath = $this->cleanSlashes($this->storage->path($currentFolder));
 
         $paths = $currentPath;
