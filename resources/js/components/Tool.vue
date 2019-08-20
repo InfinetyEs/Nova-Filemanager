@@ -309,7 +309,7 @@ export default {
         },
 
         uploadFilesByButton(e) {
-            this.$refs.manager.uploadFiles(e.target.files, 'files');
+            this.$refs.manager.uploadFiles({ files: Array.from(e.target.files) }, 'files');
         },
 
         openRenameModal(type, path) {

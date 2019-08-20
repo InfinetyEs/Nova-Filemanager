@@ -271,7 +271,7 @@ export default {
         },
 
         uploadFilesByButton(e) {
-            this.$refs.manager.uploadFiles(e.target.files);
+            this.$refs.manager.uploadFiles({ files: Array.from(e.target.files) });
         },
 
         showInfoItem(item) {
