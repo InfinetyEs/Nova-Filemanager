@@ -4,8 +4,8 @@ namespace Infinety\Filemanager\Http\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 trait GetFiles
 {

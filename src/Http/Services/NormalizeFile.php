@@ -2,11 +2,11 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Illuminate\Support\Str;
 use RarArchive;
 use ZipArchive;
 use SplFileInfo;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\FilesystemAdapter;
 

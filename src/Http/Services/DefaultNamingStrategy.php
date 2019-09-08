@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
 
 class DefaultNamingStrategy extends AbstractNamingStrategy
 {
