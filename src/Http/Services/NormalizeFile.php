@@ -2,6 +2,7 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
+use Illuminate\Support\Str;
 use RarArchive;
 use ZipArchive;
 use SplFileInfo;
@@ -68,25 +69,25 @@ class NormalizeFile
         $mime = $this->storage->getMimetype($this->storagePath);
 
         // Image
-        if (str_contains($mime, 'image') || $data['ext'] == 'svg') {
+        if (Str::contains($mime, 'image') || $data['ext'] == 'svg') {
             $data->put('type', 'image');
             $data->put('dimensions', $this->getDimensions($this->storage->getMimetype($this->storagePath)));
         }
 
         // Video
-        if (str_contains($mime, 'audio')) {
+        if (Str::contains($mime, 'audio')) {
             $data->put('type', 'audio');
             $src = str_replace(env('APP_URL'), '', $this->storage->url($this->storagePath));
             $data->put('src', $src);
         }
 
         // Video
-        if (str_contains($mime, 'video')) {
+        if (Str::contains($mime, 'video')) {
             $data->put('type', 'video');
         }
 
         // text
-        if ($this->availablesTextExtensions() && str_contains($mime, 'text')) {
+        if ($this->availablesTextExtensions() && Str::contains($mime, 'text')) {
             $data->put('type', 'text');
 
             if ($data['size']) {
@@ -100,24 +101,24 @@ class NormalizeFile
         }
 
         // text
-        if (str_contains($mime, 'pdf')) {
+        if (Str::contains($mime, 'pdf')) {
             $data->put('type', 'pdf');
         }
 
         // docx
-        if (str_contains($mime, 'wordprocessingml')) {
+        if (Str::contains($mime, 'wordprocessingml')) {
             $data->put('type', 'word');
             // $data->put('source', $this->storage->get($this->storagePath));
         }
 
         // zip
-        if (str_contains($mime, 'zip')) {
+        if (Str::contains($mime, 'zip')) {
             $data->put('type', 'zip');
             $data->put('source', $this->readZip());
         }
 
         // // rar
-        // if (str_contains($mime, 'rar')) {
+        // if (Str::contains($mime, 'rar')) {
         //     $data->put('type', 'zip');
         //     $data->put('source', $this->readRar());
         // }
@@ -143,7 +144,7 @@ class NormalizeFile
      */
     private function getImage($mime, $extension = false)
     {
-        if (str_contains($mime, 'image') || $extension == 'svg') {
+        if (Str::contains($mime, 'image') || $extension == 'svg') {
             return $this->storage->url($this->storagePath);
         }
 
@@ -161,7 +162,7 @@ class NormalizeFile
             return false;
         }
 
-        if (str_contains($mime, 'image')) {
+        if (Str::contains($mime, 'image')) {
             [$width, $height] = getimagesize($this->storage->path($this->storagePath));
 
             if (! empty($width) && ! empty($height)) {
@@ -208,7 +209,7 @@ class NormalizeFile
 
         $exist = false;
         for ($i = 0; $i < count($types); $i++) {
-            if (str_contains($types[$i], 'text') || str_contains($types[$i], 'plain') || str_contains($types[$i], 'sql') || str_contains($types[$i], 'javascript')) {
+            if (Str::contains($types[$i], 'text') || Str::contains($types[$i], 'plain') || Str::contains($types[$i], 'sql') || Str::contains($types[$i], 'javascript')) {
                 $exist = true;
                 break;
             }
