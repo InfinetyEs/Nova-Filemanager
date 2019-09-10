@@ -2,6 +2,8 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
+use Illuminate\Support\Str;
+
 class FileTypesImages
 {
     /**
@@ -47,7 +49,7 @@ class FileTypesImages
      */
     private function checkMime($mime, $type)
     {
-        if (str_contains($mime, $type)) {
+        if (Str::contains($mime, $type)) {
             return true;
         }
 

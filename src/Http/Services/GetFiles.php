@@ -4,6 +4,7 @@ namespace Infinety\Filemanager\Http\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 trait GetFiles
@@ -234,63 +235,63 @@ trait GetFiles
         $mime = $this->storage->getMimetype($file['path']);
         $extension = $file['extension'];
 
-        if (str_contains($mime, 'directory')) {
+        if (Str::contains($mime, 'directory')) {
             return 'dir';
         }
 
-        if (str_contains($mime, 'image') || $extension == 'svg') {
+        if (Str::contains($mime, 'image') || $extension == 'svg') {
             return 'image';
         }
 
-        if (str_contains($mime, 'pdf')) {
+        if (Str::contains($mime, 'pdf')) {
             return 'pdf';
         }
 
-        if (str_contains($mime, 'audio')) {
+        if (Str::contains($mime, 'audio')) {
             return 'audio';
         }
 
-        if (str_contains($mime, 'video')) {
+        if (Str::contains($mime, 'video')) {
             return 'video';
         }
 
-        if (str_contains($mime, 'zip')) {
+        if (Str::contains($mime, 'zip')) {
             return 'file';
         }
 
-        if (str_contains($mime, 'rar')) {
+        if (Str::contains($mime, 'rar')) {
             return 'file';
         }
 
-        if (str_contains($mime, 'octet-stream')) {
+        if (Str::contains($mime, 'octet-stream')) {
             return 'file';
         }
 
-        if (str_contains($mime, 'excel')) {
+        if (Str::contains($mime, 'excel')) {
             return 'text';
         }
 
-        if (str_contains($mime, 'word')) {
+        if (Str::contains($mime, 'word')) {
             return 'text';
         }
 
-        if (str_contains($mime, 'css')) {
+        if (Str::contains($mime, 'css')) {
             return 'text';
         }
 
-        if (str_contains($mime, 'javascript')) {
+        if (Str::contains($mime, 'javascript')) {
             return 'text';
         }
 
-        if (str_contains($mime, 'plain')) {
+        if (Str::contains($mime, 'plain')) {
             return 'text';
         }
 
-        if (str_contains($mime, 'rtf')) {
+        if (Str::contains($mime, 'rtf')) {
             return 'text';
         }
 
-        if (str_contains($mime, 'text')) {
+        if (Str::contains($mime, 'text')) {
             return 'text';
         }
 
@@ -313,11 +314,11 @@ trait GetFiles
         $mime = $this->storage->getMimetype($file['path']);
         $extension = $file['extension'];
 
-        if (str_contains($mime, 'directory')) {
+        if (Str::contains($mime, 'directory')) {
             return false;
         }
 
-        if (str_contains($mime, 'image') || $extension == 'svg') {
+        if (Str::contains($mime, 'image') || $extension == 'svg') {
             if (method_exists($this->storage, 'put')) {
                 return $this->storage->url($file['path']);
             }
@@ -417,7 +418,7 @@ trait GetFiles
      */
     public function isDot($file)
     {
-        if (starts_with($file['basename'], '.')) {
+        if (Str::startsWith($file['basename'], '.')) {
             return true;
         }
 
@@ -488,7 +489,7 @@ trait GetFiles
      */
     public function recursivePaths($name, $pathCollection)
     {
-        return str_before($pathCollection->implode('/'), $name).$name;
+        return Str::before($pathCollection->implode('/'), $name).$name;
     }
 
     /**

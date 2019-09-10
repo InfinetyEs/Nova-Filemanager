@@ -2,6 +2,7 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 
 class DefaultNamingStrategy extends AbstractNamingStrategy
@@ -19,7 +20,7 @@ class DefaultNamingStrategy extends AbstractNamingStrategy
             $filename = sprintf(
                 '%s_%s.%s',
                 pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
-                str_random(7),
+                Str::random(7),
                 $file->getClientOriginalExtension()
             );
         }
