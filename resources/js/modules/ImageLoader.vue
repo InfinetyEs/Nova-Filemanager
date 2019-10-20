@@ -2,7 +2,7 @@
     <transition name="fade">
         <template v-if="view == 'grid'">
 
-            <div @click="showInfo"
+            <div @click="clickStrategy"
                  ref="card"
                  :loading="loading"
                  class="card relative flex flex-wrap justify-center border border-lg border-50 overflow-hidden px-0 py-0 cursor-pointer"
@@ -21,8 +21,14 @@
 
                 </div>
 
-                <div class="actions-grid absolute pin-t pin-r pr-2 pt-2 pb-1 pl-2 bg-50">
-                    <div class="flex flex-wrap text-70">
+                <div class="actions-grid absolute pin-t pin-r pr-2 pt-2 pb-1 pl-2 bg-50"
+                     :class="{ 'hidden': !multiSelecting }"
+                >
+                    <div v-if="multiSelecting">
+                        <input :checked="selected" type="checkbox">
+                    </div>
+
+                    <div v-else class="flex flex-wrap text-70">
                         <div class="cursor-pointer" @click.prevent="deleteFile($event)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="delete" class="fill-current"><path fill-rule="nonzero" d="M6 4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h5a1 1 0 0 1 0 2h-1v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6H1a1 1 0 1 1 0-2h5zM4 6v12h12V6H4zm8-2V2H8v2h4zM8 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"></path></svg>
                         </div>
@@ -46,7 +52,13 @@
 
         <template v-if="view == 'list'">
 
-            <tr @click="showInfo" :loading="loading" v-bind:key="file.id" class="cursor-pointer">
+            <tr @click="clickStrategy" :loading="loading" v-bind:key="file.id" class="cursor-pointer">
+                <td v-if="multiSelecting" class="w-8">
+                    <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="block">
+                        <g v-if="selected"><rect width="20" height="20" rx="4" fill="var(--primary)"></rect> <path fill="#FFF" d="M7.7 9.3c-.23477048-.3130273-.63054226-.46037132-1.01285927-.37708287-.38231702.08328846-.68093514.38190658-.7642236.7642236C5.83962868 10.0694577 5.9869727 10.4652295 6.3 10.7l2 2c.38884351.3811429 1.01115649.3811429 1.4 0l4-4c.3130273-.23477048.4603713-.63054226.3770829-1.01285927-.0832885-.38231702-.3819066-.68093514-.7642236-.7642236C12.9305423 6.83962868 12.5347705 6.9869727 12.3 7.3L9 10.58l-1.3-1.3v.02z"></path></g>
+                        <g v-else><rect width="20" height="20" fill="#FFF" rx="4"></rect> <rect width="19" height="19" fill="none" x=".5" y=".5" stroke="#CCD4DB" rx="4"></rect></g>
+                    </svg>
+                </td>
                 <td>
                     <template v-if="loading">
                         <div class="rounded-lg flex items-center justify-center absolute pin z-50">
@@ -101,6 +113,7 @@
 </template>
 
 <script>
+import findIndex from 'lodash/findIndex'
 import { Minimum } from 'laravel-nova';
 
 export default {
@@ -122,12 +135,26 @@ export default {
             default: 'grid',
             required: false,
         },
+        multiSelecting: {
+            type: Boolean,
+            required: true,
+        },
+        selectedFiles: {
+            type: Array,
+            required: true,
+        },
     },
 
     data: () => ({
         loading: true,
         missing: false,
     }),
+
+    computed: {
+        selected() {
+            return findIndex(this.selectedFiles, { type: this.file.type, path: this.file.path }) >= 0
+        },
+    },
 
     mounted() {
         if (this.file.mime == 'image') {
@@ -164,6 +191,17 @@ export default {
         }
     },
     methods: {
+        clickStrategy() {
+            return this.multiSelecting ? this.select() : this.showInfo();
+        },
+
+        select() {
+            this.$emit('select', {
+                type: this.file.type,
+                path: this.file.path
+            });
+        },
+
         showInfo() {
             this.$emit('showInfo', this.file);
         },
@@ -233,7 +271,6 @@ export default {
 }
 
 .actions-grid {
-    display: none;
     border-bottom-left-radius: 0.5rem;
 }
 </style>

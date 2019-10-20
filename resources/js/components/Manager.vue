@@ -31,7 +31,7 @@
             <div v-else class="px-2 overflow-y-auto files">
                 <div class="flex flex-wrap -mx-2">
 
-                    
+
 
                     <template v-if="files.error">
                         <div class="w-full text-lg text-center my-4">
@@ -43,7 +43,7 @@
                         <div class="w-full text-lg text-center my-4">
                             <loading />
                         </div>
-                    </template> 
+                    </template>
 
                     <template v-if="noFiles">
                         <div class="w-full text-lg text-center my-4">
@@ -67,36 +67,42 @@
                                 <template v-for="file in filteredFiles">
                                     <div :class="filemanagerClass" :key="file.id" >
                                         <template v-if="file.type == 'file'">
-                                            <ImageLoader 
+                                            <ImageLoader
                                                 v-drag-and-drop:file
                                                 :ref="'file_' + file.id"
                                                 :file="file"
                                                 :data-key="file.id"
+                                                :multi-selecting="multiSelecting"
+                                                :selected-files="selectedFiles"
                                                 class="h-40 file-item"
                                                 @missing="(value) => missing = value"
                                                 v-on:showInfo="showInfo"
                                                 v-on:rename="rename"
-                                                v-on:delete="deleteData" 
+                                                v-on:delete="deleteData"
+                                                v-on:select="select"
                                             />
                                         </template>
                                         <template v-if="file.type == 'dir'">
-                                            <Folder 
-                                                v-drag-and-drop:folder 
+                                            <Folder
+                                                v-drag-and-drop:folder
                                                 :ref="'folder_' + file.id"
                                                 :file="file"
                                                 :data-key="file.id"
+                                                :multi-selecting="multiSelecting"
+                                                :selected-files="selectedFiles"
                                                 class="h-40 folder-item"
                                                 :class="{'loading': loadingInfo}"
                                                 v-on:goToFolderEvent="goToFolder"
                                                 v-on:rename="rename"
                                                 v-on:delete="deleteData"
+                                                v-on:select="select"
                                             />
                                         </template>
                                     </div>
                                 </template>
 
                             </template>
-                            
+
                             <template  v-if="!loading">
                             </template>
                         </template>
@@ -106,6 +112,7 @@
                             <table class="table custom-table w-full">
                                 <thead>
                                     <tr>
+                                        <th v-if="multiSelecting" class="w-8"></th>
                                         <th class="w-16">
                                             {{ __('Type') }}
                                         </th>
@@ -126,31 +133,34 @@
                                 <tbody>
 
                                     <template v-if="parent.id">
-                                        
-                                        <Folder 
+
+                                        <Folder
                                             :ref="'folder_' + parent.id"
-                                            :key="parent.id" 
+                                            :key="parent.id"
                                             :file="parent"
                                             :view="view"
                                             class="folder-item"
                                             :class="{'loading': loadingInfo}"
                                             v-on:goToFolderEvent="goToFolder"
                                         />
-                                        
+
                                     </template>
 
 
                                     <template  v-for="file in filteredFiles">
                                         <template v-if="file.type == 'dir'">
-                                            <Folder :key="file.id" 
+                                            <Folder :key="file.id"
                                                     :data-key="file.id"
                                                     :file="file"
                                                     :view="view"
+                                                    :multi-selecting="multiSelecting"
+                                                    :selected-files="selectedFiles"
                                                     class="folder-item"
                                                     :class="{'loading': loadingInfo}"
                                                     v-on:goToFolderEvent="goToFolder"
                                                     v-on:rename="rename"
                                                     v-on:delete="deleteData"
+                                                    v-on:select="select"
                                             />
                                         </template>
                                         <template v-if="file.type == 'file'">
@@ -159,12 +169,15 @@
                                                 :data-key="file.id"
                                                 :file="file"
                                                 :view="view"
+                                                :multi-selecting="multiSelecting"
+                                                :selected-files="selectedFiles"
                                                 class="file-item"
                                                 :class="{'loading': loadingInfo}"
                                                 @missing="(value) => missing = value"
                                                 v-on:showInfo="showInfo"
                                                 v-on:rename="rename"
                                                 v-on:delete="deleteData"
+                                                v-on:select="select"
                                             />
                                         </template>
                                     </template>
@@ -175,7 +188,7 @@
                 </div>
             </div>
         </transition>
-        
+
     </div>
 </template>
 
@@ -254,6 +267,14 @@ export default {
             type: Array,
             required: false,
             default: () => [],
+        },
+        multiSelecting: {
+            type: Boolean,
+            required: true,
+        },
+        selectedFiles: {
+            type: Array,
+            required: true,
         },
     },
 
@@ -561,6 +582,10 @@ export default {
 
         deleteData(type, path) {
             this.$emit('delete', type, path);
+        },
+
+        select(file) {
+            this.$emit('select', file);
         },
     },
 
