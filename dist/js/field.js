@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 144);
+/******/ 	return __webpack_require__(__webpack_require__.s = 266);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -9982,7 +9982,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(26)
+var listToStyles = __webpack_require__(60)
 
 /*
 type StyleObject = {
@@ -10192,6 +10192,53 @@ function applyToTag (styleElement, obj) {
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var freeGlobal = __webpack_require__(44);
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10272,7 +10319,126 @@ function applyToTag (styleElement, obj) {
 });
 
 /***/ }),
-/* 5 */
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsNative = __webpack_require__(174),
+    getValue = __webpack_require__(179);
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(18),
+    getRawTag = __webpack_require__(175),
+    objectToString = __webpack_require__(176);
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+module.exports = baseGetTag;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+module.exports = isObjectLike;
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -10318,7 +10484,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(58);
+var	fixUrls = __webpack_require__(92);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -10631,34 +10797,35 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 6 */
+/* 12 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
 
 
 /***/ }),
-/* 7 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -11066,7 +11233,7 @@ if (!CodeMirror.mimeModes.hasOwnProperty("text/html"))
 
 
 /***/ }),
-/* 8 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -11968,7 +12135,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 
 
 /***/ }),
-/* 9 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -12806,7 +12973,226 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
 
 
 /***/ }),
-/* 10 */
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var listCacheClear = __webpack_require__(164),
+    listCacheDelete = __webpack_require__(165),
+    listCacheGet = __webpack_require__(166),
+    listCacheHas = __webpack_require__(167),
+    listCacheSet = __webpack_require__(168);
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+module.exports = ListCache;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var eq = __webpack_require__(42);
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+module.exports = assocIndexOf;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__(4);
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+module.exports = isObject;
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getNative = __webpack_require__(7);
+
+/* Built-in method references that are verified to be native. */
+var nativeCreate = getNative(Object, 'create');
+
+module.exports = nativeCreate;
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isKeyable = __webpack_require__(188);
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+module.exports = getMapData;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(9),
+    isObjectLike = __webpack_require__(10);
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+}
+
+module.exports = isSymbol;
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isSymbol = __webpack_require__(22);
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = toKey;
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(61);
+
+
+/***/ }),
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -29916,17 +30302,137 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(14)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(12)(module)))
 
 /***/ }),
-/* 11 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(27);
+var getNative = __webpack_require__(7),
+    root = __webpack_require__(4);
+
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map');
+
+module.exports = Map;
 
 
 /***/ }),
-/* 12 */
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var mapCacheClear = __webpack_require__(180),
+    mapCacheDelete = __webpack_require__(187),
+    mapCacheGet = __webpack_require__(189),
+    mapCacheHas = __webpack_require__(190),
+    mapCacheSet = __webpack_require__(191);
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+module.exports = MapCache;
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+module.exports = isLength;
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isArray = __webpack_require__(5),
+    isSymbol = __webpack_require__(22);
+
+/** Used to match property names within property paths. */
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/;
+
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
+}
+
+module.exports = isKey;
+
+
+/***/ }),
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -40055,7 +40561,7 @@ module.exports = g;
 });
 
 /***/ }),
-/* 13 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.0 by @mathias */
@@ -40591,38 +41097,10 @@ module.exports = g;
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)(module), __webpack_require__(8)))
 
 /***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 15 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -40817,7 +41295,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 16 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -41072,20 +41550,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 17 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(47)
-  __webpack_require__(49)
+  __webpack_require__(81)
+  __webpack_require__(83)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(51)
+var __vue_script__ = __webpack_require__(85)
 /* template */
-var __vue_template__ = __webpack_require__(59)
+var __vue_template__ = __webpack_require__(93)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -41124,7 +41602,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 18 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -41132,7 +41610,7 @@ module.exports = Component.exports
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(7), __webpack_require__(8), __webpack_require__(9));
+    mod(__webpack_require__(0), __webpack_require__(13), __webpack_require__(14), __webpack_require__(15));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../xml/xml", "../javascript/javascript", "../css/css"], mod);
   else // Plain browser env
@@ -41282,7 +41760,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 19 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -41290,7 +41768,7 @@ module.exports = Component.exports
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(9));
+    mod(__webpack_require__(0), __webpack_require__(15));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../css/css"], mod);
   else // Plain browser env
@@ -41742,7 +42220,7 @@ CodeMirror.defineMIME("text/x-sass", "sass");
 
 
 /***/ }),
-/* 20 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -41867,7 +42345,7 @@ CodeMirror.defineMIME("text/yaml", "yaml");
 
 
 /***/ }),
-/* 21 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -42089,7 +42567,7 @@ CodeMirror.defineMIME("text/yaml", "yaml");
 
 
 /***/ }),
-/* 22 */
+/* 39 */
 /***/ (function(module, exports) {
 
 var charenc = {
@@ -42128,15 +42606,659 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 23 */
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseFindIndex = __webpack_require__(160),
+    baseIteratee = __webpack_require__(161),
+    toInteger = __webpack_require__(242);
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
+
+/**
+ * This method is like `_.find` except that it returns the index of the first
+ * element `predicate` returns truthy for instead of the element itself.
+ *
+ * @static
+ * @memberOf _
+ * @since 1.1.0
+ * @category Array
+ * @param {Array} array The array to inspect.
+ * @param {Function} [predicate=_.identity] The function invoked per iteration.
+ * @param {number} [fromIndex=0] The index to search from.
+ * @returns {number} Returns the index of the found element, else `-1`.
+ * @example
+ *
+ * var users = [
+ *   { 'user': 'barney',  'active': false },
+ *   { 'user': 'fred',    'active': false },
+ *   { 'user': 'pebbles', 'active': true }
+ * ];
+ *
+ * _.findIndex(users, function(o) { return o.user == 'barney'; });
+ * // => 0
+ *
+ * // The `_.matches` iteratee shorthand.
+ * _.findIndex(users, { 'user': 'fred', 'active': false });
+ * // => 1
+ *
+ * // The `_.matchesProperty` iteratee shorthand.
+ * _.findIndex(users, ['active', false]);
+ * // => 0
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.findIndex(users, 'active');
+ * // => 2
+ */
+function findIndex(array, predicate, fromIndex) {
+  var length = array == null ? 0 : array.length;
+  if (!length) {
+    return -1;
+  }
+  var index = fromIndex == null ? 0 : toInteger(fromIndex);
+  if (index < 0) {
+    index = nativeMax(length + index, 0);
+  }
+  return baseFindIndex(array, baseIteratee(predicate, 3), index);
+}
+
+module.exports = findIndex;
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ListCache = __webpack_require__(16),
+    stackClear = __webpack_require__(169),
+    stackDelete = __webpack_require__(170),
+    stackGet = __webpack_require__(171),
+    stackHas = __webpack_require__(172),
+    stackSet = __webpack_require__(173);
+
+/**
+ * Creates a stack cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Stack(entries) {
+  var data = this.__data__ = new ListCache(entries);
+  this.size = data.size;
+}
+
+// Add methods to `Stack`.
+Stack.prototype.clear = stackClear;
+Stack.prototype['delete'] = stackDelete;
+Stack.prototype.get = stackGet;
+Stack.prototype.has = stackHas;
+Stack.prototype.set = stackSet;
+
+module.exports = Stack;
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports) {
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+module.exports = eq;
+
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(9),
+    isObject = __webpack_require__(19);
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+module.exports = isFunction;
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+module.exports = freeGlobal;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports) {
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+module.exports = toSource;
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsEqualDeep = __webpack_require__(192),
+    isObjectLike = __webpack_require__(10);
+
+/**
+ * The base implementation of `_.isEqual` which supports partial comparisons
+ * and tracks traversed objects.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Unordered comparison
+ *  2 - Partial comparison
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ */
+function baseIsEqual(value, other, bitmask, customizer, stack) {
+  if (value === other) {
+    return true;
+  }
+  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+    return value !== value && other !== other;
+  }
+  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+}
+
+module.exports = baseIsEqual;
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var SetCache = __webpack_require__(193),
+    arraySome = __webpack_require__(196),
+    cacheHas = __webpack_require__(197);
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for arrays with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Array} array The array to compare.
+ * @param {Array} other The other array to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `array` and `other` objects.
+ * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+ */
+function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      arrLength = array.length,
+      othLength = other.length;
+
+  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+    return false;
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(array);
+  if (stacked && stack.get(other)) {
+    return stacked == other;
+  }
+  var index = -1,
+      result = true,
+      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
+
+  stack.set(array, other);
+  stack.set(other, array);
+
+  // Ignore non-index properties.
+  while (++index < arrLength) {
+    var arrValue = array[index],
+        othValue = other[index];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, arrValue, index, other, array, stack)
+        : customizer(arrValue, othValue, index, array, other, stack);
+    }
+    if (compared !== undefined) {
+      if (compared) {
+        continue;
+      }
+      result = false;
+      break;
+    }
+    // Recursively compare arrays (susceptible to call stack limits).
+    if (seen) {
+      if (!arraySome(other, function(othValue, othIndex) {
+            if (!cacheHas(seen, othIndex) &&
+                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+              return seen.push(othIndex);
+            }
+          })) {
+        result = false;
+        break;
+      }
+    } else if (!(
+          arrValue === othValue ||
+            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+        )) {
+      result = false;
+      break;
+    }
+  }
+  stack['delete'](array);
+  stack['delete'](other);
+  return result;
+}
+
+module.exports = equalArrays;
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayLikeKeys = __webpack_require__(209),
+    baseKeys = __webpack_require__(216),
+    isArrayLike = __webpack_require__(220);
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+}
+
+module.exports = keys;
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsArguments = __webpack_require__(211),
+    isObjectLike = __webpack_require__(10);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
+    !propertyIsEnumerable.call(value, 'callee');
+};
+
+module.exports = isArguments;
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(4),
+    stubFalse = __webpack_require__(212);
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Built-in value references. */
+var Buffer = moduleExports ? root.Buffer : undefined;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
+
+/**
+ * Checks if `value` is a buffer.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+ * @example
+ *
+ * _.isBuffer(new Buffer(2));
+ * // => true
+ *
+ * _.isBuffer(new Uint8Array(2));
+ * // => false
+ */
+var isBuffer = nativeIsBuffer || stubFalse;
+
+module.exports = isBuffer;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)(module)))
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports) {
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  var type = typeof value;
+  length = length == null ? MAX_SAFE_INTEGER : length;
+
+  return !!length &&
+    (type == 'number' ||
+      (type != 'symbol' && reIsUint.test(value))) &&
+        (value > -1 && value % 1 == 0 && value < length);
+}
+
+module.exports = isIndex;
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsTypedArray = __webpack_require__(213),
+    baseUnary = __webpack_require__(214),
+    nodeUtil = __webpack_require__(215);
+
+/* Node.js helper references. */
+var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+/**
+ * Checks if `value` is classified as a typed array.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ * @example
+ *
+ * _.isTypedArray(new Uint8Array);
+ * // => true
+ *
+ * _.isTypedArray([]);
+ * // => false
+ */
+var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+module.exports = isTypedArray;
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(19);
+
+/**
+ * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` if suitable for strict
+ *  equality comparisons, else `false`.
+ */
+function isStrictComparable(value) {
+  return value === value && !isObject(value);
+}
+
+module.exports = isStrictComparable;
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `matchesProperty` for source values suitable
+ * for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function matchesStrictComparable(key, srcValue) {
+  return function(object) {
+    if (object == null) {
+      return false;
+    }
+    return object[key] === srcValue &&
+      (srcValue !== undefined || (key in Object(object)));
+  };
+}
+
+module.exports = matchesStrictComparable;
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var castPath = __webpack_require__(56),
+    toKey = __webpack_require__(23);
+
+/**
+ * The base implementation of `_.get` without support for default values.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @returns {*} Returns the resolved value.
+ */
+function baseGet(object, path) {
+  path = castPath(path, object);
+
+  var index = 0,
+      length = path.length;
+
+  while (object != null && index < length) {
+    object = object[toKey(path[index++])];
+  }
+  return (index && index == length) ? object : undefined;
+}
+
+module.exports = baseGet;
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isArray = __webpack_require__(5),
+    isKey = __webpack_require__(29),
+    stringToPath = __webpack_require__(229),
+    toString = __webpack_require__(232);
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value, object) {
+  if (isArray(value)) {
+    return value;
+  }
+  return isKey(value, object) ? [value] : stringToPath(toString(value));
+}
+
+module.exports = castPath;
+
+
+/***/ }),
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(35)
+var __vue_script__ = __webpack_require__(69)
 /* template */
-var __vue_template__ = __webpack_require__(36)
+var __vue_template__ = __webpack_require__(70)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -42175,19 +43297,19 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 24 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(37)
+  __webpack_require__(71)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(39)
+var __vue_script__ = __webpack_require__(73)
 /* template */
-var __vue_template__ = __webpack_require__(40)
+var __vue_template__ = __webpack_require__(74)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -42226,19 +43348,19 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 25 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(103)
+  __webpack_require__(137)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(105)
+var __vue_script__ = __webpack_require__(139)
 /* template */
-var __vue_template__ = __webpack_require__(111)
+var __vue_template__ = __webpack_require__(145)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -42277,7 +43399,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 26 */
+/* 60 */
 /***/ (function(module, exports) {
 
 /**
@@ -42310,7 +43432,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 27 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -42335,7 +43457,7 @@ var oldRuntime = hadRuntime && g.regeneratorRuntime;
 // Force reevalutation of runtime.js.
 g.regeneratorRuntime = undefined;
 
-module.exports = __webpack_require__(28);
+module.exports = __webpack_require__(62);
 
 if (hadRuntime) {
   // Restore the original runtime.
@@ -42351,7 +43473,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 28 */
+/* 62 */
 /***/ (function(module, exports) {
 
 /**
@@ -43084,7 +44206,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 29 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -43104,10 +44226,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   // https://github.com/umdjs/umd/blob/master/returnExports.js
   if (typeof module === 'object' && module.exports) {
     // Node
-    module.exports = factory(__webpack_require__(13), __webpack_require__(15), __webpack_require__(16));
+    module.exports = factory(__webpack_require__(31), __webpack_require__(32), __webpack_require__(33));
   } else if (true) {
     // AMD. Register as an anonymous module.
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(13), __webpack_require__(15), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(31), __webpack_require__(32), __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -45431,19 +46553,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 30 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(31)
+  __webpack_require__(65)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(33)
+var __vue_script__ = __webpack_require__(67)
 /* template */
-var __vue_template__ = __webpack_require__(34)
+var __vue_template__ = __webpack_require__(68)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -45482,13 +46604,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 31 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(32);
+var content = __webpack_require__(66);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -45508,7 +46630,7 @@ if(false) {
 }
 
 /***/ }),
-/* 32 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -45516,18 +46638,20 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Scoped Styles */\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Scoped Styles */\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 33 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(6);
+//
+//
 //
 //
 //
@@ -45622,7 +46746,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 34 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -45631,138 +46755,139 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "portal",
-    {
-      attrs: {
-        to: "modals",
-        name: "Create Folder",
-        transition: "fade-transition"
-      }
-    },
+    { attrs: { to: "modals", name: "Create Folder" } },
     [
-      _vm.active
-        ? _c("modal", { on: { "modal-close": _vm.handleClose } }, [
-            _c(
-              "div",
-              {
-                staticClass: "bg-white rounded-lg shadow-lg ",
-                staticStyle: { width: "600px" }
-              },
-              [
+      _c(
+        "transition",
+        { attrs: { name: "fade" } },
+        [
+          _vm.active
+            ? _c("modal", { on: { "modal-close": _vm.handleClose } }, [
                 _c(
                   "div",
-                  { staticClass: "p-8" },
+                  {
+                    staticClass: "bg-white rounded-lg shadow-lg ",
+                    staticStyle: { width: "600px" }
+                  },
                   [
                     _c(
-                      "heading",
-                      { staticClass: "mb-6", attrs: { level: 2 } },
-                      [_vm._v(_vm._s(_vm.__("Create folder")))]
-                    ),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.folderName,
-                          expression: "folderName"
-                        }
-                      ],
-                      staticClass:
-                        "w-full h-full form-control form-input form-input-bordered py-3",
-                      attrs: {
-                        type: "text",
-                        placeholder: _vm.__("Write a folder name"),
-                        autofocus: "",
-                        required: ""
-                      },
-                      domProps: { value: _vm.folderName },
-                      on: {
-                        keyup: function($event) {
-                          if (
-                            !$event.type.indexOf("key") &&
-                            _vm._k(
-                              $event.keyCode,
-                              "enter",
-                              13,
-                              $event.key,
-                              "Enter"
-                            )
-                          ) {
-                            return null
-                          }
-                          return _vm.createFolder($event)
-                        },
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.folderName = $event.target.value
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _vm.error
-                      ? _c("p", { staticClass: "my-2 text-danger" }, [
-                          _vm._v(_vm._s(_vm.errorMsg))
-                        ])
-                      : _vm._e()
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "bg-30 px-6 py-3 flex" }, [
-                  _c("div", { staticClass: "ml-auto" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass:
-                          "btn text-80 font-normal h-9 px-3 mr-3 btn-link",
-                        attrs: {
-                          type: "button",
-                          "data-testid": "cancel-button"
-                        },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.cancelCreate($event)
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(_vm.__("Cancel")))]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        ref: "confirmButton",
-                        staticClass: "btn btn-default btn-primary",
-                        class: {
-                          "cursor-not-allowed": _vm.isSaving,
-                          "opacity-50": _vm.isSaving
-                        },
-                        attrs: {
-                          "data-testid": "confirm-button",
-                          disabled: _vm.isSaving
-                        },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.createFolder($event)
-                          }
-                        }
-                      },
+                      "div",
+                      { staticClass: "p-8" },
                       [
-                        _vm.isSaving
-                          ? _c("span", [_vm._v(_vm._s(_vm.__("Creating")))])
-                          : _c("span", [_vm._v(_vm._s(_vm.__("Create")))])
-                      ]
-                    )
-                  ])
-                ])
-              ]
-            )
-          ])
-        : _vm._e()
+                        _c(
+                          "heading",
+                          { staticClass: "mb-6", attrs: { level: 2 } },
+                          [_vm._v(_vm._s(_vm.__("Create folder")))]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.folderName,
+                              expression: "folderName"
+                            }
+                          ],
+                          staticClass:
+                            "w-full h-full form-control form-input form-input-bordered py-3",
+                          attrs: {
+                            type: "text",
+                            placeholder: _vm.__("Write a folder name"),
+                            autofocus: "",
+                            required: ""
+                          },
+                          domProps: { value: _vm.folderName },
+                          on: {
+                            keyup: function($event) {
+                              if (
+                                !$event.type.indexOf("key") &&
+                                _vm._k(
+                                  $event.keyCode,
+                                  "enter",
+                                  13,
+                                  $event.key,
+                                  "Enter"
+                                )
+                              ) {
+                                return null
+                              }
+                              return _vm.createFolder($event)
+                            },
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.folderName = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _vm.error
+                          ? _c("p", { staticClass: "my-2 text-danger" }, [
+                              _vm._v(_vm._s(_vm.errorMsg))
+                            ])
+                          : _vm._e()
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "bg-30 px-6 py-3 flex" }, [
+                      _c("div", { staticClass: "ml-auto" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn text-80 font-normal h-9 px-3 mr-3 btn-link",
+                            attrs: {
+                              type: "button",
+                              "data-testid": "cancel-button"
+                            },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.cancelCreate($event)
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(_vm.__("Cancel")))]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            ref: "confirmButton",
+                            staticClass: "btn btn-default btn-primary",
+                            class: {
+                              "cursor-not-allowed": _vm.isSaving,
+                              "opacity-50": _vm.isSaving
+                            },
+                            attrs: {
+                              "data-testid": "confirm-button",
+                              disabled: _vm.isSaving
+                            },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.createFolder($event)
+                              }
+                            }
+                          },
+                          [
+                            _vm.isSaving
+                              ? _c("span", [_vm._v(_vm._s(_vm.__("Creating")))])
+                              : _c("span", [_vm._v(_vm._s(_vm.__("Create")))])
+                          ]
+                        )
+                      ])
+                    ])
+                  ]
+                )
+              ])
+            : _vm._e()
+        ],
+        1
+      )
     ],
     1
   )
@@ -45778,12 +46903,14 @@ if (false) {
 }
 
 /***/ }),
-/* 35 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(6);
+//
+//
 //
 //
 //
@@ -45912,7 +47039,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 36 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -45921,155 +47048,157 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "portal",
-    {
-      attrs: {
-        to: "modals",
-        name: "Create Folder",
-        transition: "fade-transition"
-      }
-    },
+    { attrs: { to: "modals", name: "Create Folder" } },
     [
-      _vm.active
-        ? _c("modal", { on: { "modal-close": _vm.handleClose } }, [
-            _c(
-              "div",
-              {
-                staticClass: "bg-white rounded-lg shadow-lg overflow-hidden",
-                staticStyle: { width: "460px" }
-              },
-              [
+      _c(
+        "transition",
+        { attrs: { name: "fade" } },
+        [
+          _vm.active
+            ? _c("modal", { on: { "modal-close": _vm.handleClose } }, [
                 _c(
                   "div",
-                  { staticClass: "p-8" },
+                  {
+                    staticClass:
+                      "bg-white rounded-lg shadow-lg overflow-hidden",
+                    staticStyle: { width: "460px" }
+                  },
                   [
                     _c(
-                      "heading",
-                      { staticClass: "mb-6", attrs: { level: 2 } },
+                      "div",
+                      { staticClass: "p-8" },
                       [
+                        _c(
+                          "heading",
+                          { staticClass: "mb-6", attrs: { level: 2 } },
+                          [
+                            _vm.type == "folder"
+                              ? [
+                                  _vm._v(
+                                    "\n                            " +
+                                      _vm._s(_vm.__("Remove folder")) +
+                                      ": " +
+                                      _vm._s(_vm.name) +
+                                      "\n                        "
+                                  )
+                                ]
+                              : [
+                                  _vm._v(
+                                    "\n                            " +
+                                      _vm._s(_vm.__("Remove file")) +
+                                      ": " +
+                                      _vm._s(_vm.name) +
+                                      "\n                        "
+                                  )
+                                ]
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
                         _vm.type == "folder"
                           ? [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(_vm.__("Remove folder")) +
-                                  ": " +
-                                  _vm._s(_vm.name) +
-                                  "\n                    "
-                              )
+                              _c("p", { staticClass: "text-80" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.__(
+                                      "Are you sure you want to remove this folder?"
+                                    )
+                                  )
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("p", { staticClass: "text-sm text-80 mt-2" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.__(
+                                      "Remember: The folder and all his contents will be delete from your storage"
+                                    )
+                                  )
+                                )
+                              ])
                             ]
                           : [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(_vm.__("Remove file")) +
-                                  ": " +
-                                  _vm._s(_vm.name) +
-                                  "\n                    "
-                              )
+                              _c("p", { staticClass: "text-80" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.__(
+                                      "Are you sure you want to remove this file?"
+                                    )
+                                  )
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("p", { staticClass: "text-sm text-80 mt-2" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.__(
+                                      "Remember: The file will be delete from your storage"
+                                    )
+                                  )
+                                )
+                              ])
                             ]
                       ],
                       2
                     ),
                     _vm._v(" "),
-                    _vm.type == "folder"
-                      ? [
-                          _c("p", { staticClass: "text-80" }, [
-                            _vm._v(
-                              _vm._s(
-                                _vm.__(
-                                  "Are you sure you want to remove this folder?"
-                                )
-                              )
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("p", { staticClass: "text-sm text-80 mt-2" }, [
-                            _vm._v(
-                              _vm._s(
-                                _vm.__(
-                                  "Remember: The folder and all his contents will be delete from your storage"
-                                )
-                              )
-                            )
-                          ])
-                        ]
-                      : [
-                          _c("p", { staticClass: "text-80" }, [
-                            _vm._v(
-                              _vm._s(
-                                _vm.__(
-                                  "Are you sure you want to remove this file?"
-                                )
-                              )
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("p", { staticClass: "text-sm text-80 mt-2" }, [
-                            _vm._v(
-                              _vm._s(
-                                _vm.__(
-                                  "Remember: The file will be delete from your storage"
-                                )
-                              )
-                            )
-                          ])
-                        ]
-                  ],
-                  2
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "bg-30 px-6 py-3 flex" }, [
-                  _c("div", { staticClass: "ml-auto" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass:
-                          "btn text-80 font-normal h-9 px-3 mr-3 btn-link",
-                        attrs: {
-                          dusk: "cancel-upload-delete-button",
-                          type: "button",
-                          "data-testid": "cancel-button"
-                        },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.handleClose($event)
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(_vm.__("Cancel")))]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        ref: "confirmButton",
-                        staticClass: "btn btn-default btn-danger",
-                        class: {
-                          "cursor-not-allowed": _vm.isDeleting,
-                          "opacity-50": _vm.isDeleting
-                        },
-                        attrs: {
-                          "data-testid": "confirm-button",
-                          disabled: _vm.isDeleting
-                        },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.deleteData($event)
-                          }
-                        }
-                      },
-                      [
-                        _vm.isDeleting
-                          ? _c("span", [_vm._v(_vm._s(_vm.__("Deleting")))])
-                          : _c("span", [_vm._v(_vm._s(_vm.__("Delete")))])
-                      ]
-                    )
-                  ])
-                ])
-              ]
-            )
-          ])
-        : _vm._e()
+                    _c("div", { staticClass: "bg-30 px-6 py-3 flex" }, [
+                      _c("div", { staticClass: "ml-auto" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn text-80 font-normal h-9 px-3 mr-3 btn-link",
+                            attrs: {
+                              dusk: "cancel-upload-delete-button",
+                              type: "button",
+                              "data-testid": "cancel-button"
+                            },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.handleClose($event)
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(_vm.__("Cancel")))]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            ref: "confirmButton",
+                            staticClass: "btn btn-default btn-danger",
+                            class: {
+                              "cursor-not-allowed": _vm.isDeleting,
+                              "opacity-50": _vm.isDeleting
+                            },
+                            attrs: {
+                              "data-testid": "confirm-button",
+                              disabled: _vm.isDeleting
+                            },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.deleteData($event)
+                              }
+                            }
+                          },
+                          [
+                            _vm.isDeleting
+                              ? _c("span", [_vm._v(_vm._s(_vm.__("Deleting")))])
+                              : _c("span", [_vm._v(_vm._s(_vm.__("Delete")))])
+                          ]
+                        )
+                      ])
+                    ])
+                  ]
+                )
+              ])
+            : _vm._e()
+        ],
+        1
+      )
     ],
     1
   )
@@ -46085,13 +47214,13 @@ if (false) {
 }
 
 /***/ }),
-/* 37 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(38);
+var content = __webpack_require__(72);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -46111,7 +47240,7 @@ if(false) {
 }
 
 /***/ }),
-/* 38 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -46119,18 +47248,20 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Scoped Styles */\n.form-input-bordered-left {\n    background-color: var(--white);\n    border-width: 1px;\n    border-color: var(--60);\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n    color: var(--80);\n    border-top-left-radius: 0.5rem;\n    border-bottom-left-radius: 0.5rem;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);\n}\n.form-input-bordered-right {\n    border-width: 1px;\n    border-color: var(--60);\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n    color: var(--80);\n    border-left: 0;\n    border-top-right-radius: 0.5rem;\n    border-bottom-right-radius: 0.5rem;\n    -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Scoped Styles */\n.form-input-bordered-left {\n    background-color: var(--white);\n    border-width: 1px;\n    border-color: var(--60);\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n    color: var(--80);\n    border-top-left-radius: 0.5rem;\n    border-bottom-left-radius: 0.5rem;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);\n}\n.form-input-bordered-right {\n    border-width: 1px;\n    border-color: var(--60);\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n    color: var(--80);\n    border-left: 0;\n    border-top-right-radius: 0.5rem;\n    border-bottom-right-radius: 0.5rem;\n    -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 39 */
+/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(6);
+//
+//
 //
 //
 //
@@ -46290,7 +47421,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 40 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -46299,122 +47430,57 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "portal",
-    {
-      attrs: {
-        to: "modals",
-        name: "Rename Modal",
-        transition: "fade-transition"
-      }
-    },
+    { attrs: { to: "modals", name: "Create Folder" } },
     [
-      _vm.active
-        ? _c("modal", { on: { "modal-close": _vm.handleClose } }, [
-            _c(
-              "div",
-              {
-                staticClass: "bg-white rounded-lg shadow-lg ",
-                staticStyle: { width: "600px" }
-              },
-              [
+      _c(
+        "transition",
+        { attrs: { name: "fade" } },
+        [
+          _vm.active
+            ? _c("modal", { on: { "modal-close": _vm.handleClose } }, [
                 _c(
                   "div",
-                  { staticClass: "p-8" },
+                  {
+                    staticClass: "bg-white rounded-lg shadow-lg ",
+                    staticStyle: { width: "600px" }
+                  },
                   [
-                    _vm.type == "folder"
-                      ? [
-                          _c(
-                            "heading",
-                            { staticClass: "mb-6", attrs: { level: 2 } },
-                            [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(_vm.__("Rename folder")) +
-                                  "\n                    "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.name,
-                                expression: "name"
-                              }
-                            ],
-                            staticClass:
-                              "w-full h-full form-control form-input form-input-bordered py-3",
-                            attrs: {
-                              type: "text",
-                              placeholder: _vm.name,
-                              autofocus: "",
-                              required: ""
-                            },
-                            domProps: { value: _vm.name },
-                            on: {
-                              keyup: function($event) {
-                                if (
-                                  !$event.type.indexOf("key") &&
-                                  _vm._k(
-                                    $event.keyCode,
-                                    "enter",
-                                    13,
-                                    $event.key,
-                                    "Enter"
+                    _c(
+                      "div",
+                      { staticClass: "p-8" },
+                      [
+                        _vm.type == "folder"
+                          ? [
+                              _c(
+                                "heading",
+                                { staticClass: "mb-6", attrs: { level: 2 } },
+                                [
+                                  _vm._v(
+                                    "\n                            " +
+                                      _vm._s(_vm.__("Rename folder")) +
+                                      "\n                        "
                                   )
-                                ) {
-                                  return null
-                                }
-                                return _vm.renamePath($event)
-                              },
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.name = $event.target.value
-                              }
-                            }
-                          })
-                        ]
-                      : [
-                          _c(
-                            "heading",
-                            { staticClass: "mb-6", attrs: { level: 2 } },
-                            [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(_vm.__("Rename file")) +
-                                  "\n                    "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "flex flex-wrap items-stretch w-full mb-4 relative"
-                            },
-                            [
+                                ]
+                              ),
+                              _vm._v(" "),
                               _c("input", {
                                 directives: [
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.nameWithoutExtension,
-                                    expression: "nameWithoutExtension"
+                                    value: _vm.name,
+                                    expression: "name"
                                   }
                                 ],
                                 staticClass:
-                                  "flex-shrink flex-grow flex-auto h-full form-control form-input form-input-bordered-left py-3",
+                                  "w-full h-full form-control form-input form-input-bordered py-3",
                                 attrs: {
                                   type: "text",
-                                  placeholder: _vm.nameWithoutExtension,
+                                  placeholder: _vm.name,
                                   autofocus: "",
                                   required: ""
                                 },
-                                domProps: { value: _vm.nameWithoutExtension },
+                                domProps: { value: _vm.name },
                                 on: {
                                   keyup: function($event) {
                                     if (
@@ -46435,88 +47501,156 @@ var render = function() {
                                     if ($event.target.composing) {
                                       return
                                     }
-                                    _vm.nameWithoutExtension =
-                                      $event.target.value
+                                    _vm.name = $event.target.value
                                   }
                                 }
-                              }),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "flex -mr-px" }, [
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "flex items-center leading-normal bg-50 rounded rounded-l-none form-input-bordered-right px-3 whitespace-no-wrap text-grey-dark text-sm"
-                                  },
-                                  [_vm._v(_vm._s(_vm.extension))]
-                                )
-                              ])
+                              })
                             ]
-                          ),
-                          _vm._v(" "),
-                          _vm.error
-                            ? _c("p", { staticClass: "my-2 text-danger" }, [
-                                _vm._v(_vm._s(_vm.errorMsg))
-                              ])
-                            : _vm._e()
-                        ]
-                  ],
-                  2
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "bg-30 px-6 py-3 flex" }, [
-                  _c("div", { staticClass: "ml-auto" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass:
-                          "btn text-80 font-normal h-9 px-3 mr-3 btn-link",
-                        attrs: {
-                          type: "button",
-                          "data-testid": "cancel-button"
-                        },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.cancelRename($event)
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(_vm.__("Cancel")))]
+                          : [
+                              _c(
+                                "heading",
+                                { staticClass: "mb-6", attrs: { level: 2 } },
+                                [
+                                  _vm._v(
+                                    "\n                            " +
+                                      _vm._s(_vm.__("Rename file")) +
+                                      "\n                        "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "flex flex-wrap items-stretch w-full mb-4 relative"
+                                },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.nameWithoutExtension,
+                                        expression: "nameWithoutExtension"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "flex-shrink flex-grow flex-auto h-full form-control form-input form-input-bordered-left py-3",
+                                    attrs: {
+                                      type: "text",
+                                      placeholder: _vm.nameWithoutExtension,
+                                      autofocus: "",
+                                      required: ""
+                                    },
+                                    domProps: {
+                                      value: _vm.nameWithoutExtension
+                                    },
+                                    on: {
+                                      keyup: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "enter",
+                                            13,
+                                            $event.key,
+                                            "Enter"
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.renamePath($event)
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.nameWithoutExtension =
+                                          $event.target.value
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "flex -mr-px" }, [
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "flex items-center leading-normal bg-50 rounded rounded-l-none form-input-bordered-right px-3 whitespace-no-wrap text-grey-dark text-sm"
+                                      },
+                                      [_vm._v(_vm._s(_vm.extension))]
+                                    )
+                                  ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _vm.error
+                                ? _c("p", { staticClass: "my-2 text-danger" }, [
+                                    _vm._v(_vm._s(_vm.errorMsg))
+                                  ])
+                                : _vm._e()
+                            ]
+                      ],
+                      2
                     ),
                     _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        ref: "confirmButton",
-                        staticClass: "btn btn-default btn-primary",
-                        class: {
-                          "cursor-not-allowed": _vm.isSaving,
-                          "opacity-50": _vm.isSaving
-                        },
-                        attrs: {
-                          "data-testid": "confirm-button",
-                          disabled: _vm.isSaving
-                        },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.renamePath($event)
-                          }
-                        }
-                      },
-                      [
-                        _vm.isSaving
-                          ? _c("span", [_vm._v(_vm._s(_vm.__("Renaming")))])
-                          : _c("span", [_vm._v(_vm._s(_vm.__("Rename")))])
-                      ]
-                    )
-                  ])
-                ])
-              ]
-            )
-          ])
-        : _vm._e()
+                    _c("div", { staticClass: "bg-30 px-6 py-3 flex" }, [
+                      _c("div", { staticClass: "ml-auto" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn text-80 font-normal h-9 px-3 mr-3 btn-link",
+                            attrs: {
+                              type: "button",
+                              "data-testid": "cancel-button"
+                            },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.cancelRename($event)
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(_vm.__("Cancel")))]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            ref: "confirmButton",
+                            staticClass: "btn btn-default btn-primary",
+                            class: {
+                              "cursor-not-allowed": _vm.isSaving,
+                              "opacity-50": _vm.isSaving
+                            },
+                            attrs: {
+                              "data-testid": "confirm-button",
+                              disabled: _vm.isSaving
+                            },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.renamePath($event)
+                              }
+                            }
+                          },
+                          [
+                            _vm.isSaving
+                              ? _c("span", [_vm._v(_vm._s(_vm.__("Renaming")))])
+                              : _c("span", [_vm._v(_vm._s(_vm.__("Rename")))])
+                          ]
+                        )
+                      ])
+                    ])
+                  ]
+                )
+              ])
+            : _vm._e()
+        ],
+        1
+      )
     ],
     1
   )
@@ -46532,20 +47666,20 @@ if (false) {
 }
 
 /***/ }),
-/* 41 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(42)
-  __webpack_require__(44)
+  __webpack_require__(76)
+  __webpack_require__(78)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(46)
+var __vue_script__ = __webpack_require__(80)
 /* template */
-var __vue_template__ = __webpack_require__(102)
+var __vue_template__ = __webpack_require__(136)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -46584,13 +47718,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 42 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(43);
+var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -46610,7 +47744,7 @@ if(false) {
 }
 
 /***/ }),
-/* 43 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -46624,13 +47758,13 @@ exports.push([module.i, "\ninput[data-v-dbfdef80] {\n  box-sizing: border-box !i
 
 
 /***/ }),
-/* 44 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(45);
+var content = __webpack_require__(79);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -46650,7 +47784,7 @@ if(false) {
 }
 
 /***/ }),
-/* 45 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -46664,58 +47798,61 @@ exports.push([module.i, "\n.no-preview > .svg-mime {\n    width: 150px;\n    hei
 
 
 /***/ }),
-/* 46 */
+/* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modules_Image__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modules_Image__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modules_Image___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__modules_Image__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ConfirmationButton__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ConfirmationButton__ = __webpack_require__(94);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ConfirmationButton___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__ConfirmationButton__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__TreeView__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__TreeView__ = __webpack_require__(99);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__TreeView___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__TreeView__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_v_copy__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_v_copy__ = __webpack_require__(105);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_v_copy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_v_copy__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_plyr__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_plyr__ = __webpack_require__(107);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_plyr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_plyr__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_plyr_dist_plyr_css__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_plyr_dist_plyr_css__ = __webpack_require__(108);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_plyr_dist_plyr_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_plyr_dist_plyr_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_vue_codemirror__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_vue_codemirror__ = __webpack_require__(110);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_vue_codemirror___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_vue_codemirror__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_codemirror_lib_codemirror_css__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_codemirror_lib_codemirror_css__ = __webpack_require__(111);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_codemirror_lib_codemirror_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_codemirror_lib_codemirror_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_codemirror_theme_dracula_css__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_codemirror_theme_dracula_css__ = __webpack_require__(113);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_codemirror_theme_dracula_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_codemirror_theme_dracula_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_codemirror_mode_markdown_markdown__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_codemirror_mode_markdown_markdown__ = __webpack_require__(115);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_codemirror_mode_markdown_markdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_codemirror_mode_markdown_markdown__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_codemirror_mode_javascript_javascript__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_codemirror_mode_javascript_javascript__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_codemirror_mode_javascript_javascript___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_codemirror_mode_javascript_javascript__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_codemirror_mode_php_php__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_codemirror_mode_php_php__ = __webpack_require__(117);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_codemirror_mode_php_php___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_codemirror_mode_php_php__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_codemirror_mode_sql_sql__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_codemirror_mode_sql_sql__ = __webpack_require__(119);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_codemirror_mode_sql_sql___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_codemirror_mode_sql_sql__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_codemirror_mode_ruby_ruby__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_codemirror_mode_ruby_ruby__ = __webpack_require__(120);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_codemirror_mode_ruby_ruby___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_codemirror_mode_ruby_ruby__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_codemirror_mode_shell_shell__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_codemirror_mode_shell_shell__ = __webpack_require__(121);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_codemirror_mode_shell_shell___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15_codemirror_mode_shell_shell__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_codemirror_mode_sass_sass__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_codemirror_mode_sass_sass__ = __webpack_require__(36);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_codemirror_mode_sass_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16_codemirror_mode_sass_sass__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_codemirror_mode_yaml_yaml__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_codemirror_mode_yaml_yaml__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_codemirror_mode_yaml_yaml___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_17_codemirror_mode_yaml_yaml__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18_codemirror_mode_yaml_frontmatter_yaml_frontmatter__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18_codemirror_mode_yaml_frontmatter_yaml_frontmatter__ = __webpack_require__(122);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18_codemirror_mode_yaml_frontmatter_yaml_frontmatter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_18_codemirror_mode_yaml_frontmatter_yaml_frontmatter__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_codemirror_mode_nginx_nginx__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_codemirror_mode_nginx_nginx__ = __webpack_require__(123);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_codemirror_mode_nginx_nginx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_19_codemirror_mode_nginx_nginx__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20_codemirror_mode_xml_xml__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20_codemirror_mode_xml_xml__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20_codemirror_mode_xml_xml___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_20_codemirror_mode_xml_xml__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21_codemirror_mode_vue_vue__ = __webpack_require__(90);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21_codemirror_mode_vue_vue__ = __webpack_require__(124);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21_codemirror_mode_vue_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_21_codemirror_mode_vue_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22_codemirror_mode_dockerfile_dockerfile__ = __webpack_require__(97);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22_codemirror_mode_dockerfile_dockerfile__ = __webpack_require__(131);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_22_codemirror_mode_dockerfile_dockerfile___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_22_codemirror_mode_dockerfile_dockerfile__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23_codemirror_keymap_vim__ = __webpack_require__(98);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23_codemirror_keymap_vim__ = __webpack_require__(132);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23_codemirror_keymap_vim___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_23_codemirror_keymap_vim__);
+//
+//
+//
 //
 //
 //
@@ -47099,13 +48236,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 47 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(48);
+var content = __webpack_require__(82);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -47125,7 +48262,7 @@ if(false) {
 }
 
 /***/ }),
-/* 48 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -47139,13 +48276,13 @@ exports.push([module.i, "\n.card[data-v-26c9bda5] {\n  padding: 0 !important;\n 
 
 
 /***/ }),
-/* 49 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(50);
+var content = __webpack_require__(84);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -47165,7 +48302,7 @@ if(false) {
 }
 
 /***/ }),
-/* 50 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -47179,16 +48316,16 @@ exports.push([module.i, "\n.svg-mime {\n  width: 80px;\n  height: 75%;\n  fill: 
 
 
 /***/ }),
-/* 51 */
+/* 85 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_viewer_src_component_vue__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_viewer_src_component_vue__ = __webpack_require__(86);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_viewer_src_component_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_v_viewer_src_component_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_viewerjs_dist_viewer_css__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_viewerjs_dist_viewer_css__ = __webpack_require__(90);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_viewerjs_dist_viewer_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_viewerjs_dist_viewer_css__);
 //
 //
@@ -47336,15 +48473,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 52 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(53)
+var __vue_script__ = __webpack_require__(87)
 /* template */
-var __vue_template__ = __webpack_require__(55)
+var __vue_template__ = __webpack_require__(89)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -47383,12 +48520,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 53 */
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_viewerjs__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_viewerjs__ = __webpack_require__(88);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_viewerjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_viewerjs__);
 //
 //
@@ -47465,7 +48602,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 54 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -50514,7 +51651,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 55 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50538,13 +51675,13 @@ if (false) {
 }
 
 /***/ }),
-/* 56 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(57);
+var content = __webpack_require__(91);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -50552,7 +51689,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(11)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -50569,7 +51706,7 @@ if(false) {
 }
 
 /***/ }),
-/* 57 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -50583,7 +51720,7 @@ exports.push([module.i, "/*!\n * Viewer.js v1.3.5\n * https://fengyuanchen.githu
 
 
 /***/ }),
-/* 58 */
+/* 92 */
 /***/ (function(module, exports) {
 
 
@@ -50678,7 +51815,7 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 59 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50785,19 +51922,19 @@ if (false) {
 }
 
 /***/ }),
-/* 60 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(61)
+  __webpack_require__(95)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(63)
+var __vue_script__ = __webpack_require__(97)
 /* template */
-var __vue_template__ = __webpack_require__(64)
+var __vue_template__ = __webpack_require__(98)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50836,13 +51973,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 61 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(62);
+var content = __webpack_require__(96);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -50862,7 +51999,7 @@ if(false) {
 }
 
 /***/ }),
-/* 62 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -50876,7 +52013,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 
 /***/ }),
-/* 63 */
+/* 97 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50942,7 +52079,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 64 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50977,19 +52114,19 @@ if (false) {
 }
 
 /***/ }),
-/* 65 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(66)
+  __webpack_require__(100)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(68)
+var __vue_script__ = __webpack_require__(102)
 /* template */
-var __vue_template__ = __webpack_require__(70)
+var __vue_template__ = __webpack_require__(104)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -51028,13 +52165,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 66 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(67);
+var content = __webpack_require__(101);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -51054,7 +52191,7 @@ if(false) {
 }
 
 /***/ }),
-/* 67 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -51068,12 +52205,12 @@ exports.push([module.i, "\n.json-viewer[data-v-0fa0cf4e] {\n    width: 100%;\n  
 
 
 /***/ }),
-/* 68 */
+/* 102 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_liquor_tree__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_liquor_tree__ = __webpack_require__(103);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -51227,7 +52364,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 });
 
 /***/ }),
-/* 69 */
+/* 103 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -51240,7 +52377,7 @@ var NodeContent={name:"node-content",props:["node"],render:function(e){var t=thi
 
 
 /***/ }),
-/* 70 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -51323,7 +52460,7 @@ if (false) {
 }
 
 /***/ }),
-/* 71 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51333,7 +52470,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var mcopy = _interopDefault(__webpack_require__(72));
+var mcopy = _interopDefault(__webpack_require__(106));
 
 var copy = {
   bind: function bind(el, ref) {
@@ -51384,7 +52521,7 @@ exports['default'] = install;
 
 
 /***/ }),
-/* 72 */
+/* 106 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -51434,22 +52571,22 @@ var copyTextToClipboard = function (input) {
 
 
 /***/ }),
-/* 73 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {"object"==typeof navigator&&function(e,t){ true?module.exports=t():"function"==typeof define&&define.amd?define("Plyr",t):e.Plyr=t()}(this,function(){"use strict";var e=function(e){return null!=e?e.constructor:null},t=function(e,t){return Boolean(e&&t&&e instanceof t)},i=function(e){return null==e},n=function(t){return e(t)===Object},s=function(t){return e(t)===String},a=function(e){return Array.isArray(e)},o=function(e){return t(e,NodeList)},r=function(e){return i(e)||(s(e)||a(e)||o(e))&&!e.length||n(e)&&!Object.keys(e).length},l={nullOrUndefined:i,object:n,number:function(t){return e(t)===Number&&!Number.isNaN(t)},string:s,boolean:function(t){return e(t)===Boolean},function:function(t){return e(t)===Function},array:a,weakMap:function(e){return t(e,WeakMap)},nodeList:o,element:function(e){return t(e,Element)},textNode:function(t){return e(t)===Text},event:function(e){return t(e,Event)},keyboardEvent:function(e){return t(e,KeyboardEvent)},cue:function(e){return t(e,window.TextTrackCue)||t(e,window.VTTCue)},track:function(e){return t(e,TextTrack)||!i(e)&&s(e.kind)},url:function(e){if(t(e,window.URL))return!0;var i=e;e.startsWith("http://")&&e.startsWith("https://")||(i="http://"+e);try{return!r(new URL(i).hostname)}catch(e){return!1}},empty:r},c=function(){var e=!1;try{var t=Object.defineProperty({},"passive",{get:function(){return e=!0,null}});window.addEventListener("test",null,t),window.removeEventListener("test",null,t)}catch(e){}return e}();function u(e,t,i){var n=arguments.length>3&&void 0!==arguments[3]&&arguments[3],s=this,a=!(arguments.length>4&&void 0!==arguments[4])||arguments[4],o=arguments.length>5&&void 0!==arguments[5]&&arguments[5];if(e&&"addEventListener"in e&&!l.empty(t)&&l.function(i)){var r=t.split(" "),u=o;c&&(u={passive:a,capture:o}),r.forEach(function(t){s&&s.eventListeners&&n&&s.eventListeners.push({element:e,type:t,callback:i,options:u}),e[n?"addEventListener":"removeEventListener"](t,i,u)})}}function d(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"",i=arguments[2],n=!(arguments.length>3&&void 0!==arguments[3])||arguments[3],s=arguments.length>4&&void 0!==arguments[4]&&arguments[4];u.call(this,e,t,i,!0,n,s)}function h(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"",i=arguments[2],n=!(arguments.length>3&&void 0!==arguments[3])||arguments[3],s=arguments.length>4&&void 0!==arguments[4]&&arguments[4];u.call(this,e,t,i,!1,n,s)}function p(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"",i=arguments[2],n=!(arguments.length>3&&void 0!==arguments[3])||arguments[3],s=arguments.length>4&&void 0!==arguments[4]&&arguments[4];u.call(this,e,t,function a(){h(e,t,a,n,s);for(var o=arguments.length,r=Array(o),l=0;l<o;l++)r[l]=arguments[l];i.apply(this,r)},!0,n,s)}function f(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"",i=arguments.length>2&&void 0!==arguments[2]&&arguments[2],n=arguments.length>3&&void 0!==arguments[3]?arguments[3]:{};if(l.element(e)&&!l.empty(t)){var s=new CustomEvent(t,{bubbles:i,detail:Object.assign({},n,{plyr:this})});e.dispatchEvent(s)}}var m=function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")},g=function(){function e(e,t){for(var i=0;i<t.length;i++){var n=t[i];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,i,n){return i&&e(t.prototype,i),n&&e(t,n),t}}(),y=function(e,t,i){return t in e?Object.defineProperty(e,t,{value:i,enumerable:!0,configurable:!0,writable:!0}):e[t]=i,e},v=function(){return function(e,t){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return function(e,t){var i=[],n=!0,s=!1,a=void 0;try{for(var o,r=e[Symbol.iterator]();!(n=(o=r.next()).done)&&(i.push(o.value),!t||i.length!==t);n=!0);}catch(e){s=!0,a=e}finally{try{!n&&r.return&&r.return()}finally{if(s)throw a}}return i}(e,t);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}();function b(e,t){var i=e.length?e:[e];Array.from(i).reverse().forEach(function(e,i){var n=i>0?t.cloneNode(!0):t,s=e.parentNode,a=e.nextSibling;n.appendChild(e),a?s.insertBefore(n,a):s.appendChild(n)})}function k(e,t){l.element(e)&&!l.empty(t)&&Object.entries(t).filter(function(e){var t=v(e,2)[1];return!l.nullOrUndefined(t)}).forEach(function(t){var i=v(t,2),n=i[0],s=i[1];return e.setAttribute(n,s)})}function w(e,t,i){var n=document.createElement(e);return l.object(t)&&k(n,t),l.string(i)&&(n.innerText=i),n}function T(e,t,i,n){l.element(t)&&t.appendChild(w(e,i,n))}function A(e){l.nodeList(e)||l.array(e)?Array.from(e).forEach(A):l.element(e)&&l.element(e.parentNode)&&e.parentNode.removeChild(e)}function E(e){if(l.element(e))for(var t=e.childNodes.length;t>0;)e.removeChild(e.lastChild),t-=1}function C(e,t){return l.element(t)&&l.element(t.parentNode)&&l.element(e)?(t.parentNode.replaceChild(e,t),e):null}function P(e,t){if(!l.string(e)||l.empty(e))return{};var i={},n=t;return e.split(",").forEach(function(e){var t=e.trim(),s=t.replace(".",""),a=t.replace(/[[\]]/g,"").split("="),o=a[0],r=a.length>1?a[1].replace(/["']/g,""):"";switch(t.charAt(0)){case".":l.object(n)&&l.string(n.class)&&(n.class+=" "+s),i.class=s;break;case"#":i.id=t.replace("#","");break;case"[":i[o]=r}}),i}function S(e,t){if(l.element(e)){var i=t;l.boolean(i)||(i=!e.hidden),i?e.setAttribute("hidden",""):e.removeAttribute("hidden")}}function M(e,t,i){if(l.nodeList(e))return Array.from(e).map(function(e){return M(e,t,i)});if(l.element(e)){var n="toggle";return void 0!==i&&(n=i?"add":"remove"),e.classList[n](t),e.classList.contains(t)}return!1}function N(e,t){return l.element(e)&&e.classList.contains(t)}function L(e,t){var i={Element:Element};return(i.matches||i.webkitMatchesSelector||i.mozMatchesSelector||i.msMatchesSelector||function(){return Array.from(document.querySelectorAll(t)).includes(this)}).call(e,t)}function x(e){return this.elements.container.querySelectorAll(e)}function _(e){return this.elements.container.querySelector(e)}function I(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null,t=arguments.length>1&&void 0!==arguments[1]&&arguments[1];l.element(e)&&(e.focus(),t&&M(e,this.config.classNames.tabFocus))}var O,j,q,R=(O=document.createElement("span"),j={WebkitTransition:"webkitTransitionEnd",MozTransition:"transitionend",OTransition:"oTransitionEnd otransitionend",transition:"transitionend"},q=Object.keys(j).find(function(e){return void 0!==O.style[e]}),!!l.string(q)&&j[q]);function B(e){setTimeout(function(){try{S(e,!0),e.offsetHeight,S(e,!1)}catch(e){}},0)}var H,V={isIE:!!document.documentMode,isWebkit:"WebkitAppearance"in document.documentElement.style&&!/Edge/.test(navigator.userAgent),isIPhone:/(iPhone|iPod)/gi.test(navigator.platform),isIos:/(iPad|iPhone|iPod)/gi.test(navigator.platform)},D={"audio/ogg":"vorbis","audio/wav":"1","video/webm":"vp8, vorbis","video/mp4":"avc1.42E01E, mp4a.40.2","video/ogg":"theora"},F={audio:"canPlayType"in document.createElement("audio"),video:"canPlayType"in document.createElement("video"),check:function(e,t,i){var n=V.isIPhone&&i&&F.playsinline,s=F[e]||"html5"!==t;return{api:s,ui:s&&F.rangeInput&&("video"!==e||!V.isIPhone||n)}},pip:!V.isIPhone&&l.function(w("video").webkitSetPresentationMode),airplay:l.function(window.WebKitPlaybackTargetAvailabilityEvent),playsinline:"playsInline"in document.createElement("video"),mime:function(e){var t=e.split("/"),i=v(t,1)[0];if(!this.isHTML5||i!==this.type)return!1;var n=void 0;e&&e.includes("codecs=")?n=e:"audio/mpeg"===e?n="audio/mpeg;":e in D&&(n=e+'; codecs="'+D[e]+'"');try{return Boolean(n&&this.media.canPlayType(n).replace(/no/,""))}catch(e){return!1}},textTracks:"textTracks"in document.createElement("video"),rangeInput:(H=document.createElement("input"),H.type="range","range"===H.type),touch:"ontouchstart"in document.documentElement,transitions:!1!==R,reducedMotion:"matchMedia"in window&&window.matchMedia("(prefers-reduced-motion)").matches},U={getSources:function(){var e=this;return this.isHTML5?Array.from(this.media.querySelectorAll("source")).filter(function(t){return F.mime.call(e,t.getAttribute("type"))}):[]},getQualityOptions:function(){return U.getSources.call(this).map(function(e){return Number(e.getAttribute("size"))}).filter(Boolean)},extend:function(){if(this.isHTML5){var e=this;Object.defineProperty(e.media,"quality",{get:function(){var t=U.getSources.call(e).find(function(t){return t.getAttribute("src")===e.source});return t&&Number(t.getAttribute("size"))},set:function(t){var i=U.getSources.call(e).find(function(e){return Number(e.getAttribute("size"))===t});if(i){var n=e.media,s=n.currentTime,a=n.paused,o=n.preload,r=n.readyState;e.media.src=i.getAttribute("src"),("none"!==o||r)&&(e.once("loadedmetadata",function(){e.currentTime=s,a||e.play()}),e.media.load()),f.call(e,e.media,"qualitychange",!1,{quality:t}),e.storage.set({quality:t})}}})}},cancelRequests:function(){this.isHTML5&&(A(U.getSources.call(this)),this.media.setAttribute("src",this.config.blankVideo),this.media.load(),this.debug.log("Cancelled network requests"))}};function z(e){return l.array(e)?e.filter(function(t,i){return e.indexOf(t)===i}):e}function W(e,t){return t.split(".").reduce(function(e,t){return e&&e[t]},e)}function K(){for(var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=arguments.length,i=Array(t>1?t-1:0),n=1;n<t;n++)i[n-1]=arguments[n];if(!i.length)return e;var s=i.shift();return l.object(s)?(Object.keys(s).forEach(function(t){l.object(s[t])?(Object.keys(e).includes(t)||Object.assign(e,y({},t,{})),K(e[t],s[t])):Object.assign(e,y({},t,s[t]))}),K.apply(void 0,[e].concat(i))):e}function Y(e){for(var t=arguments.length,i=Array(t>1?t-1:0),n=1;n<t;n++)i[n-1]=arguments[n];return l.empty(e)?e:e.toString().replace(/{(\d+)}/g,function(e,t){return i[t].toString()})}function J(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"",t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"",i=arguments.length>2&&void 0!==arguments[2]?arguments[2]:"";return e.replace(new RegExp(t.toString().replace(/([.*+?^=!:${}()|[\]\/\\])/g,"\\$1"),"g"),i.toString())}function Q(){return(arguments.length>0&&void 0!==arguments[0]?arguments[0]:"").toString().replace(/\w\S*/g,function(e){return e.charAt(0).toUpperCase()+e.substr(1).toLowerCase()})}function $(){var e=(arguments.length>0&&void 0!==arguments[0]?arguments[0]:"").toString();return(e=function(){var e=(arguments.length>0&&void 0!==arguments[0]?arguments[0]:"").toString();return e=J(e,"-"," "),e=J(e,"_"," "),J(e=Q(e)," ","")}(e)).charAt(0).toLowerCase()+e.slice(1)}function G(e){var t=document.createElement("div");return t.appendChild(e),t.innerHTML}var X=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"",t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};if(l.empty(e)||l.empty(t))return"";var i=W(t.i18n,e);if(l.empty(i))return"";var n={"{seektime}":t.seekTime,"{title}":t.title};return Object.entries(n).forEach(function(e){var t=v(e,2),n=t[0],s=t[1];i=J(i,n,s)}),i},Z=function(){function e(t){m(this,e),this.enabled=t.config.storage.enabled,this.key=t.config.storage.key}return g(e,[{key:"get",value:function(t){if(!e.supported||!this.enabled)return null;var i=window.localStorage.getItem(this.key);if(l.empty(i))return null;var n=JSON.parse(i);return l.string(t)&&t.length?n[t]:n}},{key:"set",value:function(t){if(e.supported&&this.enabled&&l.object(t)){var i=this.get();l.empty(i)&&(i={}),K(i,t),window.localStorage.setItem(this.key,JSON.stringify(i))}}}],[{key:"supported",get:function(){try{if(!("localStorage"in window))return!1;return window.localStorage.setItem("___test","___test"),window.localStorage.removeItem("___test"),!0}catch(e){return!1}}}]),e}();function ee(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"text";return new Promise(function(i,n){try{var s=new XMLHttpRequest;if(!("withCredentials"in s))return;s.addEventListener("load",function(){if("text"===t)try{i(JSON.parse(s.responseText))}catch(e){i(s.responseText)}else i(s.response)}),s.addEventListener("error",function(){throw new Error(s.status)}),s.open("GET",e,!0),s.responseType=t,s.send()}catch(e){n(e)}})}function te(e,t){if(l.string(e)){var i=l.string(t),n=function(){return null!==document.getElementById(t)},s=function(e,t){e.innerHTML=t,i&&n()||document.body.insertAdjacentElement("afterbegin",e)};if(!i||!n()){var a=Z.supported,o=document.createElement("div");if(o.setAttribute("hidden",""),i&&o.setAttribute("id",t),a){var r=window.localStorage.getItem("cache-"+t);if(null!==r){var c=JSON.parse(r);s(o,c.content)}}ee(e).then(function(e){l.empty(e)||(a&&window.localStorage.setItem("cache-"+t,JSON.stringify({content:e})),s(o,e))}).catch(function(){})}}}var ie=function(e){return parseInt(e/60/60%60,10)},ne=function(e){return parseInt(e/60%60,10)},se=function(e){return parseInt(e%60,10)};function ae(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,t=arguments.length>1&&void 0!==arguments[1]&&arguments[1],i=arguments.length>2&&void 0!==arguments[2]&&arguments[2];if(!l.number(e))return ae(null,t,i);var n=function(e){return("0"+e).slice(-2)},s=ie(e),a=ne(e),o=se(e);return t||s>0?s+=":":s="",(i&&e>0?"-":"")+s+n(a)+":"+n(o)}var oe={getIconUrl:function(){var e=new URL(this.config.iconUrl,window.location).host!==window.location.host||V.isIE&&!window.svg4everybody;return{url:this.config.iconUrl,cors:e}},findElements:function(){try{return this.elements.controls=_.call(this,this.config.selectors.controls.wrapper),this.elements.buttons={play:x.call(this,this.config.selectors.buttons.play),pause:_.call(this,this.config.selectors.buttons.pause),restart:_.call(this,this.config.selectors.buttons.restart),rewind:_.call(this,this.config.selectors.buttons.rewind),fastForward:_.call(this,this.config.selectors.buttons.fastForward),mute:_.call(this,this.config.selectors.buttons.mute),pip:_.call(this,this.config.selectors.buttons.pip),airplay:_.call(this,this.config.selectors.buttons.airplay),settings:_.call(this,this.config.selectors.buttons.settings),captions:_.call(this,this.config.selectors.buttons.captions),fullscreen:_.call(this,this.config.selectors.buttons.fullscreen)},this.elements.progress=_.call(this,this.config.selectors.progress),this.elements.inputs={seek:_.call(this,this.config.selectors.inputs.seek),volume:_.call(this,this.config.selectors.inputs.volume)},this.elements.display={buffer:_.call(this,this.config.selectors.display.buffer),currentTime:_.call(this,this.config.selectors.display.currentTime),duration:_.call(this,this.config.selectors.display.duration)},l.element(this.elements.progress)&&(this.elements.display.seekTooltip=this.elements.progress.querySelector("."+this.config.classNames.tooltip)),!0}catch(e){return this.debug.warn("It looks like there is a problem with your custom controls HTML",e),this.toggleNativeControls(!0),!1}},createIcon:function(e,t){var i=oe.getIconUrl.call(this),n=(i.cors?"":i.url)+"#"+this.config.iconPrefix,s=document.createElementNS("http://www.w3.org/2000/svg","svg");k(s,K(t,{role:"presentation",focusable:"false"}));var a=document.createElementNS("http://www.w3.org/2000/svg","use"),o=n+"-"+e;return"href"in a?a.setAttributeNS("http://www.w3.org/1999/xlink","href",o):a.setAttributeNS("http://www.w3.org/1999/xlink","xlink:href",o),s.appendChild(a),s},createLabel:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},i={pip:"PIP",airplay:"AirPlay"}[e]||X(e,this.config);return w("span",Object.assign({},t,{class:[t.class,this.config.classNames.hidden].filter(Boolean).join(" ")}),i)},createBadge:function(e){if(l.empty(e))return null;var t=w("span",{class:this.config.classNames.menu.value});return t.appendChild(w("span",{class:this.config.classNames.menu.badge},e)),t},createButton:function(e,t){var i=w("button"),n=Object.assign({},t),s=$(e),a=!1,o=void 0,r=void 0,c=void 0,u=void 0;switch("type"in n||(n.type="button"),"class"in n?n.class.includes(this.config.classNames.control)||(n.class+=" "+this.config.classNames.control):n.class=this.config.classNames.control,e){case"play":a=!0,o="play",c="pause",r="play",u="pause";break;case"mute":a=!0,o="mute",c="unmute",r="volume",u="muted";break;case"captions":a=!0,o="enableCaptions",c="disableCaptions",r="captions-off",u="captions-on";break;case"fullscreen":a=!0,o="enterFullscreen",c="exitFullscreen",r="enter-fullscreen",u="exit-fullscreen";break;case"play-large":n.class+=" "+this.config.classNames.control+"--overlaid",s="play",o="play",r="play";break;default:o=s,r=e}return a?(i.appendChild(oe.createIcon.call(this,u,{class:"icon--pressed"})),i.appendChild(oe.createIcon.call(this,r,{class:"icon--not-pressed"})),i.appendChild(oe.createLabel.call(this,c,{class:"label--pressed"})),i.appendChild(oe.createLabel.call(this,o,{class:"label--not-pressed"}))):(i.appendChild(oe.createIcon.call(this,r)),i.appendChild(oe.createLabel.call(this,o))),K(n,P(this.config.selectors.buttons[s],n)),k(i,n),"play"===s?(l.array(this.elements.buttons[s])||(this.elements.buttons[s]=[]),this.elements.buttons[s].push(i)):this.elements.buttons[s]=i,i},createRange:function(e,t){var i=w("input",K(P(this.config.selectors.inputs[e]),{type:"range",min:0,max:100,step:.01,value:0,autocomplete:"off",role:"slider","aria-label":X(e,this.config),"aria-valuemin":0,"aria-valuemax":100,"aria-valuenow":0},t));return this.elements.inputs[e]=i,oe.updateRangeFill.call(this,i),i},createProgress:function(e,t){var i=w("progress",K(P(this.config.selectors.display[e]),{min:0,max:100,value:0,role:"presentation","aria-hidden":!0},t));if("volume"!==e){i.appendChild(w("span",null,"0"));var n={played:"played",buffer:"buffered"}[e],s=n?X(n,this.config):"";i.innerText="% "+s.toLowerCase()}return this.elements.display[e]=i,i},createTime:function(e){var t=P(this.config.selectors.display[e]),i=w("div",K(t,{class:(this.config.classNames.display.time+" "+(t.class?t.class:"")).trim(),"aria-label":X(e,this.config)}),"00:00");return this.elements.display[e]=i,i},bindMenuItemShortcuts:function(e,t){var i=this;d(e,"keydown keyup",function(n){if([32,38,39,40].includes(n.which)&&(n.preventDefault(),n.stopPropagation(),"keydown"!==n.type)){var s=L(e,'[role="menuitemradio"]');if(!s&&[32,39].includes(n.which))oe.showMenuPanel.call(i,t,!0);else{var a=void 0;32!==n.which&&(40===n.which||s&&39===n.which?(a=e.nextElementSibling,l.element(a)||(a=e.parentNode.firstElementChild)):(a=e.previousElementSibling,l.element(a)||(a=e.parentNode.lastElementChild)),I.call(i,a,!0))}}},!1),d(e,"keyup",function(e){13===e.which&&oe.focusFirstMenuItem.call(i,null,!0)})},createMenuItem:function(e){var t=this,i=e.value,n=e.list,s=e.type,a=e.title,o=e.badge,r=void 0===o?null:o,c=e.checked,u=void 0!==c&&c,d=P(this.config.selectors.inputs[s]),h=w("button",K(d,{type:"button",role:"menuitemradio",class:(this.config.classNames.control+" "+(d.class?d.class:"")).trim(),"aria-checked":u,value:i})),p=w("span");p.innerHTML=a,l.element(r)&&p.appendChild(r),h.appendChild(p),Object.defineProperty(h,"checked",{enumerable:!0,get:function(){return"true"===h.getAttribute("aria-checked")},set:function(e){e&&Array.from(h.parentNode.children).filter(function(e){return L(e,'[role="menuitemradio"]')}).forEach(function(e){return e.setAttribute("aria-checked","false")}),h.setAttribute("aria-checked",e?"true":"false")}}),this.listeners.bind(h,"click keyup",function(e){if(!l.keyboardEvent(e)||32===e.which){switch(e.preventDefault(),e.stopPropagation(),h.checked=!0,s){case"language":t.currentTrack=Number(i);break;case"quality":t.quality=i;break;case"speed":t.speed=parseFloat(i)}oe.showMenuPanel.call(t,"home",l.keyboardEvent(e))}},s,!1),oe.bindMenuItemShortcuts.call(this,h,s),n.appendChild(h)},formatTime:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,t=arguments.length>1&&void 0!==arguments[1]&&arguments[1];return l.number(e)?ae(e,ie(this.duration)>0,t):e},updateTimeDisplay:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null,t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,i=arguments.length>2&&void 0!==arguments[2]&&arguments[2];l.element(e)&&l.number(t)&&(e.innerText=oe.formatTime(t,i))},updateVolume:function(){this.supported.ui&&(l.element(this.elements.inputs.volume)&&oe.setRange.call(this,this.elements.inputs.volume,this.muted?0:this.volume),l.element(this.elements.buttons.mute)&&(this.elements.buttons.mute.pressed=this.muted||0===this.volume))},setRange:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0;l.element(e)&&(e.value=t,oe.updateRangeFill.call(this,e))},updateProgress:function(e){var t=this;if(this.supported.ui&&l.event(e)){var i,n,s=0;if(e)switch(e.type){case"timeupdate":case"seeking":case"seeked":i=this.currentTime,n=this.duration,s=0===i||0===n||Number.isNaN(i)||Number.isNaN(n)?0:(i/n*100).toFixed(2),"timeupdate"===e.type&&oe.setRange.call(this,this.elements.inputs.seek,s);break;case"playing":case"progress":!function(e,i){var n=l.number(i)?i:0,s=l.element(e)?e:t.elements.display.buffer;if(l.element(s)){s.value=n;var a=s.getElementsByTagName("span")[0];l.element(a)&&(a.childNodes[0].nodeValue=n)}}(this.elements.display.buffer,100*this.buffered)}}},updateRangeFill:function(e){var t=l.event(e)?e.target:e;if(l.element(t)&&"range"===t.getAttribute("type")){if(L(t,this.config.selectors.inputs.seek)){t.setAttribute("aria-valuenow",this.currentTime);var i=oe.formatTime(this.currentTime),n=oe.formatTime(this.duration),s=X("seekLabel",this.config);t.setAttribute("aria-valuetext",s.replace("{currentTime}",i).replace("{duration}",n))}else if(L(t,this.config.selectors.inputs.volume)){var a=100*t.value;t.setAttribute("aria-valuenow",a),t.setAttribute("aria-valuetext",a.toFixed(1)+"%")}else t.setAttribute("aria-valuenow",t.value);V.isWebkit&&t.style.setProperty("--value",t.value/t.max*100+"%")}},updateSeekTooltip:function(e){var t=this;if(this.config.tooltips.seek&&l.element(this.elements.inputs.seek)&&l.element(this.elements.display.seekTooltip)&&0!==this.duration){var i=0,n=this.elements.progress.getBoundingClientRect(),s=this.config.classNames.tooltip+"--visible",a=function(e){M(t.elements.display.seekTooltip,s,e)};if(this.touch)a(!1);else{if(l.event(e))i=100/n.width*(e.pageX-n.left);else{if(!N(this.elements.display.seekTooltip,s))return;i=parseFloat(this.elements.display.seekTooltip.style.left,10)}i<0?i=0:i>100&&(i=100),oe.updateTimeDisplay.call(this,this.elements.display.seekTooltip,this.duration/100*i),this.elements.display.seekTooltip.style.left=i+"%",l.event(e)&&["mouseenter","mouseleave"].includes(e.type)&&a("mouseenter"===e.type)}}},timeUpdate:function(e){var t=!l.element(this.elements.display.duration)&&this.config.invertTime;oe.updateTimeDisplay.call(this,this.elements.display.currentTime,t?this.duration-this.currentTime:this.currentTime,t),e&&"timeupdate"===e.type&&this.media.seeking||oe.updateProgress.call(this,e)},durationUpdate:function(){if(this.supported.ui&&(this.config.invertTime||!this.currentTime)){if(this.duration>=Math.pow(2,32))return S(this.elements.display.currentTime,!0),void S(this.elements.progress,!0);l.element(this.elements.inputs.seek)&&this.elements.inputs.seek.setAttribute("aria-valuemax",this.duration);var e=l.element(this.elements.display.duration);!e&&this.config.displayDuration&&this.paused&&oe.updateTimeDisplay.call(this,this.elements.display.currentTime,this.duration),e&&oe.updateTimeDisplay.call(this,this.elements.display.duration,this.duration),oe.updateSeekTooltip.call(this)}},toggleMenuButton:function(e,t){S(this.elements.settings.buttons[e],!t)},updateSetting:function(e,t,i){var n=this.elements.settings.panels[e],s=null,a=t;if("captions"===e)s=this.currentTrack;else{if(s=l.empty(i)?this[e]:i,l.empty(s)&&(s=this.config[e].default),!l.empty(this.options[e])&&!this.options[e].includes(s))return void this.debug.warn("Unsupported value of '"+s+"' for "+e);if(!this.config[e].options.includes(s))return void this.debug.warn("Disabled value of '"+s+"' for "+e)}if(l.element(a)||(a=n&&n.querySelector('[role="menu"]')),l.element(a)){this.elements.settings.buttons[e].querySelector("."+this.config.classNames.menu.value).innerHTML=oe.getLabel.call(this,e,s);var o=a&&a.querySelector('[value="'+s+'"]');l.element(o)&&(o.checked=!0)}},getLabel:function(e,t){switch(e){case"speed":return 1===t?X("normal",this.config):t+"&times;";case"quality":if(l.number(t)){var i=X("qualityLabel."+t,this.config);return i.length?i:t+"p"}return Q(t);case"captions":return ce.getLabel.call(this);default:return null}},setQualityMenu:function(e){var t=this;if(l.element(this.elements.settings.panels.quality)){var i=this.elements.settings.panels.quality.querySelector('[role="menu"]');l.array(e)&&(this.options.quality=z(e).filter(function(e){return t.config.quality.options.includes(e)}));var n=!l.empty(this.options.quality)&&this.options.quality.length>1;if(oe.toggleMenuButton.call(this,"quality",n),E(i),oe.checkMenu.call(this),n){this.options.quality.sort(function(e,i){var n=t.config.quality.options;return n.indexOf(e)>n.indexOf(i)?1:-1}).forEach(function(e){oe.createMenuItem.call(t,{value:e,list:i,type:"quality",title:oe.getLabel.call(t,"quality",e),badge:function(e){var i=X("qualityBadge."+e,t.config);return i.length?oe.createBadge.call(t,i):null}(e)})}),oe.updateSetting.call(this,"quality",i)}}},setCaptionsMenu:function(){var e=this;if(l.element(this.elements.settings.panels.captions)){var t=this.elements.settings.panels.captions.querySelector('[role="menu"]'),i=ce.getTracks.call(this),n=Boolean(i.length);if(oe.toggleMenuButton.call(this,"captions",n),E(t),oe.checkMenu.call(this),n){var s=i.map(function(i,n){return{value:n,checked:e.captions.toggled&&e.currentTrack===n,title:ce.getLabel.call(e,i),badge:i.language&&oe.createBadge.call(e,i.language.toUpperCase()),list:t,type:"language"}});s.unshift({value:-1,checked:!this.captions.toggled,title:X("disabled",this.config),list:t,type:"language"}),s.forEach(oe.createMenuItem.bind(this)),oe.updateSetting.call(this,"captions",t)}}},setSpeedMenu:function(e){var t=this;if(l.element(this.elements.settings.panels.speed)){var i=this.elements.settings.panels.speed.querySelector('[role="menu"]');l.array(e)?this.options.speed=e:(this.isHTML5||this.isVimeo)&&(this.options.speed=[.5,.75,1,1.25,1.5,1.75,2]),this.options.speed=this.options.speed.filter(function(e){return t.config.speed.options.includes(e)});var n=!l.empty(this.options.speed)&&this.options.speed.length>1;oe.toggleMenuButton.call(this,"speed",n),E(i),oe.checkMenu.call(this),n&&(this.options.speed.forEach(function(e){oe.createMenuItem.call(t,{value:e,list:i,type:"speed",title:oe.getLabel.call(t,"speed",e)})}),oe.updateSetting.call(this,"speed",i))}},checkMenu:function(){var e=this.elements.settings.buttons,t=!l.empty(e)&&Object.values(e).some(function(e){return!e.hidden});S(this.elements.settings.menu,!t)},focusFirstMenuItem:function(e){var t=arguments.length>1&&void 0!==arguments[1]&&arguments[1];if(!this.elements.settings.popup.hidden){var i=e;l.element(i)||(i=Object.values(this.elements.settings.panels).find(function(e){return!e.hidden}));var n=i.querySelector('[role^="menuitem"]');I.call(this,n,t)}},toggleMenu:function(e){var t=this.elements.settings.popup,i=this.elements.buttons.settings;if(l.element(t)&&l.element(i)){var n=t.hidden,s=n;if(l.boolean(e))s=e;else if(l.keyboardEvent(e)&&27===e.which)s=!1;else if(l.event(e)){var a=t.contains(e.target);if(a||!a&&e.target!==i&&s)return}i.setAttribute("aria-expanded",s),S(t,!s),M(this.elements.container,this.config.classNames.menu.open,s),s&&l.keyboardEvent(e)?oe.focusFirstMenuItem.call(this,null,!0):s||n||I.call(this,i,l.keyboardEvent(e))}},getMenuSize:function(e){var t=e.cloneNode(!0);t.style.position="absolute",t.style.opacity=0,t.removeAttribute("hidden"),e.parentNode.appendChild(t);var i=t.scrollWidth,n=t.scrollHeight;return A(t),{width:i,height:n}},showMenuPanel:function(){var e=this,t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"",i=arguments.length>1&&void 0!==arguments[1]&&arguments[1],n=document.getElementById("plyr-settings-"+this.id+"-"+t);if(l.element(n)){var s=n.parentNode,a=Array.from(s.children).find(function(e){return!e.hidden});if(F.transitions&&!F.reducedMotion){s.style.width=a.scrollWidth+"px",s.style.height=a.scrollHeight+"px";var o=oe.getMenuSize.call(this,n);d.call(this,s,R,function t(i){i.target===s&&["width","height"].includes(i.propertyName)&&(s.style.width="",s.style.height="",h.call(e,s,R,t))}),s.style.width=o.width+"px",s.style.height=o.height+"px"}S(a,!0),S(n,!1),oe.focusFirstMenuItem.call(this,n,i)}},create:function(e){var t=this,i=w("div",P(this.config.selectors.controls.wrapper));if(this.config.controls.includes("restart")&&i.appendChild(oe.createButton.call(this,"restart")),this.config.controls.includes("rewind")&&i.appendChild(oe.createButton.call(this,"rewind")),this.config.controls.includes("play")&&i.appendChild(oe.createButton.call(this,"play")),this.config.controls.includes("fast-forward")&&i.appendChild(oe.createButton.call(this,"fast-forward")),this.config.controls.includes("progress")){var n=w("div",P(this.config.selectors.progress));if(n.appendChild(oe.createRange.call(this,"seek",{id:"plyr-seek-"+e.id})),n.appendChild(oe.createProgress.call(this,"buffer")),this.config.tooltips.seek){var s=w("span",{class:this.config.classNames.tooltip},"00:00");n.appendChild(s),this.elements.display.seekTooltip=s}this.elements.progress=n,i.appendChild(this.elements.progress)}if(this.config.controls.includes("current-time")&&i.appendChild(oe.createTime.call(this,"currentTime")),this.config.controls.includes("duration")&&i.appendChild(oe.createTime.call(this,"duration")),this.config.controls.includes("mute")||this.config.controls.includes("volume")){var a=w("div",{class:"plyr__volume"});if(this.config.controls.includes("mute")&&a.appendChild(oe.createButton.call(this,"mute")),this.config.controls.includes("volume")){var o={max:1,step:.05,value:this.config.volume};a.appendChild(oe.createRange.call(this,"volume",K(o,{id:"plyr-volume-"+e.id}))),this.elements.volume=a}i.appendChild(a)}if(this.config.controls.includes("captions")&&i.appendChild(oe.createButton.call(this,"captions")),this.config.controls.includes("settings")&&!l.empty(this.config.settings)){var r=w("div",{class:"plyr__menu",hidden:""});r.appendChild(oe.createButton.call(this,"settings",{"aria-haspopup":!0,"aria-controls":"plyr-settings-"+e.id,"aria-expanded":!1}));var c=w("div",{class:"plyr__menu__container",id:"plyr-settings-"+e.id,hidden:""}),u=w("div"),h=w("div",{id:"plyr-settings-"+e.id+"-home"}),p=w("div",{role:"menu"});h.appendChild(p),u.appendChild(h),this.elements.settings.panels.home=h,this.config.settings.forEach(function(i){var n=w("button",K(P(t.config.selectors.buttons.settings),{type:"button",class:t.config.classNames.control+" "+t.config.classNames.control+"--forward",role:"menuitem","aria-haspopup":!0,hidden:""}));oe.bindMenuItemShortcuts.call(t,n,i),d(n,"click",function(){oe.showMenuPanel.call(t,i,!1)});var s=w("span",null,X(i,t.config)),a=w("span",{class:t.config.classNames.menu.value});a.innerHTML=e[i],s.appendChild(a),n.appendChild(s),p.appendChild(n);var o=w("div",{id:"plyr-settings-"+e.id+"-"+i,hidden:""}),r=w("button",{type:"button",class:t.config.classNames.control+" "+t.config.classNames.control+"--back"});r.appendChild(w("span",{"aria-hidden":!0},X(i,t.config))),r.appendChild(w("span",{class:t.config.classNames.hidden},X("menuBack",t.config))),d(o,"keydown",function(e){37===e.which&&(e.preventDefault(),e.stopPropagation(),oe.showMenuPanel.call(t,"home",!0))},!1),d(r,"click",function(){oe.showMenuPanel.call(t,"home",!1)}),o.appendChild(r),o.appendChild(w("div",{role:"menu"})),u.appendChild(o),t.elements.settings.buttons[i]=n,t.elements.settings.panels[i]=o}),c.appendChild(u),r.appendChild(c),i.appendChild(r),this.elements.settings.popup=c,this.elements.settings.menu=r}return this.config.controls.includes("pip")&&F.pip&&i.appendChild(oe.createButton.call(this,"pip")),this.config.controls.includes("airplay")&&F.airplay&&i.appendChild(oe.createButton.call(this,"airplay")),this.config.controls.includes("fullscreen")&&i.appendChild(oe.createButton.call(this,"fullscreen")),this.config.controls.includes("play-large")&&this.elements.container.appendChild(oe.createButton.call(this,"play-large")),this.elements.controls=i,this.isHTML5&&oe.setQualityMenu.call(this,U.getQualityOptions.call(this)),oe.setSpeedMenu.call(this),i},inject:function(){var e=this;if(this.config.loadSprite){var t=oe.getIconUrl.call(this);t.cors&&te(t.url,"sprite-plyr")}this.id=Math.floor(1e4*Math.random());var i=null;this.elements.controls=null;var n={id:this.id,seektime:this.config.seekTime,title:this.config.title},s=!0;l.function(this.config.controls)&&(this.config.controls=this.config.controls.call(this.props)),this.config.controls||(this.config.controls=[]),l.element(this.config.controls)||l.string(this.config.controls)?i=this.config.controls:(i=oe.create.call(this,{id:this.id,seektime:this.config.seekTime,speed:this.speed,quality:this.quality,captions:ce.getLabel.call(this)}),s=!1);var a=function(e){var t=e;return Object.entries(n).forEach(function(e){var i=v(e,2),n=i[0],s=i[1];t=J(t,"{"+n+"}",s)}),t};s&&(l.string(this.config.controls)?i=a(i):l.element(i)&&(i.innerHTML=a(i.innerHTML)));var o=void 0;if(l.string(this.config.selectors.controls.container)&&(o=document.querySelector(this.config.selectors.controls.container)),l.element(o)||(o=this.elements.container),o[l.element(i)?"insertAdjacentElement":"insertAdjacentHTML"]("afterbegin",i),l.element(this.elements.controls)||oe.findElements.call(this),!l.empty(this.elements.buttons)){var r=function(t){var i=e.config.classNames.controlPressed;Object.defineProperty(t,"pressed",{enumerable:!0,get:function(){return N(t,i)},set:function(){var e=arguments.length>0&&void 0!==arguments[0]&&arguments[0];M(t,i,e)}})};Object.values(this.elements.buttons).filter(Boolean).forEach(function(e){l.array(e)||l.nodeList(e)?Array.from(e).filter(Boolean).forEach(r):r(e)})}if(window.navigator.userAgent.includes("Edge")&&B(o),this.config.tooltips.controls){var c=this.config,u=c.classNames,d=c.selectors,h=d.controls.wrapper+" "+d.labels+" ."+u.hidden,p=x.call(this,h);Array.from(p).forEach(function(t){M(t,e.config.classNames.hidden,!1),M(t,e.config.classNames.tooltip,!0)})}}};function re(e){var t=e;if(!(arguments.length>1&&void 0!==arguments[1])||arguments[1]){var i=document.createElement("a");i.href=t,t=i.href}try{return new URL(t)}catch(e){return null}}function le(e){var t=new URLSearchParams;return l.object(e)&&Object.entries(e).forEach(function(e){var i=v(e,2),n=i[0],s=i[1];t.set(n,s)}),t}var ce={setup:function(){if(this.supported.ui)if(!this.isVideo||this.isYouTube||this.isHTML5&&!F.textTracks)l.array(this.config.controls)&&this.config.controls.includes("settings")&&this.config.settings.includes("captions")&&oe.setCaptionsMenu.call(this);else{var e,t;if(l.element(this.elements.captions)||(this.elements.captions=w("div",P(this.config.selectors.captions)),e=this.elements.captions,t=this.elements.wrapper,l.element(e)&&l.element(t)&&t.parentNode.insertBefore(e,t.nextSibling)),V.isIE&&window.URL){var i=this.media.querySelectorAll("track");Array.from(i).forEach(function(e){var t=e.getAttribute("src"),i=re(t);null!==i&&i.hostname!==window.location.href.hostname&&["http:","https:"].includes(i.protocol)&&ee(t,"blob").then(function(t){e.setAttribute("src",window.URL.createObjectURL(t))}).catch(function(){A(e)})})}var n=z((navigator.languages||[navigator.language||navigator.userLanguage||"en"]).map(function(e){return e.split("-")[0]})),s=(this.storage.get("language")||this.config.captions.language||"auto").toLowerCase();if("auto"===s)s=v(n,1)[0];var a=this.storage.get("captions");if(l.boolean(a)||(a=this.config.captions.active),Object.assign(this.captions,{toggled:!1,active:a,language:s,languages:n}),this.isHTML5){var o=this.config.captions.update?"addtrack removetrack":"removetrack";d.call(this,this.media.textTracks,o,ce.update.bind(this))}setTimeout(ce.update.bind(this),0)}},update:function(){var e=this,t=ce.getTracks.call(this,!0),i=this.captions,n=i.active,s=i.language,a=i.meta,o=i.currentTrackNode,r=Boolean(t.find(function(e){return e.language===s}));this.isHTML5&&this.isVideo&&t.filter(function(e){return!a.get(e)}).forEach(function(t){e.debug.log("Track added",t),a.set(t,{default:"showing"===t.mode}),t.mode="hidden",d.call(e,t,"cuechange",function(){return ce.updateCues.call(e)})}),(r&&this.language!==s||!t.includes(o))&&(ce.setLanguage.call(this,s),ce.toggle.call(this,n&&r)),M(this.elements.container,this.config.classNames.captions.enabled,!l.empty(t)),(this.config.controls||[]).includes("settings")&&this.config.settings.includes("captions")&&oe.setCaptionsMenu.call(this)},toggle:function(e){var t=!(arguments.length>1&&void 0!==arguments[1])||arguments[1];if(this.supported.ui){var i=this.captions.toggled,n=this.config.classNames.captions.active,s=l.nullOrUndefined(e)?!i:e;if(s!==i){if(t||(this.captions.active=s,this.storage.set({captions:s})),!this.language&&s&&!t){var a=ce.getTracks.call(this),o=ce.findTrack.call(this,[this.captions.language].concat(function(e){if(Array.isArray(e)){for(var t=0,i=Array(e.length);t<e.length;t++)i[t]=e[t];return i}return Array.from(e)}(this.captions.languages)),!0);return this.captions.language=o.language,void ce.set.call(this,a.indexOf(o))}this.elements.buttons.captions&&(this.elements.buttons.captions.pressed=s),M(this.elements.container,n,s),this.captions.toggled=s,oe.updateSetting.call(this,"captions"),f.call(this,this.media,s?"captionsenabled":"captionsdisabled")}}},set:function(e){var t=!(arguments.length>1&&void 0!==arguments[1])||arguments[1],i=ce.getTracks.call(this);if(-1!==e)if(l.number(e))if(e in i){if(this.captions.currentTrack!==e){this.captions.currentTrack=e;var n=i[e],s=(n||{}).language;this.captions.currentTrackNode=n,oe.updateSetting.call(this,"captions"),t||(this.captions.language=s,this.storage.set({language:s})),this.isVimeo&&this.embed.enableTextTrack(s),f.call(this,this.media,"languagechange")}ce.toggle.call(this,!0,t),this.isHTML5&&this.isVideo&&ce.updateCues.call(this)}else this.debug.warn("Track not found",e);else this.debug.warn("Invalid caption argument",e);else ce.toggle.call(this,!1,t)},setLanguage:function(e){var t=!(arguments.length>1&&void 0!==arguments[1])||arguments[1];if(l.string(e)){var i=e.toLowerCase();this.captions.language=i;var n=ce.getTracks.call(this),s=ce.findTrack.call(this,[i]);ce.set.call(this,n.indexOf(s),t)}else this.debug.warn("Invalid language argument",e)},getTracks:function(){var e=this,t=arguments.length>0&&void 0!==arguments[0]&&arguments[0];return Array.from((this.media||{}).textTracks||[]).filter(function(i){return!e.isHTML5||t||e.captions.meta.has(i)}).filter(function(e){return["captions","subtitles"].includes(e.kind)})},findTrack:function(e){var t=this,i=arguments.length>1&&void 0!==arguments[1]&&arguments[1],n=ce.getTracks.call(this),s=function(e){return Number((t.captions.meta.get(e)||{}).default)},a=Array.from(n).sort(function(e,t){return s(t)-s(e)}),o=void 0;return e.every(function(e){return!(o=a.find(function(t){return t.language===e}))}),o||(i?a[0]:void 0)},getCurrentTrack:function(){return ce.getTracks.call(this)[this.currentTrack]},getLabel:function(e){var t=e;return!l.track(t)&&F.textTracks&&this.captions.toggled&&(t=ce.getCurrentTrack.call(this)),l.track(t)?l.empty(t.label)?l.empty(t.language)?X("enabled",this.config):e.language.toUpperCase():t.label:X("disabled",this.config)},updateCues:function(e){if(this.supported.ui)if(l.element(this.elements.captions))if(l.nullOrUndefined(e)||Array.isArray(e)){var t=e;if(!t){var i=ce.getCurrentTrack.call(this);t=Array.from((i||{}).activeCues||[]).map(function(e){return e.getCueAsHTML()}).map(G)}var n=t.map(function(e){return e.trim()}).join("\n");if(n!==this.elements.captions.innerHTML){E(this.elements.captions);var s=w("span",P(this.config.selectors.caption));s.innerHTML=n,this.elements.captions.appendChild(s),f.call(this,this.media,"cuechange")}}else this.debug.warn("updateCues: Invalid input",e);else this.debug.warn("No captions element to render to")}},ue={enabled:!0,title:"",debug:!1,autoplay:!1,autopause:!0,playsinline:!0,seekTime:10,volume:1,muted:!1,duration:null,displayDuration:!0,invertTime:!0,toggleInvert:!0,ratio:"16:9",clickToPlay:!0,hideControls:!0,resetOnEnd:!1,disableContextMenu:!0,loadSprite:!0,iconPrefix:"plyr",iconUrl:"https://cdn.plyr.io/3.3.12/plyr.svg",blankVideo:"https://cdn.plyr.io/static/blank.mp4",quality:{default:576,options:[4320,2880,2160,1440,1080,720,576,480,360,240]},loop:{active:!1},speed:{selected:1,options:[.5,.75,1,1.25,1.5,1.75,2]},keyboard:{focused:!0,global:!1},tooltips:{controls:!1,seek:!0},captions:{active:!1,language:"auto",update:!1},fullscreen:{enabled:!0,fallback:!0,iosNative:!1},storage:{enabled:!0,key:"plyr"},controls:["play-large","play","progress","current-time","mute","volume","captions","settings","pip","airplay","fullscreen"],settings:["captions","quality","speed"],i18n:{restart:"Restart",rewind:"Rewind {seektime}s",play:"Play",pause:"Pause",fastForward:"Forward {seektime}s",seek:"Seek",seekLabel:"{currentTime} of {duration}",played:"Played",buffered:"Buffered",currentTime:"Current time",duration:"Duration",volume:"Volume",mute:"Mute",unmute:"Unmute",enableCaptions:"Enable captions",disableCaptions:"Disable captions",enterFullscreen:"Enter fullscreen",exitFullscreen:"Exit fullscreen",frameTitle:"Player for {title}",captions:"Captions",settings:"Settings",menuBack:"Go back to previous menu",speed:"Speed",normal:"Normal",quality:"Quality",loop:"Loop",start:"Start",end:"End",all:"All",reset:"Reset",disabled:"Disabled",enabled:"Enabled",advertisement:"Ad",qualityBadge:{2160:"4K",1440:"HD",1080:"HD",720:"HD",576:"SD",480:"SD"}},urls:{vimeo:{sdk:"https://player.vimeo.com/api/player.js",iframe:"https://player.vimeo.com/video/{0}?{1}",api:"https://vimeo.com/api/v2/video/{0}.json"},youtube:{sdk:"https://www.youtube.com/iframe_api",api:"https://www.googleapis.com/youtube/v3/videos?id={0}&key={1}&fields=items(snippet(title))&part=snippet"},googleIMA:{sdk:"https://imasdk.googleapis.com/js/sdkloader/ima3.js"}},listeners:{seek:null,play:null,pause:null,restart:null,rewind:null,fastForward:null,mute:null,volume:null,captions:null,fullscreen:null,pip:null,airplay:null,speed:null,quality:null,loop:null,language:null},events:["ended","progress","stalled","playing","waiting","canplay","canplaythrough","loadstart","loadeddata","loadedmetadata","timeupdate","volumechange","play","pause","error","seeking","seeked","emptied","ratechange","cuechange","enterfullscreen","exitfullscreen","captionsenabled","captionsdisabled","languagechange","controlshidden","controlsshown","ready","statechange","qualitychange","adsloaded","adscontentpause","adscontentresume","adstarted","adsmidpoint","adscomplete","adsallcomplete","adsimpression","adsclick"],selectors:{editable:"input, textarea, select, [contenteditable]",container:".plyr",controls:{container:null,wrapper:".plyr__controls"},labels:"[data-plyr]",buttons:{play:'[data-plyr="play"]',pause:'[data-plyr="pause"]',restart:'[data-plyr="restart"]',rewind:'[data-plyr="rewind"]',fastForward:'[data-plyr="fast-forward"]',mute:'[data-plyr="mute"]',captions:'[data-plyr="captions"]',fullscreen:'[data-plyr="fullscreen"]',pip:'[data-plyr="pip"]',airplay:'[data-plyr="airplay"]',settings:'[data-plyr="settings"]',loop:'[data-plyr="loop"]'},inputs:{seek:'[data-plyr="seek"]',volume:'[data-plyr="volume"]',speed:'[data-plyr="speed"]',language:'[data-plyr="language"]',quality:'[data-plyr="quality"]'},display:{currentTime:".plyr__time--current",duration:".plyr__time--duration",buffer:".plyr__progress__buffer",loop:".plyr__progress__loop",volume:".plyr__volume--display"},progress:".plyr__progress",captions:".plyr__captions",caption:".plyr__caption",menu:{quality:".js-plyr__menu__list--quality"}},classNames:{type:"plyr--{0}",provider:"plyr--{0}",video:"plyr__video-wrapper",embed:"plyr__video-embed",embedContainer:"plyr__video-embed__container",poster:"plyr__poster",posterEnabled:"plyr__poster-enabled",ads:"plyr__ads",control:"plyr__control",controlPressed:"plyr__control--pressed",playing:"plyr--playing",paused:"plyr--paused",stopped:"plyr--stopped",loading:"plyr--loading",hover:"plyr--hover",tooltip:"plyr__tooltip",cues:"plyr__cues",hidden:"plyr__sr-only",hideControls:"plyr--hide-controls",isIos:"plyr--is-ios",isTouch:"plyr--is-touch",uiSupported:"plyr--full-ui",noTransition:"plyr--no-transition",display:{time:"plyr__time"},menu:{value:"plyr__menu__value",badge:"plyr__badge",open:"plyr--menu-open"},captions:{enabled:"plyr--captions-enabled",active:"plyr--captions-active"},fullscreen:{enabled:"plyr--fullscreen-enabled",fallback:"plyr--fullscreen-fallback"},pip:{supported:"plyr--pip-supported",active:"plyr--pip-active"},airplay:{supported:"plyr--airplay-supported",active:"plyr--airplay-active"},tabFocus:"plyr__tab-focus"},attributes:{embed:{provider:"data-plyr-provider",id:"data-plyr-embed-id"}},keys:{google:null},ads:{enabled:!1,publisherId:""}},de={html5:"html5",youtube:"youtube",vimeo:"vimeo"},he={audio:"audio",video:"video"};var pe=function(){},fe=function(){function e(){var t=arguments.length>0&&void 0!==arguments[0]&&arguments[0];m(this,e),this.enabled=window.console&&t,this.enabled&&this.log("Debugging enabled")}return g(e,[{key:"log",get:function(){return this.enabled?Function.prototype.bind.call(console.log,console):pe}},{key:"warn",get:function(){return this.enabled?Function.prototype.bind.call(console.warn,console):pe}},{key:"error",get:function(){return this.enabled?Function.prototype.bind.call(console.error,console):pe}}]),e}();function me(){if(this.enabled){var e=this.player.elements.buttons.fullscreen;l.element(e)&&(e.pressed=this.active),f.call(this.player,this.target,this.active?"enterfullscreen":"exitfullscreen",!0),V.isIos||function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null,t=arguments.length>1&&void 0!==arguments[1]&&arguments[1];if(l.element(e)){var i=x.call(this,"button:not(:disabled), input:not(:disabled), [tabindex]"),n=i[0],s=i[i.length-1];u.call(this,this.elements.container,"keydown",function(e){if("Tab"===e.key&&9===e.keyCode){var t=document.activeElement;t!==s||e.shiftKey?t===n&&e.shiftKey&&(s.focus(),e.preventDefault()):(n.focus(),e.preventDefault())}},t,!1)}}.call(this.player,this.target,this.active)}}function ge(){var e=arguments.length>0&&void 0!==arguments[0]&&arguments[0];e?this.scrollPosition={x:window.scrollX||0,y:window.scrollY||0}:window.scrollTo(this.scrollPosition.x,this.scrollPosition.y),document.body.style.overflow=e?"hidden":"",M(this.target,this.player.config.classNames.fullscreen.fallback,e),me.call(this)}var ye=function(){function e(t){var i=this;m(this,e),this.player=t,this.prefix=e.prefix,this.property=e.property,this.scrollPosition={x:0,y:0},d.call(this.player,document,"ms"===this.prefix?"MSFullscreenChange":this.prefix+"fullscreenchange",function(){me.call(i)}),d.call(this.player,this.player.elements.container,"dblclick",function(e){l.element(i.player.elements.controls)&&i.player.elements.controls.contains(e.target)||i.toggle()}),this.update()}return g(e,[{key:"update",value:function(){this.enabled?this.player.debug.log((e.native?"Native":"Fallback")+" fullscreen enabled"):this.player.debug.log("Fullscreen not supported and fallback disabled"),M(this.player.elements.container,this.player.config.classNames.fullscreen.enabled,this.enabled)}},{key:"enter",value:function(){this.enabled&&(V.isIos&&this.player.config.fullscreen.iosNative?this.target.webkitEnterFullscreen():e.native?this.prefix?l.empty(this.prefix)||this.target[this.prefix+"Request"+this.property]():this.target.requestFullscreen():ge.call(this,!0))}},{key:"exit",value:function(){if(this.enabled)if(V.isIos&&this.player.config.fullscreen.iosNative)this.target.webkitExitFullscreen(),this.player.play();else if(e.native)if(this.prefix){if(!l.empty(this.prefix)){var t="moz"===this.prefix?"Cancel":"Exit";document[""+this.prefix+t+this.property]()}}else(document.cancelFullScreen||document.exitFullscreen).call(document);else ge.call(this,!1)}},{key:"toggle",value:function(){this.active?this.exit():this.enter()}},{key:"enabled",get:function(){return(e.native||this.player.config.fullscreen.fallback)&&this.player.config.fullscreen.enabled&&this.player.supported.ui&&this.player.isVideo}},{key:"active",get:function(){return!!this.enabled&&(e.native?(this.prefix?document[""+this.prefix+this.property+"Element"]:document.fullscreenElement)===this.target:N(this.target,this.player.config.classNames.fullscreen.fallback))}},{key:"target",get:function(){return V.isIos&&this.player.config.fullscreen.iosNative?this.player.media:this.player.elements.container}}],[{key:"native",get:function(){return!!(document.fullscreenEnabled||document.webkitFullscreenEnabled||document.mozFullScreenEnabled||document.msFullscreenEnabled)}},{key:"prefix",get:function(){if(l.function(document.exitFullscreen))return"";var e="";return["webkit","moz","ms"].some(function(t){return!(!l.function(document[t+"ExitFullscreen"])&&!l.function(document[t+"CancelFullScreen"]))&&(e=t,!0)}),e}},{key:"property",get:function(){return"moz"===this.prefix?"FullScreen":"Fullscreen"}}]),e}();function ve(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:1;return new Promise(function(i,n){var s=new Image,a=function(){delete s.onload,delete s.onerror,(s.naturalWidth>=t?i:n)(s)};Object.assign(s,{onload:a,onerror:a,src:e})})}var be={addStyleHook:function(){M(this.elements.container,this.config.selectors.container.replace(".",""),!0),M(this.elements.container,this.config.classNames.uiSupported,this.supported.ui)},toggleNativeControls:function(){arguments.length>0&&void 0!==arguments[0]&&arguments[0]&&this.isHTML5?this.media.setAttribute("controls",""):this.media.removeAttribute("controls")},build:function(){var e=this;if(this.listeners.media(),!this.supported.ui)return this.debug.warn("Basic support only for "+this.provider+" "+this.type),void be.toggleNativeControls.call(this,!0);l.element(this.elements.controls)||(oe.inject.call(this),this.listeners.controls()),be.toggleNativeControls.call(this),this.isHTML5&&ce.setup.call(this),this.volume=null,this.muted=null,this.speed=null,this.loop=null,this.quality=null,oe.updateVolume.call(this),oe.timeUpdate.call(this),be.checkPlaying.call(this),M(this.elements.container,this.config.classNames.pip.supported,F.pip&&this.isHTML5&&this.isVideo),M(this.elements.container,this.config.classNames.airplay.supported,F.airplay&&this.isHTML5),M(this.elements.container,this.config.classNames.isIos,V.isIos),M(this.elements.container,this.config.classNames.isTouch,this.touch),this.ready=!0,setTimeout(function(){f.call(e,e.media,"ready")},0),be.setTitle.call(this),this.poster&&be.setPoster.call(this,this.poster,!1).catch(function(){}),this.config.duration&&oe.durationUpdate.call(this)},setTitle:function(){var e=X("play",this.config);if(l.string(this.config.title)&&!l.empty(this.config.title)&&(e+=", "+this.config.title),Array.from(this.elements.buttons.play||[]).forEach(function(t){t.setAttribute("aria-label",e)}),this.isEmbed){var t=_.call(this,"iframe");if(!l.element(t))return;var i=l.empty(this.config.title)?"video":this.config.title,n=X("frameTitle",this.config);t.setAttribute("title",n.replace("{title}",i))}},togglePoster:function(e){M(this.elements.container,this.config.classNames.posterEnabled,e)},setPoster:function(e){var t=this;return arguments.length>1&&void 0!==arguments[1]&&!arguments[1]||!this.poster?(this.media.setAttribute("poster",e),function(){var e=this;return new Promise(function(t){return e.ready?setTimeout(t,0):d.call(e,e.elements.container,"ready",t)}).then(function(){})}.call(this).then(function(){return ve(e)}).catch(function(i){throw e===t.poster&&be.togglePoster.call(t,!1),i}).then(function(){if(e!==t.poster)throw new Error("setPoster cancelled by later call to setPoster")}).then(function(){return Object.assign(t.elements.poster.style,{backgroundImage:"url('"+e+"')",backgroundSize:""}),be.togglePoster.call(t,!0),e})):Promise.reject(new Error("Poster already set"))},checkPlaying:function(e){var t=this;M(this.elements.container,this.config.classNames.playing,this.playing),M(this.elements.container,this.config.classNames.paused,this.paused),M(this.elements.container,this.config.classNames.stopped,this.stopped),Array.from(this.elements.buttons.play||[]).forEach(function(e){e.pressed=t.playing}),l.event(e)&&"timeupdate"===e.type||be.toggleControls.call(this)},checkLoading:function(e){var t=this;this.loading=["stalled","waiting"].includes(e.type),clearTimeout(this.timers.loading),this.timers.loading=setTimeout(function(){M(t.elements.container,t.config.classNames.loading,t.loading),be.toggleControls.call(t)},this.loading?250:0)},toggleControls:function(e){var t=this.elements.controls;t&&this.config.hideControls&&this.toggleControls(Boolean(e||this.loading||this.paused||t.pressed||t.hover))}},ke=function(){function e(t){m(this,e),this.player=t,this.lastKey=null,this.focusTimer=null,this.lastKeyDown=null,this.handleKey=this.handleKey.bind(this),this.toggleMenu=this.toggleMenu.bind(this),this.setTabFocus=this.setTabFocus.bind(this),this.firstTouch=this.firstTouch.bind(this)}return g(e,[{key:"handleKey",value:function(e){var t=this.player,i=t.elements,n=e.keyCode?e.keyCode:e.which,s="keydown"===e.type,a=s&&n===this.lastKey;if(!(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey)&&l.number(n)){if(s){var o=document.activeElement;if(l.element(o)){var r=t.config.selectors.editable;if(o!==i.inputs.seek&&L(o,r))return;if(32===e.which&&L(o,'button, [role^="menuitem"]'))return}switch([32,37,38,39,40,48,49,50,51,52,53,54,56,57,67,70,73,75,76,77,79].includes(n)&&(e.preventDefault(),e.stopPropagation()),n){case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:a||(t.currentTime=t.duration/10*(n-48));break;case 32:case 75:a||t.togglePlay();break;case 38:t.increaseVolume(.1);break;case 40:t.decreaseVolume(.1);break;case 77:a||(t.muted=!t.muted);break;case 39:t.forward();break;case 37:t.rewind();break;case 70:t.fullscreen.toggle();break;case 67:a||t.toggleCaptions();break;case 76:t.loop=!t.loop}!t.fullscreen.enabled&&t.fullscreen.active&&27===n&&t.fullscreen.toggle(),this.lastKey=n}else this.lastKey=null}}},{key:"toggleMenu",value:function(e){oe.toggleMenu.call(this.player,e)}},{key:"firstTouch",value:function(){var e=this.player,t=e.elements;e.touch=!0,M(t.container,e.config.classNames.isTouch,!0)}},{key:"setTabFocus",value:function(e){var t=this.player,i=t.elements;if(clearTimeout(this.focusTimer),"keydown"!==e.type||9===e.which){"keydown"===e.type&&(this.lastKeyDown=e.timeStamp);var n,s=e.timeStamp-this.lastKeyDown<=20;if("focus"!==e.type||s)n=t.config.classNames.tabFocus,M(x.call(t,"."+n),n,!1),this.focusTimer=setTimeout(function(){var e=document.activeElement;i.container.contains(e)&&M(document.activeElement,t.config.classNames.tabFocus,!0)},10)}}},{key:"global",value:function(){var e=!(arguments.length>0&&void 0!==arguments[0])||arguments[0],t=this.player;t.config.keyboard.global&&u.call(t,window,"keydown keyup",this.handleKey,e,!1),u.call(t,document.body,"click",this.toggleMenu,e),p.call(t,document.body,"touchstart",this.firstTouch),u.call(t,document.body,"keydown focus blur",this.setTabFocus,e,!1,!0)}},{key:"container",value:function(){var e=this.player,t=e.elements;!e.config.keyboard.global&&e.config.keyboard.focused&&d.call(e,t.container,"keydown keyup",this.handleKey,!1),d.call(e,t.container,"mousemove mouseleave touchstart touchmove enterfullscreen exitfullscreen",function(i){var n=t.controls;n&&"enterfullscreen"===i.type&&(n.pressed=!1,n.hover=!1);var s=0;["touchstart","touchmove","mousemove"].includes(i.type)&&(be.toggleControls.call(e,!0),s=e.touch?3e3:2e3),clearTimeout(e.timers.controls),e.timers.controls=setTimeout(function(){return be.toggleControls.call(e,!1)},s)})}},{key:"media",value:function(){var e=this.player,t=e.elements;if(d.call(e,e.media,"timeupdate seeking seeked",function(t){return oe.timeUpdate.call(e,t)}),d.call(e,e.media,"durationchange loadeddata loadedmetadata",function(t){return oe.durationUpdate.call(e,t)}),d.call(e,e.media,"canplay",function(){S(t.volume,!e.hasAudio),S(t.buttons.mute,!e.hasAudio)}),d.call(e,e.media,"ended",function(){e.isHTML5&&e.isVideo&&e.config.resetOnEnd&&e.restart()}),d.call(e,e.media,"progress playing seeking seeked",function(t){return oe.updateProgress.call(e,t)}),d.call(e,e.media,"volumechange",function(t){return oe.updateVolume.call(e,t)}),d.call(e,e.media,"playing play pause ended emptied timeupdate",function(t){return be.checkPlaying.call(e,t)}),d.call(e,e.media,"waiting canplay seeked playing",function(t){return be.checkLoading.call(e,t)}),d.call(e,e.media,"playing",function(){e.ads&&e.ads.enabled&&!e.ads.initialized&&e.ads.managerPromise.then(function(){return e.ads.play()}).catch(function(){return e.play()})}),e.supported.ui&&e.config.clickToPlay&&!e.isAudio){var i=_.call(e,"."+e.config.classNames.video);if(!l.element(i))return;d.call(e,t.container,"click touchstart",function(n){([t.container,i].includes(n.target)||i.contains(n.target))&&(e.config.hideControls&&e.touch&&N(t.container,e.config.classNames.hideControls)||(e.ended?(e.restart(),e.play()):e.togglePlay()))})}e.supported.ui&&e.config.disableContextMenu&&d.call(e,t.wrapper,"contextmenu",function(e){e.preventDefault()},!1),d.call(e,e.media,"volumechange",function(){e.storage.set({volume:e.volume,muted:e.muted})}),d.call(e,e.media,"ratechange",function(){oe.updateSetting.call(e,"speed"),e.storage.set({speed:e.speed})}),d.call(e,e.media,"qualitychange",function(t){oe.updateSetting.call(e,"quality",null,t.detail.quality)});var n=e.config.events.concat(["keyup","keydown"]).join(" ");d.call(e,e.media,n,function(i){var n=i.detail,s=void 0===n?{}:n;"error"===i.type&&(s=e.media.error),f.call(e,t.container,i.type,!0,s)})}},{key:"proxy",value:function(e,t,i){var n=this.player,s=n.config.listeners[i],a=!0;l.function(s)&&(a=s.call(n,e)),a&&l.function(t)&&t.call(n,e)}},{key:"bind",value:function(e,t,i,n){var s=this,a=!(arguments.length>4&&void 0!==arguments[4])||arguments[4],o=this.player,r=o.config.listeners[n],c=l.function(r);d.call(o,e,t,function(e){return s.proxy(e,i,n)},a&&!c)}},{key:"controls",value:function(){var e=this,t=this.player,i=t.elements,n=V.isIE?"change":"input";if(i.buttons.play&&Array.from(i.buttons.play).forEach(function(i){e.bind(i,"click",t.togglePlay,"play")}),this.bind(i.buttons.restart,"click",t.restart,"restart"),this.bind(i.buttons.rewind,"click",t.rewind,"rewind"),this.bind(i.buttons.fastForward,"click",t.forward,"fastForward"),this.bind(i.buttons.mute,"click",function(){t.muted=!t.muted},"mute"),this.bind(i.buttons.captions,"click",function(){return t.toggleCaptions()}),this.bind(i.buttons.fullscreen,"click",function(){t.fullscreen.toggle()},"fullscreen"),this.bind(i.buttons.pip,"click",function(){t.pip="toggle"},"pip"),this.bind(i.buttons.airplay,"click",t.airplay,"airplay"),this.bind(i.buttons.settings,"click",function(e){e.stopPropagation(),oe.toggleMenu.call(t,e)}),this.bind(i.buttons.settings,"keyup",function(e){var i=e.which;[13,32].includes(i)&&(13!==i?(e.preventDefault(),e.stopPropagation(),oe.toggleMenu.call(t,e)):oe.focusFirstMenuItem.call(t,null,!0))},null,!1),this.bind(i.settings.menu,"keydown",function(e){27===e.which&&oe.toggleMenu.call(t,e)}),this.bind(i.inputs.seek,"mousedown mousemove",function(e){var t=i.progress.getBoundingClientRect(),n=100/t.width*(e.pageX-t.left);e.currentTarget.setAttribute("seek-value",n)}),this.bind(i.inputs.seek,"mousedown mouseup keydown keyup touchstart touchend",function(e){var i=e.currentTarget,n=e.keyCode?e.keyCode:e.which;if(!l.keyboardEvent(e)||39===n||37===n){var s=i.hasAttribute("play-on-seeked"),a=["mouseup","touchend","keyup"].includes(e.type);s&&a?(i.removeAttribute("play-on-seeked"),t.play()):!a&&t.playing&&(i.setAttribute("play-on-seeked",""),t.pause())}}),V.isIos){var s=x.call(t,'input[type="range"]');Array.from(s).forEach(function(t){return e.bind(t,n,function(e){return B(e.target)})})}this.bind(i.inputs.seek,n,function(e){var i=e.currentTarget,n=i.getAttribute("seek-value");l.empty(n)&&(n=i.value),i.removeAttribute("seek-value"),t.currentTime=n/i.max*t.duration},"seek"),this.bind(i.progress,"mouseenter mouseleave mousemove",function(e){return oe.updateSeekTooltip.call(t,e)}),V.isWebkit&&Array.from(x.call(t,'input[type="range"]')).forEach(function(i){e.bind(i,"input",function(e){return oe.updateRangeFill.call(t,e.target)})}),t.config.toggleInvert&&!l.element(i.display.duration)&&this.bind(i.display.currentTime,"click",function(){0!==t.currentTime&&(t.config.invertTime=!t.config.invertTime,oe.timeUpdate.call(t))}),this.bind(i.inputs.volume,n,function(e){t.volume=e.target.value},"volume"),this.bind(i.controls,"mouseenter mouseleave",function(e){i.controls.hover=!t.touch&&"mouseenter"===e.type}),this.bind(i.controls,"mousedown mouseup touchstart touchend touchcancel",function(e){i.controls.pressed=["mousedown","touchstart"].includes(e.type)}),this.bind(i.controls,"focusin focusout",function(i){var n=t.config,s=t.elements,a=t.timers,o="focusin"===i.type;if(M(s.controls,n.classNames.noTransition,o),be.toggleControls.call(t,o),o){setTimeout(function(){M(s.controls,n.classNames.noTransition,!1)},0);var r=e.touch?3e3:4e3;clearTimeout(a.controls),a.controls=setTimeout(function(){return be.toggleControls.call(t,!1)},r)}}),this.bind(i.inputs.volume,"wheel",function(e){var i=e.webkitDirectionInvertedFromDevice,n=[e.deltaX,-e.deltaY].map(function(e){return i?-e:e}),s=v(n,2),a=s[0],o=s[1],r=Math.sign(Math.abs(a)>Math.abs(o)?a:o);t.increaseVolume(r/50);var l=t.media.volume;(1===r&&l<1||-1===r&&l>0)&&e.preventDefault()},"volume",!1)}}]),e}();"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self&&self;var we,Te=(function(e,t){var i;i=function(){var e=function(){},t={},i={},n={};function s(e,t){if(e){var s=n[e];if(i[e]=t,s)for(;s.length;)s[0](e,t),s.splice(0,1)}}function a(t,i){t.call&&(t={success:t}),i.length?(t.error||e)(i):(t.success||e)(t)}function o(t,i,n,s){var a,r,l=document,c=n.async,u=(n.numRetries||0)+1,d=n.before||e,h=t.replace(/^(css|img)!/,"");s=s||0,/(^css!|\.css$)/.test(t)?(a=!0,(r=l.createElement("link")).rel="stylesheet",r.href=h):/(^img!|\.(png|gif|jpg|svg)$)/.test(t)?(r=l.createElement("img")).src=h:((r=l.createElement("script")).src=t,r.async=void 0===c||c),r.onload=r.onerror=r.onbeforeload=function(e){var l=e.type[0];if(a&&"hideFocus"in r)try{r.sheet.cssText.length||(l="e")}catch(e){l="e"}if("e"==l&&(s+=1)<u)return o(t,i,n,s);i(t,l,e.defaultPrevented)},!1!==d(t,r)&&l.head.appendChild(r)}function r(e,i,n){var r,l;if(i&&i.trim&&(r=i),l=(r?n:i)||{},r){if(r in t)throw"LoadJS";t[r]=!0}!function(e,t,i){var n,s,a=(e=e.push?e:[e]).length,r=a,l=[];for(n=function(e,i,n){if("e"==i&&l.push(e),"b"==i){if(!n)return;l.push(e)}--a||t(l)},s=0;s<r;s++)o(e[s],n,i)}(e,function(e){a(l,e),s(r,e)},l)}return r.ready=function(e,t){return function(e,t){e=e.push?e:[e];var s,a,o,r=[],l=e.length,c=l;for(s=function(e,i){i.length&&r.push(e),--c||t(r)};l--;)a=e[l],(o=i[a])?s(a,o):(n[a]=n[a]||[]).push(s)}(e,function(e){a(t,e)}),r},r.done=function(e){s(e,[])},r.reset=function(){t={},i={},n={}},r.isDefined=function(e){return e in t},r},e.exports=i()}(we={exports:{}},we.exports),we.exports);function Ae(e){return new Promise(function(t,i){Te(e,{success:t,error:i})})}function Ee(e){e&&!this.embed.hasPlayed&&(this.embed.hasPlayed=!0),this.media.paused===e&&(this.media.paused=!e,f.call(this,this.media,e?"play":"pause"))}var Ce={setup:function(){var e=this;M(this.elements.wrapper,this.config.classNames.embed,!0),Ce.setAspectRatio.call(this),l.object(window.Vimeo)?Ce.ready.call(this):Ae(this.config.urls.vimeo.sdk).then(function(){Ce.ready.call(e)}).catch(function(t){e.debug.warn("Vimeo API failed to load",t)})},setAspectRatio:function(e){var t=(l.string(e)?e:this.config.ratio).split(":"),i=v(t,2),n=100/i[0]*i[1];if(this.elements.wrapper.style.paddingBottom=n+"%",this.supported.ui){var s=(240-n)/4.8;this.media.style.transform="translateY(-"+s+"%)"}},ready:function(){var e=this,t=this,i=le({loop:t.config.loop.active,autoplay:t.autoplay,byline:!1,portrait:!1,title:!1,speed:!0,transparent:0,gesture:"media",playsinline:!this.config.fullscreen.iosNative}),n=t.media.getAttribute("src");l.empty(n)&&(n=t.media.getAttribute(t.config.attributes.embed.id));var s,a=(s=n,l.empty(s)?null:l.number(Number(s))?s:s.match(/^.*(vimeo.com\/|video\/)(\d+).*/)?RegExp.$2:s),o=w("iframe"),r=Y(t.config.urls.vimeo.iframe,a,i);o.setAttribute("src",r),o.setAttribute("allowfullscreen",""),o.setAttribute("allowtransparency",""),o.setAttribute("allow","autoplay");var c=w("div",{poster:t.poster,class:t.config.classNames.embedContainer});c.appendChild(o),t.media=C(c,t.media),ee(Y(t.config.urls.vimeo.api,a),"json").then(function(e){if(!l.empty(e)){var i=new URL(e[0].thumbnail_large);i.pathname=i.pathname.split("_")[0]+".jpg",be.setPoster.call(t,i.href).catch(function(){})}}),t.embed=new window.Vimeo.Player(o,{autopause:t.config.autopause,muted:t.muted}),t.media.paused=!0,t.media.currentTime=0,t.supported.ui&&t.embed.disableTextTrack(),t.media.play=function(){return Ee.call(t,!0),t.embed.play()},t.media.pause=function(){return Ee.call(t,!1),t.embed.pause()},t.media.stop=function(){t.pause(),t.currentTime=0};var u=t.media.currentTime;Object.defineProperty(t.media,"currentTime",{get:function(){return u},set:function(e){var i=t.embed,n=t.media,s=t.paused,a=t.volume,o=s&&!i.hasPlayed;n.seeking=!0,f.call(t,n,"seeking"),Promise.resolve(o&&i.setVolume(0)).then(function(){return i.setCurrentTime(e)}).then(function(){return o&&i.pause()}).then(function(){return o&&i.setVolume(a)}).catch(function(){})}});var d=t.config.speed.selected;Object.defineProperty(t.media,"playbackRate",{get:function(){return d},set:function(e){t.embed.setPlaybackRate(e).then(function(){d=e,f.call(t,t.media,"ratechange")}).catch(function(e){"Error"===e.name&&oe.setSpeedMenu.call(t,[])})}});var h=t.config.volume;Object.defineProperty(t.media,"volume",{get:function(){return h},set:function(e){t.embed.setVolume(e).then(function(){h=e,f.call(t,t.media,"volumechange")})}});var p=t.config.muted;Object.defineProperty(t.media,"muted",{get:function(){return p},set:function(e){var i=!!l.boolean(e)&&e;t.embed.setVolume(i?0:t.config.volume).then(function(){p=i,f.call(t,t.media,"volumechange")})}});var m=t.config.loop;Object.defineProperty(t.media,"loop",{get:function(){return m},set:function(e){var i=l.boolean(e)?e:t.config.loop.active;t.embed.setLoop(i).then(function(){m=i})}});var g=void 0;t.embed.getVideoUrl().then(function(e){g=e}).catch(function(t){e.debug.warn(t)}),Object.defineProperty(t.media,"currentSrc",{get:function(){return g}}),Object.defineProperty(t.media,"ended",{get:function(){return t.currentTime===t.duration}}),Promise.all([t.embed.getVideoWidth(),t.embed.getVideoHeight()]).then(function(t){var i=function(e,t){var i=function e(t,i){return 0===i?t:e(i,t%i)}(e,t);return e/i+":"+t/i}(t[0],t[1]);Ce.setAspectRatio.call(e,i)}),t.embed.setAutopause(t.config.autopause).then(function(e){t.config.autopause=e}),t.embed.getVideoTitle().then(function(i){t.config.title=i,be.setTitle.call(e)}),t.embed.getCurrentTime().then(function(e){u=e,f.call(t,t.media,"timeupdate")}),t.embed.getDuration().then(function(e){t.media.duration=e,f.call(t,t.media,"durationchange")}),t.embed.getTextTracks().then(function(e){t.media.textTracks=e,ce.setup.call(t)}),t.embed.on("cuechange",function(e){var i=e.cues,n=(void 0===i?[]:i).map(function(e){return t=e.text,i=document.createDocumentFragment(),n=document.createElement("div"),i.appendChild(n),n.innerHTML=t,i.firstChild.innerText;var t,i,n});ce.updateCues.call(t,n)}),t.embed.on("loaded",function(){(t.embed.getPaused().then(function(e){Ee.call(t,!e),e||f.call(t,t.media,"playing")}),l.element(t.embed.element)&&t.supported.ui)&&t.embed.element.setAttribute("tabindex",-1)}),t.embed.on("play",function(){Ee.call(t,!0),f.call(t,t.media,"playing")}),t.embed.on("pause",function(){Ee.call(t,!1)}),t.embed.on("timeupdate",function(e){t.media.seeking=!1,u=e.seconds,f.call(t,t.media,"timeupdate")}),t.embed.on("progress",function(e){t.media.buffered=e.percent,f.call(t,t.media,"progress"),1===parseInt(e.percent,10)&&f.call(t,t.media,"canplaythrough"),t.embed.getDuration().then(function(e){e!==t.media.duration&&(t.media.duration=e,f.call(t,t.media,"durationchange"))})}),t.embed.on("seeked",function(){t.media.seeking=!1,f.call(t,t.media,"seeked")}),t.embed.on("ended",function(){t.media.paused=!0,f.call(t,t.media,"ended")}),t.embed.on("error",function(e){t.media.error=e,f.call(t,t.media,"error")}),setTimeout(function(){return be.build.call(t)},0)}};function Pe(e){e&&!this.embed.hasPlayed&&(this.embed.hasPlayed=!0),this.media.paused===e&&(this.media.paused=!e,f.call(this,this.media,e?"play":"pause"))}var Se,Me={setup:function(){var e=this;M(this.elements.wrapper,this.config.classNames.embed,!0),Me.setAspectRatio.call(this),l.object(window.YT)&&l.function(window.YT.Player)?Me.ready.call(this):(Ae(this.config.urls.youtube.sdk).catch(function(t){e.debug.warn("YouTube API failed to load",t)}),window.onYouTubeReadyCallbacks=window.onYouTubeReadyCallbacks||[],window.onYouTubeReadyCallbacks.push(function(){Me.ready.call(e)}),window.onYouTubeIframeAPIReady=function(){window.onYouTubeReadyCallbacks.forEach(function(e){e()})})},getTitle:function(e){var t=this;if(l.function(this.embed.getVideoData)){var i=this.embed.getVideoData().title;if(l.empty(i))return this.config.title=i,void be.setTitle.call(this)}var n=this.config.keys.google;l.string(n)&&!l.empty(n)&&ee(Y(this.config.urls.youtube.api,e,n)).then(function(e){l.object(e)&&(t.config.title=e.items[0].snippet.title,be.setTitle.call(t))}).catch(function(){})},setAspectRatio:function(){var e=this.config.ratio.split(":");this.elements.wrapper.style.paddingBottom=100/e[0]*e[1]+"%"},ready:function(){var e=this,t=e.media.getAttribute("id");if(l.empty(t)||!t.startsWith("youtube-")){var i=e.media.getAttribute("src");l.empty(i)&&(i=e.media.getAttribute(this.config.attributes.embed.id));var n,s=(n=i,l.empty(n)?null:n.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/)?RegExp.$2:n),a=e.provider+"-"+Math.floor(1e4*Math.random()),o=w("div",{id:a,poster:e.poster});e.media=C(o,e.media);var r=function(e){return"https://img.youtube.com/vi/"+s+"/"+e+"default.jpg"};ve(r("maxres"),121).catch(function(){return ve(r("sd"),121)}).catch(function(){return ve(r("hq"))}).then(function(t){return be.setPoster.call(e,t.src)}).then(function(t){t.includes("maxres")||(e.elements.poster.style.backgroundSize="cover")}).catch(function(){}),e.embed=new window.YT.Player(a,{videoId:s,playerVars:{autoplay:e.config.autoplay?1:0,hl:e.config.hl,controls:e.supported.ui?0:1,rel:0,showinfo:0,iv_load_policy:3,modestbranding:1,disablekb:1,playsinline:1,widget_referrer:window?window.location.href:null,cc_load_policy:e.captions.active?1:0,cc_lang_pref:e.config.captions.language},events:{onError:function(t){if(!e.media.error){var i=t.data,n={2:"The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.",5:"The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.",100:"The video requested was not found. This error occurs when a video has been removed (for any reason) or has been marked as private.",101:"The owner of the requested video does not allow it to be played in embedded players.",150:"The owner of the requested video does not allow it to be played in embedded players."}[i]||"An unknown error occured";e.media.error={code:i,message:n},f.call(e,e.media,"error")}},onPlaybackRateChange:function(t){var i=t.target;e.media.playbackRate=i.getPlaybackRate(),f.call(e,e.media,"ratechange")},onReady:function(t){if(!l.function(e.media.play)){var i=t.target;Me.getTitle.call(e,s),e.media.play=function(){Pe.call(e,!0),i.playVideo()},e.media.pause=function(){Pe.call(e,!1),i.pauseVideo()},e.media.stop=function(){i.stopVideo()},e.media.duration=i.getDuration(),e.media.paused=!0,e.media.currentTime=0,Object.defineProperty(e.media,"currentTime",{get:function(){return Number(i.getCurrentTime())},set:function(t){e.paused&&!e.embed.hasPlayed&&e.embed.mute(),e.media.seeking=!0,f.call(e,e.media,"seeking"),i.seekTo(t)}}),Object.defineProperty(e.media,"playbackRate",{get:function(){return i.getPlaybackRate()},set:function(e){i.setPlaybackRate(e)}});var n=e.config.volume;Object.defineProperty(e.media,"volume",{get:function(){return n},set:function(t){n=t,i.setVolume(100*n),f.call(e,e.media,"volumechange")}});var a=e.config.muted;Object.defineProperty(e.media,"muted",{get:function(){return a},set:function(t){var n=l.boolean(t)?t:a;a=n,i[n?"mute":"unMute"](),f.call(e,e.media,"volumechange")}}),Object.defineProperty(e.media,"currentSrc",{get:function(){return i.getVideoUrl()}}),Object.defineProperty(e.media,"ended",{get:function(){return e.currentTime===e.duration}}),e.options.speed=i.getAvailablePlaybackRates(),e.supported.ui&&e.media.setAttribute("tabindex",-1),f.call(e,e.media,"timeupdate"),f.call(e,e.media,"durationchange"),clearInterval(e.timers.buffering),e.timers.buffering=setInterval(function(){e.media.buffered=i.getVideoLoadedFraction(),(null===e.media.lastBuffered||e.media.lastBuffered<e.media.buffered)&&f.call(e,e.media,"progress"),e.media.lastBuffered=e.media.buffered,1===e.media.buffered&&(clearInterval(e.timers.buffering),f.call(e,e.media,"canplaythrough"))},200),setTimeout(function(){return be.build.call(e)},50)}},onStateChange:function(t){var i=t.target;switch(clearInterval(e.timers.playing),e.media.seeking&&[1,2].includes(t.data)&&(e.media.seeking=!1,f.call(e,e.media,"seeked")),t.data){case-1:f.call(e,e.media,"timeupdate"),e.media.buffered=i.getVideoLoadedFraction(),f.call(e,e.media,"progress");break;case 0:Pe.call(e,!1),e.media.loop?(i.stopVideo(),i.playVideo()):f.call(e,e.media,"ended");break;case 1:e.media.paused&&!e.embed.hasPlayed?e.media.pause():(Pe.call(e,!0),f.call(e,e.media,"playing"),e.timers.playing=setInterval(function(){f.call(e,e.media,"timeupdate")},50),e.media.duration!==i.getDuration()&&(e.media.duration=i.getDuration(),f.call(e,e.media,"durationchange")));break;case 2:e.muted||e.embed.unMute(),Pe.call(e,!1)}f.call(e,e.elements.container,"statechange",!1,{code:t.data})}}})}}},Ne={setup:function(){this.media?(M(this.elements.container,this.config.classNames.type.replace("{0}",this.type),!0),M(this.elements.container,this.config.classNames.provider.replace("{0}",this.provider),!0),this.isEmbed&&M(this.elements.container,this.config.classNames.type.replace("{0}","video"),!0),this.isVideo&&(this.elements.wrapper=w("div",{class:this.config.classNames.video}),b(this.media,this.elements.wrapper),this.elements.poster=w("div",{class:this.config.classNames.poster}),this.elements.wrapper.appendChild(this.elements.poster)),this.isHTML5?U.extend.call(this):this.isYouTube?Me.setup.call(this):this.isVimeo&&Ce.setup.call(this)):this.debug.warn("No media element found!")}},Le=function(){function e(t){var i=this;m(this,e),this.player=t,this.publisherId=t.config.ads.publisherId,this.playing=!1,this.initialized=!1,this.elements={container:null,displayContainer:null},this.manager=null,this.loader=null,this.cuePoints=null,this.events={},this.safetyTimer=null,this.countdownTimer=null,this.managerPromise=new Promise(function(e,t){i.on("loaded",e),i.on("error",t)}),this.load()}return g(e,[{key:"load",value:function(){var e=this;this.enabled&&(l.object(window.google)&&l.object(window.google.ima)?this.ready():Ae(this.player.config.urls.googleIMA.sdk).then(function(){e.ready()}).catch(function(){e.trigger("error",new Error("Google IMA SDK failed to load"))}))}},{key:"ready",value:function(){var e=this;this.startSafetyTimer(12e3,"ready()"),this.managerPromise.then(function(){e.clearSafetyTimer("onAdsManagerLoaded()")}),this.listeners(),this.setupIMA()}},{key:"setupIMA",value:function(){this.elements.container=w("div",{class:this.player.config.classNames.ads}),this.player.elements.container.appendChild(this.elements.container),google.ima.settings.setVpaidMode(google.ima.ImaSdkSettings.VpaidMode.ENABLED),google.ima.settings.setLocale(this.player.config.ads.language),this.elements.displayContainer=new google.ima.AdDisplayContainer(this.elements.container),this.requestAds()}},{key:"requestAds",value:function(){var e=this,t=this.player.elements.container;try{this.loader=new google.ima.AdsLoader(this.elements.displayContainer),this.loader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,function(t){return e.onAdsManagerLoaded(t)},!1),this.loader.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR,function(t){return e.onAdError(t)},!1);var i=new google.ima.AdsRequest;i.adTagUrl=this.tagUrl,i.linearAdSlotWidth=t.offsetWidth,i.linearAdSlotHeight=t.offsetHeight,i.nonLinearAdSlotWidth=t.offsetWidth,i.nonLinearAdSlotHeight=t.offsetHeight,i.forceNonLinearFullSlot=!1,i.setAdWillPlayMuted(!this.player.muted),this.loader.requestAds(i)}catch(e){this.onAdError(e)}}},{key:"pollCountdown",value:function(){var e=this;if(!(arguments.length>0&&void 0!==arguments[0]&&arguments[0]))return clearInterval(this.countdownTimer),void this.elements.container.removeAttribute("data-badge-text");this.countdownTimer=setInterval(function(){var t=ae(Math.max(e.manager.getRemainingTime(),0)),i=X("advertisement",e.player.config)+" - "+t;e.elements.container.setAttribute("data-badge-text",i)},100)}},{key:"onAdsManagerLoaded",value:function(e){var t=this;if(this.enabled){var i=new google.ima.AdsRenderingSettings;i.restoreCustomPlaybackStateOnAdBreakComplete=!0,i.enablePreloading=!0,this.manager=e.getAdsManager(this.player,i),this.cuePoints=this.manager.getCuePoints(),l.empty(this.cuePoints)||this.cuePoints.forEach(function(e){if(0!==e&&-1!==e&&e<t.player.duration){var i=t.player.elements.progress;if(l.element(i)){var n=100/t.player.duration*e,s=w("span",{class:t.player.config.classNames.cues});s.style.left=n.toString()+"%",i.appendChild(s)}}}),this.manager.setVolume(this.player.volume),this.manager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR,function(e){return t.onAdError(e)}),Object.keys(google.ima.AdEvent.Type).forEach(function(e){t.manager.addEventListener(google.ima.AdEvent.Type[e],function(e){return t.onAdEvent(e)})}),this.trigger("loaded")}}},{key:"onAdEvent",value:function(e){var t=this,i=this.player.elements.container,n=e.getAd(),s=function(e){var i="ads"+e.replace(/_/g,"").toLowerCase();f.call(t.player,t.player.media,i)};switch(e.type){case google.ima.AdEvent.Type.LOADED:this.trigger("loaded"),s(e.type),this.pollCountdown(!0),n.isLinear()||(n.width=i.offsetWidth,n.height=i.offsetHeight);break;case google.ima.AdEvent.Type.ALL_ADS_COMPLETED:s(e.type),this.loadAds();break;case google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED:s(e.type),this.pauseContent();break;case google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED:s(e.type),this.pollCountdown(),this.resumeContent();break;case google.ima.AdEvent.Type.STARTED:case google.ima.AdEvent.Type.MIDPOINT:case google.ima.AdEvent.Type.COMPLETE:case google.ima.AdEvent.Type.IMPRESSION:case google.ima.AdEvent.Type.CLICK:s(e.type)}}},{key:"onAdError",value:function(e){this.cancel(),this.player.debug.warn("Ads error",e)}},{key:"listeners",value:function(){var e=this,t=this.player.elements.container,i=void 0;this.player.on("ended",function(){e.loader.contentComplete()}),this.player.on("seeking",function(){return i=e.player.currentTime}),this.player.on("seeked",function(){var t=e.player.currentTime;l.empty(e.cuePoints)||e.cuePoints.forEach(function(n,s){i<n&&n<t&&(e.manager.discardAdBreak(),e.cuePoints.splice(s,1))})}),window.addEventListener("resize",function(){e.manager&&e.manager.resize(t.offsetWidth,t.offsetHeight,google.ima.ViewMode.NORMAL)})}},{key:"play",value:function(){var e=this,t=this.player.elements.container;this.managerPromise||this.resumeContent(),this.managerPromise.then(function(){e.elements.displayContainer.initialize();try{e.initialized||(e.manager.init(t.offsetWidth,t.offsetHeight,google.ima.ViewMode.NORMAL),e.manager.start()),e.initialized=!0}catch(t){e.onAdError(t)}}).catch(function(){})}},{key:"resumeContent",value:function(){this.elements.container.style.zIndex="",this.playing=!1,this.player.currentTime<this.player.duration&&this.player.play()}},{key:"pauseContent",value:function(){this.elements.container.style.zIndex=3,this.playing=!0,this.player.pause()}},{key:"cancel",value:function(){this.initialized&&this.resumeContent(),this.trigger("error"),this.loadAds()}},{key:"loadAds",value:function(){var e=this;this.managerPromise.then(function(){e.manager&&e.manager.destroy(),e.managerPromise=new Promise(function(t){e.on("loaded",t),e.player.debug.log(e.manager)}),e.requestAds()}).catch(function(){})}},{key:"trigger",value:function(e){for(var t=this,i=arguments.length,n=Array(i>1?i-1:0),s=1;s<i;s++)n[s-1]=arguments[s];var a=this.events[e];l.array(a)&&a.forEach(function(e){l.function(e)&&e.apply(t,n)})}},{key:"on",value:function(e,t){return l.array(this.events[e])||(this.events[e]=[]),this.events[e].push(t),this}},{key:"startSafetyTimer",value:function(e,t){var i=this;this.player.debug.log("Safety timer invoked from: "+t),this.safetyTimer=setTimeout(function(){i.cancel(),i.clearSafetyTimer("startSafetyTimer()")},e)}},{key:"clearSafetyTimer",value:function(e){l.nullOrUndefined(this.safetyTimer)||(this.player.debug.log("Safety timer cleared from: "+e),clearTimeout(this.safetyTimer),this.safetyTimer=null)}},{key:"enabled",get:function(){return this.player.isHTML5&&this.player.isVideo&&this.player.config.ads.enabled&&!l.empty(this.publisherId)}},{key:"tagUrl",get:function(){return"https://go.aniview.com/api/adserver6/vast/?"+le({AV_PUBLISHERID:"58c25bb0073ef448b1087ad6",AV_CHANNELID:"5a0458dc28a06145e4519d21",AV_URL:window.location.hostname,cb:Date.now(),AV_WIDTH:640,AV_HEIGHT:480,AV_CDIM2:this.publisherId})}}]),e}(),xe={insertElements:function(e,t){var i=this;l.string(t)?T(e,this.media,{src:t}):l.array(t)&&t.forEach(function(t){T(e,i.media,t)})},change:function(e){var t=this;W(e,"sources.length")?(U.cancelRequests.call(this),this.destroy.call(this,function(){t.options.quality=[],A(t.media),t.media=null,l.element(t.elements.container)&&t.elements.container.removeAttribute("class");var i=e.sources,n=e.type,s=v(i,1)[0],a=s.provider,o=void 0===a?de.html5:a,r=s.src,c="html5"===o?n:"div",u="html5"===o?{}:{src:r};Object.assign(t,{provider:o,type:n,supported:F.check(n,o,t.config.playsinline),media:w(c,u)}),t.elements.container.appendChild(t.media),l.boolean(e.autoplay)&&(t.config.autoplay=e.autoplay),t.isHTML5&&(t.config.crossorigin&&t.media.setAttribute("crossorigin",""),t.config.autoplay&&t.media.setAttribute("autoplay",""),l.empty(e.poster)||(t.poster=e.poster),t.config.loop.active&&t.media.setAttribute("loop",""),t.config.muted&&t.media.setAttribute("muted",""),t.config.playsinline&&t.media.setAttribute("playsinline","")),be.addStyleHook.call(t),t.isHTML5&&xe.insertElements.call(t,"source",i),t.config.title=e.title,Ne.setup.call(t),t.isHTML5&&("tracks"in e&&xe.insertElements.call(t,"track",e.tracks),t.media.load()),(t.isHTML5||t.isEmbed&&!t.supported.ui)&&be.build.call(t),t.fullscreen.update()},!0)):this.debug.warn("Invalid source format")}},_e=function(){function e(t,i){var n=this;if(m(this,e),this.timers={},this.ready=!1,this.loading=!1,this.failed=!1,this.touch=F.touch,this.media=t,l.string(this.media)&&(this.media=document.querySelectorAll(this.media)),(window.jQuery&&this.media instanceof jQuery||l.nodeList(this.media)||l.array(this.media))&&(this.media=this.media[0]),this.config=K({},ue,e.defaults,i||{},function(){try{return JSON.parse(n.media.getAttribute("data-plyr-config"))}catch(e){return{}}}()),this.elements={container:null,captions:null,buttons:{},display:{},progress:{},inputs:{},settings:{popup:null,menu:null,panels:{},buttons:{}}},this.captions={active:null,currentTrack:-1,meta:new WeakMap},this.fullscreen={active:!1},this.options={speed:[],quality:[]},this.debug=new fe(this.config.debug),this.debug.log("Config",this.config),this.debug.log("Support",F),!l.nullOrUndefined(this.media)&&l.element(this.media))if(this.media.plyr)this.debug.warn("Target already setup");else if(this.config.enabled)if(F.check().api){var s=this.media.cloneNode(!0);s.autoplay=!1,this.elements.original=s;var a=this.media.tagName.toLowerCase(),o=null,r=null;switch(a){case"div":if(o=this.media.querySelector("iframe"),l.element(o)){if(r=re(o.getAttribute("src")),this.provider=function(e){return/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/.test(e)?de.youtube:/^https?:\/\/player.vimeo.com\/video\/\d{0,9}(?=\b|\/)/.test(e)?de.vimeo:null}(r.toString()),this.elements.container=this.media,this.media=o,this.elements.container.className="",r.search.length){var c=["1","true"];c.includes(r.searchParams.get("autoplay"))&&(this.config.autoplay=!0),c.includes(r.searchParams.get("loop"))&&(this.config.loop.active=!0),this.isYouTube?(this.config.playsinline=c.includes(r.searchParams.get("playsinline")),this.config.hl=r.searchParams.get("hl")):this.config.playsinline=!0}}else this.provider=this.media.getAttribute(this.config.attributes.embed.provider),this.media.removeAttribute(this.config.attributes.embed.provider);if(l.empty(this.provider)||!Object.keys(de).includes(this.provider))return void this.debug.error("Setup failed: Invalid provider");this.type=he.video;break;case"video":case"audio":this.type=a,this.provider=de.html5,this.media.hasAttribute("crossorigin")&&(this.config.crossorigin=!0),this.media.hasAttribute("autoplay")&&(this.config.autoplay=!0),(this.media.hasAttribute("playsinline")||this.media.hasAttribute("webkit-playsinline"))&&(this.config.playsinline=!0),this.media.hasAttribute("muted")&&(this.config.muted=!0),this.media.hasAttribute("loop")&&(this.config.loop.active=!0);break;default:return void this.debug.error("Setup failed: unsupported type")}this.supported=F.check(this.type,this.provider,this.config.playsinline),this.supported.api?(this.eventListeners=[],this.listeners=new ke(this),this.storage=new Z(this),this.media.plyr=this,l.element(this.elements.container)||(this.elements.container=w("div"),b(this.media,this.elements.container)),be.addStyleHook.call(this),Ne.setup.call(this),this.config.debug&&d.call(this,this.elements.container,this.config.events.join(" "),function(e){n.debug.log("event: "+e.type)}),(this.isHTML5||this.isEmbed&&!this.supported.ui)&&be.build.call(this),this.listeners.container(),this.listeners.global(),this.fullscreen=new ye(this),this.config.ads.enabled&&(this.ads=new Le(this)),this.config.autoplay&&this.play()):this.debug.error("Setup failed: no support")}else this.debug.error("Setup failed: no support");else this.debug.error("Setup failed: disabled by config");else this.debug.error("Setup failed: no suitable element passed")}return g(e,[{key:"play",value:function(){return l.function(this.media.play)?this.media.play():null}},{key:"pause",value:function(){this.playing&&l.function(this.media.pause)&&this.media.pause()}},{key:"togglePlay",value:function(e){(l.boolean(e)?e:!this.playing)?this.play():this.pause()}},{key:"stop",value:function(){this.isHTML5?(this.pause(),this.restart()):l.function(this.media.stop)&&this.media.stop()}},{key:"restart",value:function(){this.currentTime=0}},{key:"rewind",value:function(e){this.currentTime=this.currentTime-(l.number(e)?e:this.config.seekTime)}},{key:"forward",value:function(e){this.currentTime=this.currentTime+(l.number(e)?e:this.config.seekTime)}},{key:"increaseVolume",value:function(e){var t=this.media.muted?0:this.volume;this.volume=t+(l.number(e)?e:0)}},{key:"decreaseVolume",value:function(e){this.increaseVolume(-e)}},{key:"toggleCaptions",value:function(e){ce.toggle.call(this,e,!1)}},{key:"airplay",value:function(){F.airplay&&this.media.webkitShowPlaybackTargetPicker()}},{key:"toggleControls",value:function(e){if(this.supported.ui&&!this.isAudio){var t=N(this.elements.container,this.config.classNames.hideControls),i=void 0===e?void 0:!e,n=M(this.elements.container,this.config.classNames.hideControls,i);if(n&&this.config.controls.includes("settings")&&!l.empty(this.config.settings)&&oe.toggleMenu.call(this,!1),n!==t){var s=n?"controlshidden":"controlsshown";f.call(this,this.media,s)}return!n}return!1}},{key:"on",value:function(e,t){d.call(this,this.elements.container,e,t)}},{key:"once",value:function(e,t){p.call(this,this.elements.container,e,t)}},{key:"off",value:function(e,t){h(this.elements.container,e,t)}},{key:"destroy",value:function(e){var t=this,i=arguments.length>1&&void 0!==arguments[1]&&arguments[1];if(this.ready){var n=function(){document.body.style.overflow="",t.embed=null,i?(Object.keys(t.elements).length&&(A(t.elements.buttons.play),A(t.elements.captions),A(t.elements.controls),A(t.elements.wrapper),t.elements.buttons.play=null,t.elements.captions=null,t.elements.controls=null,t.elements.wrapper=null),l.function(e)&&e()):(function(){this&&this.eventListeners&&(this.eventListeners.forEach(function(e){var t=e.element,i=e.type,n=e.callback,s=e.options;t.removeEventListener(i,n,s)}),this.eventListeners=[])}.call(t),C(t.elements.original,t.elements.container),f.call(t,t.elements.original,"destroyed",!0),l.function(e)&&e.call(t.elements.original),t.ready=!1,setTimeout(function(){t.elements=null,t.media=null},200))};this.stop(),this.isHTML5?(clearTimeout(this.timers.loading),be.toggleNativeControls.call(this,!0),n()):this.isYouTube?(clearInterval(this.timers.buffering),clearInterval(this.timers.playing),null!==this.embed&&l.function(this.embed.destroy)&&this.embed.destroy(),n()):this.isVimeo&&(null!==this.embed&&this.embed.unload().then(n),setTimeout(n,200))}}},{key:"supports",value:function(e){return F.mime.call(this,e)}},{key:"isHTML5",get:function(){return Boolean(this.provider===de.html5)}},{key:"isEmbed",get:function(){return Boolean(this.isYouTube||this.isVimeo)}},{key:"isYouTube",get:function(){return Boolean(this.provider===de.youtube)}},{key:"isVimeo",get:function(){return Boolean(this.provider===de.vimeo)}},{key:"isVideo",get:function(){return Boolean(this.type===he.video)}},{key:"isAudio",get:function(){return Boolean(this.type===he.audio)}},{key:"playing",get:function(){return Boolean(this.ready&&!this.paused&&!this.ended)}},{key:"paused",get:function(){return Boolean(this.media.paused)}},{key:"stopped",get:function(){return Boolean(this.paused&&0===this.currentTime)}},{key:"ended",get:function(){return Boolean(this.media.ended)}},{key:"currentTime",set:function(e){if(this.duration){var t=l.number(e)&&e>0;this.media.currentTime=t?Math.min(e,this.duration):0,this.debug.log("Seeking to "+this.currentTime+" seconds")}},get:function(){return Number(this.media.currentTime)}},{key:"buffered",get:function(){var e=this.media.buffered;return l.number(e)?e:e&&e.length&&this.duration>0?e.end(0)/this.duration:0}},{key:"seeking",get:function(){return Boolean(this.media.seeking)}},{key:"duration",get:function(){var e=parseFloat(this.config.duration),t=(this.media||{}).duration,i=l.number(t)&&t!==1/0?t:0;return e||i}},{key:"volume",set:function(e){var t=e;l.string(t)&&(t=Number(t)),l.number(t)||(t=this.storage.get("volume")),l.number(t)||(t=this.config.volume),t>1&&(t=1),t<0&&(t=0),this.config.volume=t,this.media.volume=t,!l.empty(e)&&this.muted&&t>0&&(this.muted=!1)},get:function(){return Number(this.media.volume)}},{key:"muted",set:function(e){var t=e;l.boolean(t)||(t=this.storage.get("muted")),l.boolean(t)||(t=this.config.muted),this.config.muted=t,this.media.muted=t},get:function(){return Boolean(this.media.muted)}},{key:"hasAudio",get:function(){return!this.isHTML5||(!!this.isAudio||(Boolean(this.media.mozHasAudio)||Boolean(this.media.webkitAudioDecodedByteCount)||Boolean(this.media.audioTracks&&this.media.audioTracks.length)))}},{key:"speed",set:function(e){var t=null;l.number(e)&&(t=e),l.number(t)||(t=this.storage.get("speed")),l.number(t)||(t=this.config.speed.selected),t<.1&&(t=.1),t>2&&(t=2),this.config.speed.options.includes(t)?(this.config.speed.selected=t,this.media.playbackRate=t):this.debug.warn("Unsupported speed ("+t+")")},get:function(){return Number(this.media.playbackRate)}},{key:"quality",set:function(e){var t=this.config.quality,i=this.options.quality;if(i.length){var n=[!l.empty(e)&&Number(e),this.storage.get("quality"),t.selected,t.default].find(l.number);if(!i.includes(n)){var s=function(e,t){return l.array(e)&&e.length?e.reduce(function(e,i){return Math.abs(i-t)<Math.abs(e-t)?i:e}):null}(i,n);this.debug.warn("Unsupported quality option: "+n+", using "+s+" instead"),n=s}t.selected=n,this.media.quality=n}},get:function(){return this.media.quality}},{key:"loop",set:function(e){var t=l.boolean(e)?e:this.config.loop.active;this.config.loop.active=t,this.media.loop=t},get:function(){return Boolean(this.media.loop)}},{key:"source",set:function(e){xe.change.call(this,e)},get:function(){return this.media.currentSrc}},{key:"poster",set:function(e){this.isVideo?be.setPoster.call(this,e,!1).catch(function(){}):this.debug.warn("Poster can only be set for video")},get:function(){return this.isVideo?this.media.getAttribute("poster"):null}},{key:"autoplay",set:function(e){var t=l.boolean(e)?e:this.config.autoplay;this.config.autoplay=t},get:function(){return Boolean(this.config.autoplay)}},{key:"currentTrack",set:function(e){ce.set.call(this,e,!1)},get:function(){var e=this.captions,t=e.toggled,i=e.currentTrack;return t?i:-1}},{key:"language",set:function(e){ce.setLanguage.call(this,e,!1)},get:function(){return(ce.getCurrentTrack.call(this)||{}).language}},{key:"pip",set:function(e){var t="picture-in-picture",i="inline";if(F.pip){var n=l.boolean(e)?e:this.pip===i;this.media.webkitSetPresentationMode(n?t:i)}},get:function(){return F.pip?this.media.webkitPresentationMode:null}}],[{key:"supported",value:function(e,t,i){return F.check(e,t,i)}},{key:"loadSprite",value:function(e,t){return te(e,t)}},{key:"setup",value:function(t){var i=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=null;return l.string(t)?n=Array.from(document.querySelectorAll(t)):l.nodeList(t)?n=Array.from(t):l.array(t)&&(n=t.filter(l.element)),l.empty(n)?null:n.map(function(t){return new e(t,i)})}}]),e}();return _e.defaults=(Se=ue,JSON.parse(JSON.stringify(Se))),_e});
 //# sourceMappingURL=plyr.min.js.map
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 74 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(75);
+var content = __webpack_require__(109);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -51457,7 +52594,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(11)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -51474,7 +52611,7 @@ if(false) {
 }
 
 /***/ }),
-/* 75 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -51488,19 +52625,19 @@ exports.push([module.i, "@keyframes plyr-progress{to{background-position:25px 0}
 
 
 /***/ }),
-/* 76 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(e,t){ true?module.exports=t(__webpack_require__(0)):"function"==typeof define&&define.amd?define(["codemirror"],t):"object"==typeof exports?exports.VueCodemirror=t(require("codemirror")):e.VueCodemirror=t(e.codemirror)}(this,function(e){return function(e){function t(r){if(n[r])return n[r].exports;var o=n[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,t),o.l=!0,o.exports}var n={};return t.m=e,t.c=n,t.i=function(e){return e},t.d=function(e,n,r){t.o(e,n)||Object.defineProperty(e,n,{configurable:!1,enumerable:!0,get:r})},t.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(n,"a",n),n},t.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},t.p="/",t(t.s=2)}([function(t,n){t.exports=e},function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r=n(3),o=n.n(r),i=n(5),s=n(4),c=s(o.a,i.a,!1,null,null,null);t.default=c.exports},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(t,"__esModule",{value:!0}),t.install=t.codemirror=t.CodeMirror=void 0;var o=n(0),i=r(o),s=n(1),c=r(s),a=window.CodeMirror||i.default,u=function(e,t){t&&(t.options&&(c.default.props.globalOptions.default=function(){return t.options}),t.events&&(c.default.props.globalEvents.default=function(){return t.events})),e.component(c.default.name,c.default)},l={CodeMirror:a,codemirror:c.default,install:u};t.default=l,t.CodeMirror=a,t.codemirror=c.default,t.install=u},function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r=n(0),o=function(e){return e&&e.__esModule?e:{default:e}}(r),i=window.CodeMirror||o.default;"function"!=typeof Object.assign&&Object.defineProperty(Object,"assign",{value:function(e,t){if(null==e)throw new TypeError("Cannot convert undefined or null to object");for(var n=Object(e),r=1;r<arguments.length;r++){var o=arguments[r];if(null!=o)for(var i in o)Object.prototype.hasOwnProperty.call(o,i)&&(n[i]=o[i])}return n},writable:!0,configurable:!0}),t.default={name:"codemirror",data:function(){return{content:"",codemirror:null,cminstance:null}},props:{code:String,value:String,marker:Function,unseenLines:Array,placeholder:{type:String,default:""},merge:{type:Boolean,default:!1},options:{type:Object,default:function(){return{}}},events:{type:Array,default:function(){return[]}},globalOptions:{type:Object,default:function(){return{}}},globalEvents:{type:Array,default:function(){return[]}}},watch:{options:{deep:!0,handler:function(e,t){for(var n in e)this.cminstance.setOption(n,e[n])}},merge:function(e){this.$nextTick(this.switchMerge)},code:function(e,t){this.handerCodeChange(e,t)},value:function(e,t){this.handerCodeChange(e,t)}},methods:{initialize:function(){var e=this,t=Object.assign({},this.globalOptions,this.options);this.merge?(this.codemirror=i.MergeView(this.$refs.mergeview,t),this.cminstance=this.codemirror.edit):(this.codemirror=i.fromTextArea(this.$refs.textarea,t),this.cminstance=this.codemirror,this.cminstance.setValue(this.code||this.value||this.content)),this.cminstance.on("change",function(t){e.content=t.getValue(),e.$emit&&e.$emit("input",e.content)});var n={};["scroll","changes","beforeChange","cursorActivity","keyHandled","inputRead","electricInput","beforeSelectionChange","viewportChange","swapDoc","gutterClick","gutterContextMenu","focus","blur","refresh","optionChange","scrollCursorIntoView","update"].concat(this.events).concat(this.globalEvents).filter(function(e){return!n[e]&&(n[e]=!0)}).forEach(function(t){e.cminstance.on(t,function(){for(var n=arguments.length,r=Array(n),o=0;o<n;o++)r[o]=arguments[o];e.$emit.apply(e,[t].concat(r));var i=t.replace(/([A-Z])/g,"-$1").toLowerCase();i!==t&&e.$emit.apply(e,[i].concat(r))})});this.$emit("ready",this.codemirror),this.unseenLineMarkers(),this.refresh()},refresh:function(){var e=this;this.$nextTick(function(){e.cminstance.refresh()})},destroy:function(){var e=this.cminstance.doc.cm.getWrapperElement();e&&e.remove&&e.remove()},handerCodeChange:function(e,t){if(e!==this.cminstance.getValue()){var n=this.cminstance.getScrollInfo();this.cminstance.setValue(e),this.content=e,this.cminstance.scrollTo(n.left,n.top)}this.unseenLineMarkers()},unseenLineMarkers:function(){var e=this;void 0!==this.unseenLines&&void 0!==this.marker&&this.unseenLines.forEach(function(t){var n=e.cminstance.lineInfo(t);e.cminstance.setGutterMarker(t,"breakpoints",n.gutterMarkers?null:e.marker())})},switchMerge:function(){var e=this.cminstance.doc.history,t=this.cminstance.doc.cleanGeneration;this.options.value=this.cminstance.getValue(),this.destroy(),this.initialize(),this.cminstance.doc.history=e,this.cminstance.doc.cleanGeneration=t}},mounted:function(){this.initialize()},beforeDestroy:function(){this.destroy()}}},function(e,t){e.exports=function(e,t,n,r,o,i){var s,c=e=e||{},a=typeof e.default;"object"!==a&&"function"!==a||(s=e,c=e.default);var u="function"==typeof c?c.options:c;t&&(u.render=t.render,u.staticRenderFns=t.staticRenderFns,u._compiled=!0),n&&(u.functional=!0),o&&(u._scopeId=o);var l;if(i?(l=function(e){e=e||this.$vnode&&this.$vnode.ssrContext||this.parent&&this.parent.$vnode&&this.parent.$vnode.ssrContext,e||"undefined"==typeof __VUE_SSR_CONTEXT__||(e=__VUE_SSR_CONTEXT__),r&&r.call(this,e),e&&e._registeredComponents&&e._registeredComponents.add(i)},u._ssrRegister=l):r&&(l=r),l){var f=u.functional,d=f?u.render:u.beforeCreate;f?(u._injectStyles=l,u.render=function(e,t){return l.call(t),d(e,t)}):u.beforeCreate=d?[].concat(d,l):[l]}return{esModule:s,exports:c,options:u}}},function(e,t,n){"use strict";var r=function(){var e=this,t=e.$createElement,n=e._self._c||t;return n("div",{staticClass:"vue-codemirror",class:{merge:e.merge}},[e.merge?n("div",{ref:"mergeview"}):n("textarea",{ref:"textarea",attrs:{placeholder:e.placeholder}})])},o=[],i={render:r,staticRenderFns:o};t.a=i}])});
 
 /***/ }),
-/* 77 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(78);
+var content = __webpack_require__(112);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -51508,7 +52645,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(11)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -51525,7 +52662,7 @@ if(false) {
 }
 
 /***/ }),
-/* 78 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -51539,13 +52676,13 @@ exports.push([module.i, "/* BASICS */\n\n.CodeMirror {\n  /* Set height, width, 
 
 
 /***/ }),
-/* 79 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(80);
+var content = __webpack_require__(114);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -51553,7 +52690,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(11)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -51570,7 +52707,7 @@ if(false) {
 }
 
 /***/ }),
-/* 80 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -51584,7 +52721,7 @@ exports.push([module.i, "/*\n\n    Name:       dracula\n    Author:     Michael 
 
 
 /***/ }),
-/* 81 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -51592,7 +52729,7 @@ exports.push([module.i, "/*\n\n    Name:       dracula\n    Author:     Michael 
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(7), __webpack_require__(82));
+    mod(__webpack_require__(0), __webpack_require__(13), __webpack_require__(116));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
   else // Plain browser env
@@ -52474,7 +53611,7 @@ CodeMirror.defineMIME("text/x-markdown", "markdown");
 
 
 /***/ }),
-/* 82 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -52697,7 +53834,7 @@ CodeMirror.defineMIME("text/x-markdown", "markdown");
 
 
 /***/ }),
-/* 83 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -52705,7 +53842,7 @@ CodeMirror.defineMIME("text/x-markdown", "markdown");
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(18), __webpack_require__(84));
+    mod(__webpack_require__(0), __webpack_require__(35), __webpack_require__(118));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../htmlmixed/htmlmixed", "../clike/clike"], mod);
   else // Plain browser env
@@ -52937,7 +54074,7 @@ CodeMirror.defineMIME("text/x-markdown", "markdown");
 
 
 /***/ }),
-/* 84 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -53777,7 +54914,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
 
 
 /***/ }),
-/* 85 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -54283,7 +55420,7 @@ CodeMirror.defineMode("sql", function(config, parserConfig) {
 
 
 /***/ }),
-/* 86 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -54585,7 +55722,7 @@ CodeMirror.defineMIME("text/x-ruby", "ruby");
 
 
 /***/ }),
-/* 87 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -54742,7 +55879,7 @@ CodeMirror.defineMIME('application/x-sh', 'shell');
 
 
 /***/ }),
-/* 88 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -54750,7 +55887,7 @@ CodeMirror.defineMIME('application/x-sh', 'shell');
 
 (function (mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(20))
+    mod(__webpack_require__(0), __webpack_require__(37))
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../yaml/yaml"], mod)
   else // Plain browser env
@@ -54816,7 +55953,7 @@ CodeMirror.defineMIME('application/x-sh', 'shell');
 
 
 /***/ }),
-/* 89 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -55000,7 +56137,7 @@ CodeMirror.defineMIME("text/x-nginx-conf", "nginx");
 
 
 /***/ }),
-/* 90 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -55010,15 +56147,15 @@ CodeMirror.defineMIME("text/x-nginx-conf", "nginx");
   "use strict";
   if (true) {// CommonJS
     mod(__webpack_require__(0),
-        __webpack_require__(91),
-        __webpack_require__(7),
-        __webpack_require__(8),
-        __webpack_require__(92),
-        __webpack_require__(9),
-        __webpack_require__(19),
-        __webpack_require__(93),
-        __webpack_require__(94),
-        __webpack_require__(95));
+        __webpack_require__(125),
+        __webpack_require__(13),
+        __webpack_require__(14),
+        __webpack_require__(126),
+        __webpack_require__(15),
+        __webpack_require__(36),
+        __webpack_require__(127),
+        __webpack_require__(128),
+        __webpack_require__(129));
   } else if (typeof define === "function" && define.amd) { // AMD
     define(["../../lib/codemirror",
             "../../addon/mode/overlay",
@@ -55083,7 +56220,7 @@ CodeMirror.defineMIME("text/x-nginx-conf", "nginx");
 
 
 /***/ }),
-/* 91 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -55179,7 +56316,7 @@ CodeMirror.overlayMode = function(base, overlay, combine) {
 
 
 /***/ }),
-/* 92 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -55544,7 +56681,7 @@ CodeMirror.defineMIME("text/coffeescript", "coffeescript");
 
 
 /***/ }),
-/* 93 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -56321,7 +57458,7 @@ CodeMirror.defineMIME("text/coffeescript", "coffeescript");
 
 
 /***/ }),
-/* 94 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -56329,7 +57466,7 @@ CodeMirror.defineMIME("text/coffeescript", "coffeescript");
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(8), __webpack_require__(9), __webpack_require__(18));
+    mod(__webpack_require__(0), __webpack_require__(14), __webpack_require__(15), __webpack_require__(35));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../javascript/javascript", "../css/css", "../htmlmixed/htmlmixed"], mod);
   else // Plain browser env
@@ -56918,7 +58055,7 @@ CodeMirror.defineMIME('text/x-jade', 'pug');
 
 
 /***/ }),
-/* 95 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -56926,7 +58063,7 @@ CodeMirror.defineMIME('text/x-jade', 'pug');
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(21), __webpack_require__(96));
+    mod(__webpack_require__(0), __webpack_require__(38), __webpack_require__(130));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../../addon/mode/simple", "../../addon/mode/multiplex"], mod);
   else // Plain browser env
@@ -56990,7 +58127,7 @@ CodeMirror.defineMIME('text/x-jade', 'pug');
 
 
 /***/ }),
-/* 96 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -57127,7 +58264,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
 
 
 /***/ }),
-/* 97 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -57135,7 +58272,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(21));
+    mod(__webpack_require__(0), __webpack_require__(38));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../../addon/mode/simple"], mod);
   else // Plain browser env
@@ -57344,7 +58481,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
 
 
 /***/ }),
-/* 98 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -57385,7 +58522,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(0), __webpack_require__(99), __webpack_require__(100), __webpack_require__(101));
+    mod(__webpack_require__(0), __webpack_require__(133), __webpack_require__(134), __webpack_require__(135));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../lib/codemirror", "../addon/search/searchcursor", "../addon/dialog/dialog", "../addon/edit/matchbrackets"], mod);
   else // Plain browser env
@@ -62762,7 +63899,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
 
 
 /***/ }),
-/* 99 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -63061,7 +64198,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
 
 
 /***/ }),
-/* 100 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -63228,7 +64365,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
 
 
 /***/ }),
-/* 101 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -63379,7 +64516,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
 
 
 /***/ }),
-/* 102 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -63388,545 +64525,575 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "portal",
-    {
-      attrs: {
-        to: "modals",
-        name: "File Details",
-        transition: "fade-transition"
-      }
-    },
+    { attrs: { to: "modals", name: "File Details" } },
     [
-      _vm.active
-        ? _c("modal", { on: { "modal-close": _vm.handleClose } }, [
-            _c(
-              "div",
-              {
-                staticClass: "bg-white rounded-lg shadow-lg",
-                staticStyle: { width: "70vw" }
-              },
-              [
+      _c(
+        "transition",
+        { attrs: { name: "fade" } },
+        [
+          _vm.active
+            ? _c("modal", { on: { "modal-close": _vm.handleClose } }, [
                 _c(
                   "div",
-                  { staticClass: "bg-30 flex flex-wrap border-b border-70" },
+                  {
+                    staticClass: "bg-white rounded-lg shadow-lg",
+                    staticStyle: { width: "70vw" }
+                  },
                   [
-                    _c("div", { staticClass: "w-3/4 px-4 py-3 " }, [
-                      _vm._v(
-                        "\n                    " +
-                          _vm._s(_vm.__("Preview of")) +
-                          " "
-                      ),
-                      _c("span", { staticClass: "text-primary-70%" }, [
-                        _vm._v(_vm._s(_vm.info.name))
-                      ])
-                    ]),
-                    _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "w-1/4 flex flex-wrap justify-end" },
+                      {
+                        staticClass: "bg-30 flex flex-wrap border-b border-70"
+                      },
                       [
+                        _c("div", { staticClass: "w-3/4 px-4 py-3 " }, [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(_vm.__("Preview of")) +
+                              " "
+                          ),
+                          _c("span", { staticClass: "text-primary-70%" }, [
+                            _vm._v(_vm._s(_vm.info.name))
+                          ])
+                        ]),
+                        _vm._v(" "),
                         _c(
-                          "button",
-                          {
-                            staticClass: "btn buttons-actions",
-                            on: { click: _vm.closePreview }
-                          },
-                          [_vm._v("X")]
+                          "div",
+                          { staticClass: "w-1/4 flex flex-wrap justify-end" },
+                          [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn buttons-actions",
+                                on: { click: _vm.closePreview }
+                              },
+                              [_vm._v("X")]
+                            )
+                          ]
                         )
                       ]
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "flex flex-wrap" }, [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "w-3/5 box-preview flex justify-center",
-                      class: _vm.cssType
-                    },
-                    [
-                      _vm.info.type == "image"
-                        ? [
-                            _c("ImageInfo", {
-                              attrs: {
-                                file: _vm.info,
-                                preview: true,
-                                css:
-                                  "card relative w-full flex flex-wrap justify-center items-center overflow-hidden px-0 py-0"
-                              }
-                            })
-                          ]
-                        : _vm.info.type == "audio"
-                        ? [
-                            _c(
-                              "audio",
-                              { ref: "audio", attrs: { controls: "" } },
-                              [
-                                _c("source", {
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "flex flex-wrap" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "w-3/5 box-preview flex justify-center",
+                          class: _vm.cssType
+                        },
+                        [
+                          _vm.info.type == "image"
+                            ? [
+                                _c("ImageInfo", {
                                   attrs: {
-                                    src: _vm.info.src,
-                                    type: _vm.info.mime
+                                    file: _vm.info,
+                                    preview: true,
+                                    css:
+                                      "card relative w-full flex flex-wrap justify-center items-center overflow-hidden px-0 py-0"
                                   }
                                 })
                               ]
-                            )
-                          ]
-                        : _vm.info.type == "video"
-                        ? [
-                            _c(
-                              "video",
-                              {
-                                ref: "video",
-                                attrs: {
-                                  controls: "",
-                                  crossorigin: "",
-                                  playsinline: ""
-                                }
-                              },
-                              [
-                                _c("source", {
-                                  attrs: {
-                                    src: _vm.info.url,
-                                    type: _vm.info.mime
-                                  }
-                                })
-                              ]
-                            )
-                          ]
-                        : _vm.info.type == "text"
-                        ? [
-                            _vm.codeLoaded
-                              ? _c("codemirror", {
-                                  ref: "code",
-                                  attrs: {
-                                    value: _vm.info.source,
-                                    options: _vm.cmOptions
-                                  }
-                                })
-                              : _vm._e()
-                          ]
-                        : _vm.info.type == "zip"
-                        ? [
-                            _vm.zipLoaded
-                              ? _c("TreeView", {
-                                  attrs: {
-                                    json: _vm.info.source,
-                                    name: _vm.info.name
-                                  }
-                                })
-                              : _vm._e()
-                          ]
-                        : _vm.info.type == "pdf"
-                        ? [
-                            _c(
-                              "object",
-                              {
-                                attrs: {
-                                  data: _vm.info.url,
-                                  type: "application/pdf",
-                                  width: "100%",
-                                  height: "100%"
-                                }
-                              },
-                              [
+                            : _vm.info.type == "audio"
+                            ? [
                                 _c(
-                                  "iframe",
+                                  "audio",
+                                  { ref: "audio", attrs: { controls: "" } },
+                                  [
+                                    _c("source", {
+                                      attrs: {
+                                        src: _vm.info.src,
+                                        type: _vm.info.mime
+                                      }
+                                    })
+                                  ]
+                                )
+                              ]
+                            : _vm.info.type == "video"
+                            ? [
+                                _c(
+                                  "video",
                                   {
-                                    staticStyle: { border: "none" },
+                                    ref: "video",
                                     attrs: {
-                                      src: _vm.info.url,
+                                      controls: "",
+                                      crossorigin: "",
+                                      playsinline: ""
+                                    }
+                                  },
+                                  [
+                                    _c("source", {
+                                      attrs: {
+                                        src: _vm.info.url,
+                                        type: _vm.info.mime
+                                      }
+                                    })
+                                  ]
+                                )
+                              ]
+                            : _vm.info.type == "text"
+                            ? [
+                                _vm.codeLoaded
+                                  ? _c("codemirror", {
+                                      ref: "code",
+                                      attrs: {
+                                        value: _vm.info.source,
+                                        options: _vm.cmOptions
+                                      }
+                                    })
+                                  : _vm._e()
+                              ]
+                            : _vm.info.type == "zip"
+                            ? [
+                                _vm.zipLoaded
+                                  ? _c("TreeView", {
+                                      attrs: {
+                                        json: _vm.info.source,
+                                        name: _vm.info.name
+                                      }
+                                    })
+                                  : _vm._e()
+                              ]
+                            : _vm.info.type == "pdf"
+                            ? [
+                                _c(
+                                  "object",
+                                  {
+                                    attrs: {
+                                      data: _vm.info.url,
+                                      type: "application/pdf",
                                       width: "100%",
                                       height: "100%"
                                     }
                                   },
                                   [
-                                    _c("object", {
-                                      staticClass: "no-preview",
-                                      domProps: {
-                                        innerHTML: _vm._s(_vm.info.image)
-                                      }
-                                    })
-                                  ]
-                                )
-                              ]
-                            )
-                          ]
-                        : [
-                            _c("object", {
-                              staticClass: "no-preview",
-                              domProps: { innerHTML: _vm._s(_vm.info.image) }
-                            })
-                          ]
-                    ],
-                    2
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "w-2/5 bg-30 box-info flex flex-wrap" },
-                    [
-                      _c("div", { staticClass: "info-data w-full" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "info mx-4 my-3 flex flex-wrap items-center"
-                          },
-                          [
-                            _c(
-                              "span",
-                              {
-                                staticClass: "title bg-50 px-1 py-1 rounded-l"
-                              },
-                              [_vm._v(_vm._s(_vm.__("Name")) + ":")]
-                            ),
-                            _vm._v(" "),
-                            !_vm.editingName
-                              ? _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "value bg-white px-1 py-1 rounded-r"
-                                  },
-                                  [
-                                    _vm._v(
-                                      _vm._s(_vm.info.name) +
-                                        "\n                            "
-                                    )
-                                  ]
-                                )
-                              : _vm._e(),
-                            _vm._v(" "),
-                            !_vm.editingName
-                              ? _c(
-                                  "svg",
-                                  {
-                                    staticClass: "ml-1 cursor-pointer",
-                                    attrs: {
-                                      xmlns: "http://www.w3.org/2000/svg",
-                                      viewBox: "0 0 20 20",
-                                      width: "12",
-                                      height: "12"
-                                    },
-                                    on: { click: _vm.editName }
-                                  },
-                                  [
-                                    _c("path", {
-                                      attrs: {
-                                        d:
-                                          "M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"
-                                      }
-                                    })
-                                  ]
-                                )
-                              : _vm._e(),
-                            _vm._v(" "),
-                            _vm.editingName
-                              ? [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.nameNoExtension,
-                                        expression: "nameNoExtension"
-                                      }
-                                    ],
-                                    ref: "inputName",
-                                    staticClass: " value px-1 py-1 rounded-r",
-                                    style: { width: _vm.nameWidth + "px" },
-                                    attrs: { type: "text" },
-                                    domProps: { value: _vm.nameNoExtension },
-                                    on: {
-                                      input: function($event) {
-                                        if ($event.target.composing) {
-                                          return
-                                        }
-                                        _vm.nameNoExtension =
-                                          $event.target.value
-                                      }
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "svg",
-                                    {
-                                      staticClass:
-                                        "ml-1 cursor-pointer text-success fill-current",
-                                      attrs: {
-                                        xmlns: "http://www.w3.org/2000/svg",
-                                        viewBox: "0 0 20 20",
-                                        width: "12",
-                                        height: "12"
-                                      },
-                                      on: { click: _vm.rename }
-                                    },
-                                    [
-                                      _c("path", {
-                                        attrs: {
-                                          d: "M0 11l2-2 5 5L18 3l2 2L7 18z"
-                                        }
-                                      })
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "svg",
-                                    {
-                                      staticClass: "ml-1 cursor-pointer",
-                                      attrs: {
-                                        xmlns: "http://www.w3.org/2000/svg",
-                                        viewBox: "0 0 20 20",
-                                        width: "12",
-                                        height: "12"
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          _vm.editingName = !_vm.editingName
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c("path", {
-                                        attrs: {
-                                          d:
-                                            "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"
-                                        }
-                                      })
-                                    ]
-                                  )
-                                ]
-                              : _vm._e()
-                          ],
-                          2
-                        ),
-                        _vm._v(" "),
-                        _vm.info.mime
-                          ? _c(
-                              "div",
-                              { staticClass: "info mx-4 my-3 flex flex-wrap" },
-                              [
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "title bg-50 px-1 py-1 rounded-l"
-                                  },
-                                  [_vm._v(_vm._s(_vm.__("Mime Type")) + ":")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "value bg-white px-1 py-1 rounded-r"
-                                  },
-                                  [_vm._v(_vm._s(_vm.info.mime))]
-                                )
-                              ]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.info.date
-                          ? _c(
-                              "div",
-                              { staticClass: "info mx-4 my-3 flex flex-wrap" },
-                              [
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "title bg-50 px-1 py-1 rounded-l"
-                                  },
-                                  [
-                                    _vm._v(
-                                      _vm._s(_vm.__("Last Modification")) + ":"
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "value bg-white px-1 py-1 rounded-r"
-                                  },
-                                  [_vm._v(_vm._s(_vm.info.date))]
-                                )
-                              ]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.info.size
-                          ? _c(
-                              "div",
-                              { staticClass: "info mx-4 my-3 flex flex-wrap" },
-                              [
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "title bg-50 px-1 py-1 rounded-l"
-                                  },
-                                  [_vm._v(_vm._s(_vm.__("Size")) + ":")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "value bg-white px-1 py-1 rounded-r"
-                                  },
-                                  [_vm._v(_vm._s(_vm.info.size))]
-                                )
-                              ]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.info.dimensions
-                          ? _c(
-                              "div",
-                              { staticClass: "info mx-4 my-3 flex flex-wrap" },
-                              [
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "title bg-50 px-1 py-1 rounded-l"
-                                  },
-                                  [_vm._v(_vm._s(_vm.__("Dimensions")) + ":")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "span",
-                                  {
-                                    staticClass:
-                                      "value bg-white px-1 py-1 rounded-r"
-                                  },
-                                  [_vm._v(_vm._s(_vm.info.dimensions))]
-                                )
-                              ]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.info.url
-                          ? _c("div", { staticClass: "info mx-4 mt-6" }, [
-                              _c(
-                                "label",
-                                {
-                                  staticClass:
-                                    "block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2",
-                                  attrs: { for: "grid-value" }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                " +
-                                      _vm._s(_vm.__("Url")) +
-                                      "\n                            "
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "flex flex-wrap items-stretch w-full mb-4 relative"
-                                },
-                                [
-                                  _c("input", {
-                                    staticClass:
-                                      "flex-shrink flex-grow flex-auto text-xs leading-normal w-px flex-1 border border-70 rounded rounded-r-none px-1 relative",
-                                    attrs: { type: "text", disabled: "" },
-                                    domProps: { value: _vm.info.url }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "flex -mr-px" }, [
                                     _c(
-                                      "button",
+                                      "iframe",
                                       {
-                                        directives: [
-                                          {
-                                            name: "copy",
-                                            rawName: "v-copy",
-                                            value: _vm.info.url,
-                                            expression: "info.url"
-                                          },
-                                          {
-                                            name: "copy",
-                                            rawName: "v-copy:callback",
-                                            value: _vm.onCopy,
-                                            expression: "onCopy",
-                                            arg: "callback"
-                                          }
-                                        ],
-                                        staticClass:
-                                          "copy flex items-center leading-normal bg-50 rounded rounded-l-none border border-l-0 border-70 px-3 whitespace-no-wrap text-grey-dark text-xs"
+                                        staticStyle: { border: "none" },
+                                        attrs: {
+                                          src: _vm.info.url,
+                                          width: "100%",
+                                          height: "100%"
+                                        }
                                       },
-                                      [_vm._v(_vm._s(_vm.__("Copy")))]
+                                      [
+                                        _c("object", {
+                                          staticClass: "no-preview",
+                                          domProps: {
+                                            innerHTML: _vm._s(_vm.info.image)
+                                          }
+                                        })
+                                      ]
                                     )
-                                  ])
-                                ]
-                              )
-                            ])
-                          : _vm._e()
-                      ]),
+                                  ]
+                                )
+                              ]
+                            : [
+                                _c("object", {
+                                  staticClass: "no-preview",
+                                  domProps: {
+                                    innerHTML: _vm._s(_vm.info.image)
+                                  }
+                                })
+                              ]
+                        ],
+                        2
+                      ),
                       _vm._v(" "),
                       _c(
                         "div",
-                        {
-                          staticClass:
-                            "info-actions w-full flex flex-wrap self-end justify-end"
-                        },
+                        { staticClass: "w-2/5 bg-30 box-info flex flex-wrap" },
                         [
-                          _c(
-                            "div",
-                            { class: { "m-3": _vm.popup } },
-                            [
-                              _c("confirmation-button", {
-                                attrs: {
-                                  messages: _vm.messagesRemove,
-                                  css:
-                                    "btn text-danger text-sm font-normal h-9 px-3 mr-3 btn-link"
-                                },
-                                on: {
-                                  "confirmation-success": function($event) {
-                                    return _vm.removeFilePopup()
-                                  }
-                                }
-                              }),
-                              _vm._v(" "),
-                              _vm.popup
-                                ? [
-                                    _c(
-                                      "button",
+                          _c("div", { staticClass: "info-data w-full" }, [
+                            _c(
+                              "div",
+                              {
+                                staticClass:
+                                  "info mx-4 my-3 flex flex-wrap items-center"
+                              },
+                              [
+                                _c(
+                                  "span",
+                                  {
+                                    staticClass:
+                                      "title bg-50 px-1 py-1 rounded-l"
+                                  },
+                                  [_vm._v(_vm._s(_vm.__("Name")) + ":")]
+                                ),
+                                _vm._v(" "),
+                                !_vm.editingName
+                                  ? _c(
+                                      "span",
                                       {
                                         staticClass:
-                                          "btn btn-default btn-primary",
-                                        on: { click: _vm.selectFile }
+                                          "value bg-white px-1 py-1 rounded-r"
                                       },
                                       [
                                         _vm._v(
-                                          "\n                                    " +
-                                            _vm._s(_vm.__("Select file")) +
+                                          _vm._s(_vm.info.name) +
                                             "\n                                "
                                         )
                                       ]
                                     )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                !_vm.editingName
+                                  ? _c(
+                                      "svg",
+                                      {
+                                        staticClass: "ml-1 cursor-pointer",
+                                        attrs: {
+                                          xmlns: "http://www.w3.org/2000/svg",
+                                          viewBox: "0 0 20 20",
+                                          width: "12",
+                                          height: "12"
+                                        },
+                                        on: { click: _vm.editName }
+                                      },
+                                      [
+                                        _c("path", {
+                                          attrs: {
+                                            d:
+                                              "M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.editingName
+                                  ? [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.nameNoExtension,
+                                            expression: "nameNoExtension"
+                                          }
+                                        ],
+                                        ref: "inputName",
+                                        staticClass:
+                                          " value px-1 py-1 rounded-r",
+                                        style: { width: _vm.nameWidth + "px" },
+                                        attrs: { type: "text" },
+                                        domProps: {
+                                          value: _vm.nameNoExtension
+                                        },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.nameNoExtension =
+                                              $event.target.value
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "svg",
+                                        {
+                                          staticClass:
+                                            "ml-1 cursor-pointer text-success fill-current",
+                                          attrs: {
+                                            xmlns: "http://www.w3.org/2000/svg",
+                                            viewBox: "0 0 20 20",
+                                            width: "12",
+                                            height: "12"
+                                          },
+                                          on: { click: _vm.rename }
+                                        },
+                                        [
+                                          _c("path", {
+                                            attrs: {
+                                              d: "M0 11l2-2 5 5L18 3l2 2L7 18z"
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "svg",
+                                        {
+                                          staticClass: "ml-1 cursor-pointer",
+                                          attrs: {
+                                            xmlns: "http://www.w3.org/2000/svg",
+                                            viewBox: "0 0 20 20",
+                                            width: "12",
+                                            height: "12"
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              _vm.editingName = !_vm.editingName
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("path", {
+                                            attrs: {
+                                              d:
+                                                "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"
+                                            }
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  : _vm._e()
+                              ],
+                              2
+                            ),
+                            _vm._v(" "),
+                            _vm.info.mime
+                              ? _c(
+                                  "div",
+                                  {
+                                    staticClass: "info mx-4 my-3 flex flex-wrap"
+                                  },
+                                  [
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "title bg-50 px-1 py-1 rounded-l"
+                                      },
+                                      [
+                                        _vm._v(
+                                          _vm._s(_vm.__("Mime Type")) + ":"
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "value bg-white px-1 py-1 rounded-r"
+                                      },
+                                      [_vm._v(_vm._s(_vm.info.mime))]
+                                    )
                                   ]
-                                : _vm._e()
-                            ],
-                            2
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.info.date
+                              ? _c(
+                                  "div",
+                                  {
+                                    staticClass: "info mx-4 my-3 flex flex-wrap"
+                                  },
+                                  [
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "title bg-50 px-1 py-1 rounded-l"
+                                      },
+                                      [
+                                        _vm._v(
+                                          _vm._s(_vm.__("Last Modification")) +
+                                            ":"
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "value bg-white px-1 py-1 rounded-r"
+                                      },
+                                      [_vm._v(_vm._s(_vm.info.date))]
+                                    )
+                                  ]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.info.size
+                              ? _c(
+                                  "div",
+                                  {
+                                    staticClass: "info mx-4 my-3 flex flex-wrap"
+                                  },
+                                  [
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "title bg-50 px-1 py-1 rounded-l"
+                                      },
+                                      [_vm._v(_vm._s(_vm.__("Size")) + ":")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "value bg-white px-1 py-1 rounded-r"
+                                      },
+                                      [_vm._v(_vm._s(_vm.info.size))]
+                                    )
+                                  ]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.info.dimensions
+                              ? _c(
+                                  "div",
+                                  {
+                                    staticClass: "info mx-4 my-3 flex flex-wrap"
+                                  },
+                                  [
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "title bg-50 px-1 py-1 rounded-l"
+                                      },
+                                      [
+                                        _vm._v(
+                                          _vm._s(_vm.__("Dimensions")) + ":"
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "value bg-white px-1 py-1 rounded-r"
+                                      },
+                                      [_vm._v(_vm._s(_vm.info.dimensions))]
+                                    )
+                                  ]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.info.url
+                              ? _c("div", { staticClass: "info mx-4 mt-6" }, [
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass:
+                                        "block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2",
+                                      attrs: { for: "grid-value" }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                                    " +
+                                          _vm._s(_vm.__("Url")) +
+                                          "\n                                "
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "flex flex-wrap items-stretch w-full mb-4 relative"
+                                    },
+                                    [
+                                      _c("input", {
+                                        staticClass:
+                                          "flex-shrink flex-grow flex-auto text-xs leading-normal w-px flex-1 border border-70 rounded rounded-r-none px-1 relative",
+                                        attrs: { type: "text" },
+                                        domProps: { value: _vm.info.url }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "flex -mr-px" },
+                                        [
+                                          _c(
+                                            "button",
+                                            {
+                                              directives: [
+                                                {
+                                                  name: "copy",
+                                                  rawName: "v-copy",
+                                                  value: _vm.info.url,
+                                                  expression: "info.url"
+                                                },
+                                                {
+                                                  name: "copy",
+                                                  rawName: "v-copy:callback",
+                                                  value: _vm.onCopy,
+                                                  expression: "onCopy",
+                                                  arg: "callback"
+                                                }
+                                              ],
+                                              staticClass:
+                                                "copy flex items-center leading-normal bg-50 rounded rounded-l-none border border-l-0 border-70 px-3 whitespace-no-wrap text-grey-dark text-xs"
+                                            },
+                                            [_vm._v(_vm._s(_vm.__("Copy")))]
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ])
+                              : _vm._e()
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "info-actions w-full flex flex-wrap self-end justify-end"
+                            },
+                            [
+                              _c(
+                                "div",
+                                { class: { "m-3": _vm.popup } },
+                                [
+                                  _c("confirmation-button", {
+                                    attrs: {
+                                      messages: _vm.messagesRemove,
+                                      css:
+                                        "btn text-danger text-sm font-normal h-9 px-3 mr-3 btn-link"
+                                    },
+                                    on: {
+                                      "confirmation-success": function($event) {
+                                        return _vm.removeFilePopup()
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _vm.popup
+                                    ? [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "btn btn-default btn-primary",
+                                            on: { click: _vm.selectFile }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                        " +
+                                                _vm._s(_vm.__("Select file")) +
+                                                "\n                                    "
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    : _vm._e()
+                                ],
+                                2
+                              )
+                            ]
                           )
                         ]
                       )
-                    ]
-                  )
-                ])
-              ]
-            )
-          ])
-        : _vm._e()
+                    ])
+                  ]
+                )
+              ])
+            : _vm._e()
+        ],
+        1
+      )
     ],
     1
   )
@@ -63942,13 +65109,13 @@ if (false) {
 }
 
 /***/ }),
-/* 103 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(104);
+var content = __webpack_require__(138);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -63968,7 +65135,7 @@ if(false) {
 }
 
 /***/ }),
-/* 104 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -63982,16 +65149,16 @@ exports.push([module.i, "\n.stack-uploads[data-v-5c13b779] {\n  right: 10px;\n  
 
 
 /***/ }),
-/* 105 */
+/* 139 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_Progress__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_Progress__ = __webpack_require__(140);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_Progress___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__modules_Progress__);
 
 
@@ -64218,19 +65385,19 @@ var token = document.head.querySelector('meta[name="csrf-token"]');
 });
 
 /***/ }),
-/* 106 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(107)
+  __webpack_require__(141)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(109)
+var __vue_script__ = __webpack_require__(143)
 /* template */
-var __vue_template__ = __webpack_require__(110)
+var __vue_template__ = __webpack_require__(144)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -64269,13 +65436,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 107 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(108);
+var content = __webpack_require__(142);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -64295,7 +65462,7 @@ if(false) {
 }
 
 /***/ }),
-/* 108 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -64309,7 +65476,7 @@ exports.push([module.i, "/* PROGRESS */\n.progress[data-v-30912c5a] {\n  backgro
 
 
 /***/ }),
-/* 109 */
+/* 143 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -64379,7 +65546,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 110 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -64409,7 +65576,7 @@ if (false) {
 }
 
 /***/ }),
-/* 111 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -64607,19 +65774,19 @@ if (false) {
 }
 
 /***/ }),
-/* 112 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(113)
+  __webpack_require__(147)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(115)
+var __vue_script__ = __webpack_require__(149)
 /* template */
-var __vue_template__ = __webpack_require__(136)
+var __vue_template__ = __webpack_require__(255)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -64658,13 +65825,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 113 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(114);
+var content = __webpack_require__(148);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -64684,7 +65851,7 @@ if(false) {
 }
 
 /***/ }),
-/* 114 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -64698,33 +65865,46 @@ exports.push([module.i, "/* Scoped Styles */\n.w-1\\/8 {\n  width: 12.5%;\n}\n.w
 
 
 /***/ }),
-/* 115 */
+/* 149 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_filesize__ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_filesize__ = __webpack_require__(150);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_filesize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_filesize__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_md5__ = __webpack_require__(117);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_md5__ = __webpack_require__(151);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_md5___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_md5__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__modules_ImageLoader__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__modules_ImageLoader__ = __webpack_require__(154);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__modules_ImageLoader___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__modules_ImageLoader__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__modules_Folder__ = __webpack_require__(127);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__modules_Folder__ = __webpack_require__(246);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__modules_Folder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__modules_Folder__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Loading__ = __webpack_require__(132);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Loading__ = __webpack_require__(251);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Loading___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__Loading__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__tools_DragAndDrop__ = __webpack_require__(135);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__tools_DragAndDrop__ = __webpack_require__(254);
 
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -64983,6 +66163,14 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
             default: function _default() {
                 return [];
             }
+        },
+        multiSelecting: {
+            type: Boolean,
+            required: true
+        },
+        selectedFiles: {
+            type: Array,
+            required: true
         }
     },
 
@@ -65375,6 +66563,9 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
         },
         deleteData: function deleteData(type, path) {
             this.$emit('delete', type, path);
+        },
+        select: function select(file) {
+            this.$emit('select', file);
         }
     },
 
@@ -65454,7 +66645,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 });
 
 /***/ }),
-/* 116 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65632,17 +66823,17 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 	}
 })(typeof window !== "undefined" ? window : global);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 117 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(){
-  var crypt = __webpack_require__(118),
-      utf8 = __webpack_require__(22).utf8,
-      isBuffer = __webpack_require__(119),
-      bin = __webpack_require__(22).bin,
+  var crypt = __webpack_require__(152),
+      utf8 = __webpack_require__(39).utf8,
+      isBuffer = __webpack_require__(153),
+      bin = __webpack_require__(39).bin,
 
   // The core
   md5 = function (message, options) {
@@ -65801,7 +66992,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 
 /***/ }),
-/* 118 */
+/* 152 */
 /***/ (function(module, exports) {
 
 (function() {
@@ -65903,7 +67094,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 
 /***/ }),
-/* 119 */
+/* 153 */
 /***/ (function(module, exports) {
 
 /*!
@@ -65930,20 +67121,20 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 120 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(121)
-  __webpack_require__(123)
+  __webpack_require__(155)
+  __webpack_require__(157)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(125)
+var __vue_script__ = __webpack_require__(159)
 /* template */
-var __vue_template__ = __webpack_require__(126)
+var __vue_template__ = __webpack_require__(245)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -65982,13 +67173,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 121 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(122);
+var content = __webpack_require__(156);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -66008,7 +67199,7 @@ if(false) {
 }
 
 /***/ }),
-/* 122 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -66016,19 +67207,19 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.card[data-v-31214a98] {\n  padding: 0 !important;\n}\n.card:hover > .image-block[data-v-31214a98],\n  .card:hover > .mime-icon[data-v-31214a98] {\n    opacity: 0.5;\n}\n.card:hover > .actions-grid[data-v-31214a98] {\n    display: flex;\n}\n.h-5\\/6[data-v-31214a98] {\n  height: 83.33333%;\n}\n.h-1\\/6[data-v-31214a98] {\n  height: 16.66667%;\n}\n.actions-grid[data-v-31214a98] {\n  display: none;\n  border-bottom-left-radius: 0.5rem;\n}\n", ""]);
+exports.push([module.i, "\n.card[data-v-31214a98] {\n  padding: 0 !important;\n}\n.card:hover > .image-block[data-v-31214a98],\n  .card:hover > .mime-icon[data-v-31214a98] {\n    opacity: 0.5;\n}\n.card:hover > .actions-grid[data-v-31214a98] {\n    display: flex;\n}\n.h-5\\/6[data-v-31214a98] {\n  height: 83.33333%;\n}\n.h-1\\/6[data-v-31214a98] {\n  height: 16.66667%;\n}\n.actions-grid[data-v-31214a98] {\n  border-bottom-left-radius: 0.5rem;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 123 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(124);
+var content = __webpack_require__(158);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -66048,7 +67239,7 @@ if(false) {
 }
 
 /***/ }),
-/* 124 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -66062,13 +67253,15 @@ exports.push([module.i, "\n.svg-mime {\n    width: 80px;\n    height: 75%;\n    
 
 
 /***/ }),
-/* 125 */
+/* 159 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findIndex__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findIndex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_findIndex__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_laravel_nova__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_laravel_nova__);
 //
 //
 //
@@ -66171,6 +67364,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -66192,6 +67398,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             type: String,
             default: 'grid',
             required: false
+        },
+        multiSelecting: {
+            type: Boolean,
+            required: true
+        },
+        selectedFiles: {
+            type: Array,
+            required: true
         }
     },
 
@@ -66202,11 +67416,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
 
+    computed: {
+        selected: function selected() {
+            return __WEBPACK_IMPORTED_MODULE_0_lodash_findIndex___default()(this.selectedFiles, { type: this.file.type, path: this.file.path }) >= 0;
+        }
+    },
+
     mounted: function mounted() {
         var _this = this;
 
         if (this.file.mime == 'image') {
-            Object(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Minimum"])(window.axios.get(this.file.thumb, {
+            Object(__WEBPACK_IMPORTED_MODULE_1_laravel_nova__["Minimum"])(window.axios.get(this.file.thumb, {
                 responseType: 'blob'
             })).then(function (_ref) {
                 var headers = _ref.headers,
@@ -66239,6 +67459,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+        clickStrategy: function clickStrategy() {
+            return this.multiSelecting ? this.select() : this.showInfo();
+        },
+        select: function select() {
+            this.$emit('select', {
+                type: this.file.type,
+                path: this.file.path
+            });
+        },
         showInfo: function showInfo() {
             this.$emit('showInfo', this.file);
         },
@@ -66279,7 +67508,2831 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 126 */
+/* 160 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.findIndex` and `_.findLastIndex` without
+ * support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} predicate The function invoked per iteration.
+ * @param {number} fromIndex The index to search from.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseFindIndex(array, predicate, fromIndex, fromRight) {
+  var length = array.length,
+      index = fromIndex + (fromRight ? 1 : -1);
+
+  while ((fromRight ? index-- : ++index < length)) {
+    if (predicate(array[index], index, array)) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = baseFindIndex;
+
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseMatches = __webpack_require__(162),
+    baseMatchesProperty = __webpack_require__(227),
+    identity = __webpack_require__(238),
+    isArray = __webpack_require__(5),
+    property = __webpack_require__(239);
+
+/**
+ * The base implementation of `_.iteratee`.
+ *
+ * @private
+ * @param {*} [value=_.identity] The value to convert to an iteratee.
+ * @returns {Function} Returns the iteratee.
+ */
+function baseIteratee(value) {
+  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
+  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
+  if (typeof value == 'function') {
+    return value;
+  }
+  if (value == null) {
+    return identity;
+  }
+  if (typeof value == 'object') {
+    return isArray(value)
+      ? baseMatchesProperty(value[0], value[1])
+      : baseMatches(value);
+  }
+  return property(value);
+}
+
+module.exports = baseIteratee;
+
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsMatch = __webpack_require__(163),
+    getMatchData = __webpack_require__(226),
+    matchesStrictComparable = __webpack_require__(54);
+
+/**
+ * The base implementation of `_.matches` which doesn't clone `source`.
+ *
+ * @private
+ * @param {Object} source The object of property values to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function baseMatches(source) {
+  var matchData = getMatchData(source);
+  if (matchData.length == 1 && matchData[0][2]) {
+    return matchesStrictComparable(matchData[0][0], matchData[0][1]);
+  }
+  return function(object) {
+    return object === source || baseIsMatch(object, source, matchData);
+  };
+}
+
+module.exports = baseMatches;
+
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Stack = __webpack_require__(41),
+    baseIsEqual = __webpack_require__(46);
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * The base implementation of `_.isMatch` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to inspect.
+ * @param {Object} source The object of property values to match.
+ * @param {Array} matchData The property names, values, and compare flags to match.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+ */
+function baseIsMatch(object, source, matchData, customizer) {
+  var index = matchData.length,
+      length = index,
+      noCustomizer = !customizer;
+
+  if (object == null) {
+    return !length;
+  }
+  object = Object(object);
+  while (index--) {
+    var data = matchData[index];
+    if ((noCustomizer && data[2])
+          ? data[1] !== object[data[0]]
+          : !(data[0] in object)
+        ) {
+      return false;
+    }
+  }
+  while (++index < length) {
+    data = matchData[index];
+    var key = data[0],
+        objValue = object[key],
+        srcValue = data[1];
+
+    if (noCustomizer && data[2]) {
+      if (objValue === undefined && !(key in object)) {
+        return false;
+      }
+    } else {
+      var stack = new Stack;
+      if (customizer) {
+        var result = customizer(objValue, srcValue, key, object, source, stack);
+      }
+      if (!(result === undefined
+            ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
+            : result
+          )) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+module.exports = baseIsMatch;
+
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports) {
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+module.exports = listCacheClear;
+
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assocIndexOf = __webpack_require__(17);
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+module.exports = listCacheDelete;
+
+
+/***/ }),
+/* 166 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assocIndexOf = __webpack_require__(17);
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+module.exports = listCacheGet;
+
+
+/***/ }),
+/* 167 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assocIndexOf = __webpack_require__(17);
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+module.exports = listCacheHas;
+
+
+/***/ }),
+/* 168 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assocIndexOf = __webpack_require__(17);
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+module.exports = listCacheSet;
+
+
+/***/ }),
+/* 169 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ListCache = __webpack_require__(16);
+
+/**
+ * Removes all key-value entries from the stack.
+ *
+ * @private
+ * @name clear
+ * @memberOf Stack
+ */
+function stackClear() {
+  this.__data__ = new ListCache;
+  this.size = 0;
+}
+
+module.exports = stackClear;
+
+
+/***/ }),
+/* 170 */
+/***/ (function(module, exports) {
+
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function stackDelete(key) {
+  var data = this.__data__,
+      result = data['delete'](key);
+
+  this.size = data.size;
+  return result;
+}
+
+module.exports = stackDelete;
+
+
+/***/ }),
+/* 171 */
+/***/ (function(module, exports) {
+
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function stackGet(key) {
+  return this.__data__.get(key);
+}
+
+module.exports = stackGet;
+
+
+/***/ }),
+/* 172 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function stackHas(key) {
+  return this.__data__.has(key);
+}
+
+module.exports = stackHas;
+
+
+/***/ }),
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ListCache = __webpack_require__(16),
+    Map = __webpack_require__(26),
+    MapCache = __webpack_require__(27);
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * Sets the stack `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Stack
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the stack cache instance.
+ */
+function stackSet(key, value) {
+  var data = this.__data__;
+  if (data instanceof ListCache) {
+    var pairs = data.__data__;
+    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+      pairs.push([key, value]);
+      this.size = ++data.size;
+      return this;
+    }
+    data = this.__data__ = new MapCache(pairs);
+  }
+  data.set(key, value);
+  this.size = data.size;
+  return this;
+}
+
+module.exports = stackSet;
+
+
+/***/ }),
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isFunction = __webpack_require__(43),
+    isMasked = __webpack_require__(177),
+    isObject = __webpack_require__(19),
+    toSource = __webpack_require__(45);
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+module.exports = baseIsNative;
+
+
+/***/ }),
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(18);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+module.exports = getRawTag;
+
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports) {
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString.call(value);
+}
+
+module.exports = objectToString;
+
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var coreJsData = __webpack_require__(178);
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+module.exports = isMasked;
+
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__(4);
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+module.exports = coreJsData;
+
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports) {
+
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+module.exports = getValue;
+
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Hash = __webpack_require__(181),
+    ListCache = __webpack_require__(16),
+    Map = __webpack_require__(26);
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+module.exports = mapCacheClear;
+
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var hashClear = __webpack_require__(182),
+    hashDelete = __webpack_require__(183),
+    hashGet = __webpack_require__(184),
+    hashHas = __webpack_require__(185),
+    hashSet = __webpack_require__(186);
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+module.exports = Hash;
+
+
+/***/ }),
+/* 182 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var nativeCreate = __webpack_require__(20);
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+  this.size = 0;
+}
+
+module.exports = hashClear;
+
+
+/***/ }),
+/* 183 */
+/***/ (function(module, exports) {
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = hashDelete;
+
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var nativeCreate = __webpack_require__(20);
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+module.exports = hashGet;
+
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var nativeCreate = __webpack_require__(20);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
+}
+
+module.exports = hashHas;
+
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var nativeCreate = __webpack_require__(20);
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+module.exports = hashSet;
+
+
+/***/ }),
+/* 187 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getMapData = __webpack_require__(21);
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  var result = getMapData(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = mapCacheDelete;
+
+
+/***/ }),
+/* 188 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+module.exports = isKeyable;
+
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getMapData = __webpack_require__(21);
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+module.exports = mapCacheGet;
+
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getMapData = __webpack_require__(21);
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+module.exports = mapCacheHas;
+
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getMapData = __webpack_require__(21);
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+module.exports = mapCacheSet;
+
+
+/***/ }),
+/* 192 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Stack = __webpack_require__(41),
+    equalArrays = __webpack_require__(47),
+    equalByTag = __webpack_require__(198),
+    equalObjects = __webpack_require__(202),
+    getTag = __webpack_require__(221),
+    isArray = __webpack_require__(5),
+    isBuffer = __webpack_require__(50),
+    isTypedArray = __webpack_require__(52);
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    objectTag = '[object Object]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqual` for arrays and objects which performs
+ * deep comparisons and tracks traversed objects enabling objects with circular
+ * references to be compared.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+  var objIsArr = isArray(object),
+      othIsArr = isArray(other),
+      objTag = objIsArr ? arrayTag : getTag(object),
+      othTag = othIsArr ? arrayTag : getTag(other);
+
+  objTag = objTag == argsTag ? objectTag : objTag;
+  othTag = othTag == argsTag ? objectTag : othTag;
+
+  var objIsObj = objTag == objectTag,
+      othIsObj = othTag == objectTag,
+      isSameTag = objTag == othTag;
+
+  if (isSameTag && isBuffer(object)) {
+    if (!isBuffer(other)) {
+      return false;
+    }
+    objIsArr = true;
+    objIsObj = false;
+  }
+  if (isSameTag && !objIsObj) {
+    stack || (stack = new Stack);
+    return (objIsArr || isTypedArray(object))
+      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+  }
+  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
+    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+
+    if (objIsWrapped || othIsWrapped) {
+      var objUnwrapped = objIsWrapped ? object.value() : object,
+          othUnwrapped = othIsWrapped ? other.value() : other;
+
+      stack || (stack = new Stack);
+      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+    }
+  }
+  if (!isSameTag) {
+    return false;
+  }
+  stack || (stack = new Stack);
+  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+}
+
+module.exports = baseIsEqualDeep;
+
+
+/***/ }),
+/* 193 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var MapCache = __webpack_require__(27),
+    setCacheAdd = __webpack_require__(194),
+    setCacheHas = __webpack_require__(195);
+
+/**
+ *
+ * Creates an array cache object to store unique values.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function SetCache(values) {
+  var index = -1,
+      length = values == null ? 0 : values.length;
+
+  this.__data__ = new MapCache;
+  while (++index < length) {
+    this.add(values[index]);
+  }
+}
+
+// Add methods to `SetCache`.
+SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+SetCache.prototype.has = setCacheHas;
+
+module.exports = SetCache;
+
+
+/***/ }),
+/* 194 */
+/***/ (function(module, exports) {
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Adds `value` to the array cache.
+ *
+ * @private
+ * @name add
+ * @memberOf SetCache
+ * @alias push
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache instance.
+ */
+function setCacheAdd(value) {
+  this.__data__.set(value, HASH_UNDEFINED);
+  return this;
+}
+
+module.exports = setCacheAdd;
+
+
+/***/ }),
+/* 195 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is in the array cache.
+ *
+ * @private
+ * @name has
+ * @memberOf SetCache
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `true` if `value` is found, else `false`.
+ */
+function setCacheHas(value) {
+  return this.__data__.has(value);
+}
+
+module.exports = setCacheHas;
+
+
+/***/ }),
+/* 196 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `_.some` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+function arraySome(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (predicate(array[index], index, array)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports = arraySome;
+
+
+/***/ }),
+/* 197 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if a `cache` value for `key` exists.
+ *
+ * @private
+ * @param {Object} cache The cache to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function cacheHas(cache, key) {
+  return cache.has(key);
+}
+
+module.exports = cacheHas;
+
+
+/***/ }),
+/* 198 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(18),
+    Uint8Array = __webpack_require__(199),
+    eq = __webpack_require__(42),
+    equalArrays = __webpack_require__(47),
+    mapToArray = __webpack_require__(200),
+    setToArray = __webpack_require__(201);
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]';
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for comparing objects of
+ * the same `toStringTag`.
+ *
+ * **Note:** This function only supports comparing values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {string} tag The `toStringTag` of the objects to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+  switch (tag) {
+    case dataViewTag:
+      if ((object.byteLength != other.byteLength) ||
+          (object.byteOffset != other.byteOffset)) {
+        return false;
+      }
+      object = object.buffer;
+      other = other.buffer;
+
+    case arrayBufferTag:
+      if ((object.byteLength != other.byteLength) ||
+          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+        return false;
+      }
+      return true;
+
+    case boolTag:
+    case dateTag:
+    case numberTag:
+      // Coerce booleans to `1` or `0` and dates to milliseconds.
+      // Invalid dates are coerced to `NaN`.
+      return eq(+object, +other);
+
+    case errorTag:
+      return object.name == other.name && object.message == other.message;
+
+    case regexpTag:
+    case stringTag:
+      // Coerce regexes to strings and treat strings, primitives and objects,
+      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+      // for more details.
+      return object == (other + '');
+
+    case mapTag:
+      var convert = mapToArray;
+
+    case setTag:
+      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+      convert || (convert = setToArray);
+
+      if (object.size != other.size && !isPartial) {
+        return false;
+      }
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked) {
+        return stacked == other;
+      }
+      bitmask |= COMPARE_UNORDERED_FLAG;
+
+      // Recursively compare objects (susceptible to call stack limits).
+      stack.set(object, other);
+      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+      stack['delete'](object);
+      return result;
+
+    case symbolTag:
+      if (symbolValueOf) {
+        return symbolValueOf.call(object) == symbolValueOf.call(other);
+      }
+  }
+  return false;
+}
+
+module.exports = equalByTag;
+
+
+/***/ }),
+/* 199 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__(4);
+
+/** Built-in value references. */
+var Uint8Array = root.Uint8Array;
+
+module.exports = Uint8Array;
+
+
+/***/ }),
+/* 200 */
+/***/ (function(module, exports) {
+
+/**
+ * Converts `map` to its key-value pairs.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the key-value pairs.
+ */
+function mapToArray(map) {
+  var index = -1,
+      result = Array(map.size);
+
+  map.forEach(function(value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+module.exports = mapToArray;
+
+
+/***/ }),
+/* 201 */
+/***/ (function(module, exports) {
+
+/**
+ * Converts `set` to an array of its values.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the values.
+ */
+function setToArray(set) {
+  var index = -1,
+      result = Array(set.size);
+
+  set.forEach(function(value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+module.exports = setToArray;
+
+
+/***/ }),
+/* 202 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getAllKeys = __webpack_require__(203);
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for objects with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      objProps = getAllKeys(object),
+      objLength = objProps.length,
+      othProps = getAllKeys(other),
+      othLength = othProps.length;
+
+  if (objLength != othLength && !isPartial) {
+    return false;
+  }
+  var index = objLength;
+  while (index--) {
+    var key = objProps[index];
+    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+      return false;
+    }
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(object);
+  if (stacked && stack.get(other)) {
+    return stacked == other;
+  }
+  var result = true;
+  stack.set(object, other);
+  stack.set(other, object);
+
+  var skipCtor = isPartial;
+  while (++index < objLength) {
+    key = objProps[index];
+    var objValue = object[key],
+        othValue = other[key];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, objValue, key, other, object, stack)
+        : customizer(objValue, othValue, key, object, other, stack);
+    }
+    // Recursively compare objects (susceptible to call stack limits).
+    if (!(compared === undefined
+          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+          : compared
+        )) {
+      result = false;
+      break;
+    }
+    skipCtor || (skipCtor = key == 'constructor');
+  }
+  if (result && !skipCtor) {
+    var objCtor = object.constructor,
+        othCtor = other.constructor;
+
+    // Non `Object` object instances with different constructors are not equal.
+    if (objCtor != othCtor &&
+        ('constructor' in object && 'constructor' in other) &&
+        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+      result = false;
+    }
+  }
+  stack['delete'](object);
+  stack['delete'](other);
+  return result;
+}
+
+module.exports = equalObjects;
+
+
+/***/ }),
+/* 203 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetAllKeys = __webpack_require__(204),
+    getSymbols = __webpack_require__(206),
+    keys = __webpack_require__(48);
+
+/**
+ * Creates an array of own enumerable property names and symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeys(object) {
+  return baseGetAllKeys(object, keys, getSymbols);
+}
+
+module.exports = getAllKeys;
+
+
+/***/ }),
+/* 204 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayPush = __webpack_require__(205),
+    isArray = __webpack_require__(5);
+
+/**
+ * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+ * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @param {Function} symbolsFunc The function to get the symbols of `object`.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+  var result = keysFunc(object);
+  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+}
+
+module.exports = baseGetAllKeys;
+
+
+/***/ }),
+/* 205 */
+/***/ (function(module, exports) {
+
+/**
+ * Appends the elements of `values` to `array`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to append.
+ * @returns {Array} Returns `array`.
+ */
+function arrayPush(array, values) {
+  var index = -1,
+      length = values.length,
+      offset = array.length;
+
+  while (++index < length) {
+    array[offset + index] = values[index];
+  }
+  return array;
+}
+
+module.exports = arrayPush;
+
+
+/***/ }),
+/* 206 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayFilter = __webpack_require__(207),
+    stubArray = __webpack_require__(208);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+  if (object == null) {
+    return [];
+  }
+  object = Object(object);
+  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+    return propertyIsEnumerable.call(object, symbol);
+  });
+};
+
+module.exports = getSymbols;
+
+
+/***/ }),
+/* 207 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `_.filter` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+function arrayFilter(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      resIndex = 0,
+      result = [];
+
+  while (++index < length) {
+    var value = array[index];
+    if (predicate(value, index, array)) {
+      result[resIndex++] = value;
+    }
+  }
+  return result;
+}
+
+module.exports = arrayFilter;
+
+
+/***/ }),
+/* 208 */
+/***/ (function(module, exports) {
+
+/**
+ * This method returns a new empty array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {Array} Returns the new empty array.
+ * @example
+ *
+ * var arrays = _.times(2, _.stubArray);
+ *
+ * console.log(arrays);
+ * // => [[], []]
+ *
+ * console.log(arrays[0] === arrays[1]);
+ * // => false
+ */
+function stubArray() {
+  return [];
+}
+
+module.exports = stubArray;
+
+
+/***/ }),
+/* 209 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseTimes = __webpack_require__(210),
+    isArguments = __webpack_require__(49),
+    isArray = __webpack_require__(5),
+    isBuffer = __webpack_require__(50),
+    isIndex = __webpack_require__(51),
+    isTypedArray = __webpack_require__(52);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Creates an array of the enumerable property names of the array-like `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @param {boolean} inherited Specify returning inherited property names.
+ * @returns {Array} Returns the array of property names.
+ */
+function arrayLikeKeys(value, inherited) {
+  var isArr = isArray(value),
+      isArg = !isArr && isArguments(value),
+      isBuff = !isArr && !isArg && isBuffer(value),
+      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
+      skipIndexes = isArr || isArg || isBuff || isType,
+      result = skipIndexes ? baseTimes(value.length, String) : [],
+      length = result.length;
+
+  for (var key in value) {
+    if ((inherited || hasOwnProperty.call(value, key)) &&
+        !(skipIndexes && (
+           // Safari 9 has enumerable `arguments.length` in strict mode.
+           key == 'length' ||
+           // Node.js 0.10 has enumerable non-index properties on buffers.
+           (isBuff && (key == 'offset' || key == 'parent')) ||
+           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+           // Skip index properties.
+           isIndex(key, length)
+        ))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = arrayLikeKeys;
+
+
+/***/ }),
+/* 210 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+module.exports = baseTimes;
+
+
+/***/ }),
+/* 211 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(9),
+    isObjectLike = __webpack_require__(10);
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]';
+
+/**
+ * The base implementation of `_.isArguments`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ */
+function baseIsArguments(value) {
+  return isObjectLike(value) && baseGetTag(value) == argsTag;
+}
+
+module.exports = baseIsArguments;
+
+
+/***/ }),
+/* 212 */
+/***/ (function(module, exports) {
+
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+function stubFalse() {
+  return false;
+}
+
+module.exports = stubFalse;
+
+
+/***/ }),
+/* 213 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(9),
+    isLength = __webpack_require__(28),
+    isObjectLike = __webpack_require__(10);
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values of typed arrays. */
+var typedArrayTags = {};
+typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+typedArrayTags[uint32Tag] = true;
+typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+typedArrayTags[setTag] = typedArrayTags[stringTag] =
+typedArrayTags[weakMapTag] = false;
+
+/**
+ * The base implementation of `_.isTypedArray` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ */
+function baseIsTypedArray(value) {
+  return isObjectLike(value) &&
+    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+}
+
+module.exports = baseIsTypedArray;
+
+
+/***/ }),
+/* 214 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+module.exports = baseUnary;
+
+
+/***/ }),
+/* 215 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(44);
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Detect free variable `process` from Node.js. */
+var freeProcess = moduleExports && freeGlobal.process;
+
+/** Used to access faster Node.js helpers. */
+var nodeUtil = (function() {
+  try {
+    // Use `util.types` for Node.js 10+.
+    var types = freeModule && freeModule.require && freeModule.require('util').types;
+
+    if (types) {
+      return types;
+    }
+
+    // Legacy `process.binding('util')` for Node.js < 10.
+    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+  } catch (e) {}
+}());
+
+module.exports = nodeUtil;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)(module)))
+
+/***/ }),
+/* 216 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isPrototype = __webpack_require__(217),
+    nativeKeys = __webpack_require__(218);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys(object) {
+  if (!isPrototype(object)) {
+    return nativeKeys(object);
+  }
+  var result = [];
+  for (var key in Object(object)) {
+    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = baseKeys;
+
+
+/***/ }),
+/* 217 */
+/***/ (function(module, exports) {
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+  return value === proto;
+}
+
+module.exports = isPrototype;
+
+
+/***/ }),
+/* 218 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var overArg = __webpack_require__(219);
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeKeys = overArg(Object.keys, Object);
+
+module.exports = nativeKeys;
+
+
+/***/ }),
+/* 219 */
+/***/ (function(module, exports) {
+
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+
+module.exports = overArg;
+
+
+/***/ }),
+/* 220 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isFunction = __webpack_require__(43),
+    isLength = __webpack_require__(28);
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(value.length) && !isFunction(value);
+}
+
+module.exports = isArrayLike;
+
+
+/***/ }),
+/* 221 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var DataView = __webpack_require__(222),
+    Map = __webpack_require__(26),
+    Promise = __webpack_require__(223),
+    Set = __webpack_require__(224),
+    WeakMap = __webpack_require__(225),
+    baseGetTag = __webpack_require__(9),
+    toSource = __webpack_require__(45);
+
+/** `Object#toString` result references. */
+var mapTag = '[object Map]',
+    objectTag = '[object Object]',
+    promiseTag = '[object Promise]',
+    setTag = '[object Set]',
+    weakMapTag = '[object WeakMap]';
+
+var dataViewTag = '[object DataView]';
+
+/** Used to detect maps, sets, and weakmaps. */
+var dataViewCtorString = toSource(DataView),
+    mapCtorString = toSource(Map),
+    promiseCtorString = toSource(Promise),
+    setCtorString = toSource(Set),
+    weakMapCtorString = toSource(WeakMap);
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+var getTag = baseGetTag;
+
+// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+    (Map && getTag(new Map) != mapTag) ||
+    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+    (Set && getTag(new Set) != setTag) ||
+    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+  getTag = function(value) {
+    var result = baseGetTag(value),
+        Ctor = result == objectTag ? value.constructor : undefined,
+        ctorString = Ctor ? toSource(Ctor) : '';
+
+    if (ctorString) {
+      switch (ctorString) {
+        case dataViewCtorString: return dataViewTag;
+        case mapCtorString: return mapTag;
+        case promiseCtorString: return promiseTag;
+        case setCtorString: return setTag;
+        case weakMapCtorString: return weakMapTag;
+      }
+    }
+    return result;
+  };
+}
+
+module.exports = getTag;
+
+
+/***/ }),
+/* 222 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getNative = __webpack_require__(7),
+    root = __webpack_require__(4);
+
+/* Built-in method references that are verified to be native. */
+var DataView = getNative(root, 'DataView');
+
+module.exports = DataView;
+
+
+/***/ }),
+/* 223 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getNative = __webpack_require__(7),
+    root = __webpack_require__(4);
+
+/* Built-in method references that are verified to be native. */
+var Promise = getNative(root, 'Promise');
+
+module.exports = Promise;
+
+
+/***/ }),
+/* 224 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getNative = __webpack_require__(7),
+    root = __webpack_require__(4);
+
+/* Built-in method references that are verified to be native. */
+var Set = getNative(root, 'Set');
+
+module.exports = Set;
+
+
+/***/ }),
+/* 225 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getNative = __webpack_require__(7),
+    root = __webpack_require__(4);
+
+/* Built-in method references that are verified to be native. */
+var WeakMap = getNative(root, 'WeakMap');
+
+module.exports = WeakMap;
+
+
+/***/ }),
+/* 226 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isStrictComparable = __webpack_require__(53),
+    keys = __webpack_require__(48);
+
+/**
+ * Gets the property names, values, and compare flags of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the match data of `object`.
+ */
+function getMatchData(object) {
+  var result = keys(object),
+      length = result.length;
+
+  while (length--) {
+    var key = result[length],
+        value = object[key];
+
+    result[length] = [key, value, isStrictComparable(value)];
+  }
+  return result;
+}
+
+module.exports = getMatchData;
+
+
+/***/ }),
+/* 227 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsEqual = __webpack_require__(46),
+    get = __webpack_require__(228),
+    hasIn = __webpack_require__(235),
+    isKey = __webpack_require__(29),
+    isStrictComparable = __webpack_require__(53),
+    matchesStrictComparable = __webpack_require__(54),
+    toKey = __webpack_require__(23);
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+ *
+ * @private
+ * @param {string} path The path of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function baseMatchesProperty(path, srcValue) {
+  if (isKey(path) && isStrictComparable(srcValue)) {
+    return matchesStrictComparable(toKey(path), srcValue);
+  }
+  return function(object) {
+    var objValue = get(object, path);
+    return (objValue === undefined && objValue === srcValue)
+      ? hasIn(object, path)
+      : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
+  };
+}
+
+module.exports = baseMatchesProperty;
+
+
+/***/ }),
+/* 228 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGet = __webpack_require__(55);
+
+/**
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
+ */
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
+}
+
+module.exports = get;
+
+
+/***/ }),
+/* 229 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var memoizeCapped = __webpack_require__(230);
+
+/** Used to match property names within property paths. */
+var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+/** Used to match backslashes in property paths. */
+var reEscapeChar = /\\(\\)?/g;
+
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+var stringToPath = memoizeCapped(function(string) {
+  var result = [];
+  if (string.charCodeAt(0) === 46 /* . */) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, subString) {
+    result.push(quote ? subString.replace(reEscapeChar, '$1') : (number || match));
+  });
+  return result;
+});
+
+module.exports = stringToPath;
+
+
+/***/ }),
+/* 230 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var memoize = __webpack_require__(231);
+
+/** Used as the maximum memoize cache size. */
+var MAX_MEMOIZE_SIZE = 500;
+
+/**
+ * A specialized version of `_.memoize` which clears the memoized function's
+ * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+ *
+ * @private
+ * @param {Function} func The function to have its output memoized.
+ * @returns {Function} Returns the new memoized function.
+ */
+function memoizeCapped(func) {
+  var result = memoize(func, function(key) {
+    if (cache.size === MAX_MEMOIZE_SIZE) {
+      cache.clear();
+    }
+    return key;
+  });
+
+  var cache = result.cache;
+  return result;
+}
+
+module.exports = memoizeCapped;
+
+
+/***/ }),
+/* 231 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var MapCache = __webpack_require__(27);
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result) || cache;
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Expose `MapCache`.
+memoize.Cache = MapCache;
+
+module.exports = memoize;
+
+
+/***/ }),
+/* 232 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseToString = __webpack_require__(233);
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+module.exports = toString;
+
+
+/***/ }),
+/* 233 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(18),
+    arrayMap = __webpack_require__(234),
+    isArray = __webpack_require__(5),
+    isSymbol = __webpack_require__(22);
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isArray(value)) {
+    // Recursively convert values (susceptible to call stack limits).
+    return arrayMap(value, baseToString) + '';
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = baseToString;
+
+
+/***/ }),
+/* 234 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+module.exports = arrayMap;
+
+
+/***/ }),
+/* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseHasIn = __webpack_require__(236),
+    hasPath = __webpack_require__(237);
+
+/**
+ * Checks if `path` is a direct or inherited property of `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ * @example
+ *
+ * var object = _.create({ 'a': _.create({ 'b': 2 }) });
+ *
+ * _.hasIn(object, 'a');
+ * // => true
+ *
+ * _.hasIn(object, 'a.b');
+ * // => true
+ *
+ * _.hasIn(object, ['a', 'b']);
+ * // => true
+ *
+ * _.hasIn(object, 'b');
+ * // => false
+ */
+function hasIn(object, path) {
+  return object != null && hasPath(object, path, baseHasIn);
+}
+
+module.exports = hasIn;
+
+
+/***/ }),
+/* 236 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.hasIn` without support for deep paths.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHasIn(object, key) {
+  return object != null && key in Object(object);
+}
+
+module.exports = baseHasIn;
+
+
+/***/ }),
+/* 237 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var castPath = __webpack_require__(56),
+    isArguments = __webpack_require__(49),
+    isArray = __webpack_require__(5),
+    isIndex = __webpack_require__(51),
+    isLength = __webpack_require__(28),
+    toKey = __webpack_require__(23);
+
+/**
+ * Checks if `path` exists on `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @param {Function} hasFunc The function to check properties.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ */
+function hasPath(object, path, hasFunc) {
+  path = castPath(path, object);
+
+  var index = -1,
+      length = path.length,
+      result = false;
+
+  while (++index < length) {
+    var key = toKey(path[index]);
+    if (!(result = object != null && hasFunc(object, key))) {
+      break;
+    }
+    object = object[key];
+  }
+  if (result || ++index != length) {
+    return result;
+  }
+  length = object == null ? 0 : object.length;
+  return !!length && isLength(length) && isIndex(key, length) &&
+    (isArray(object) || isArguments(object));
+}
+
+module.exports = hasPath;
+
+
+/***/ }),
+/* 238 */
+/***/ (function(module, exports) {
+
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
+
+
+/***/ }),
+/* 239 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseProperty = __webpack_require__(240),
+    basePropertyDeep = __webpack_require__(241),
+    isKey = __webpack_require__(29),
+    toKey = __webpack_require__(23);
+
+/**
+ * Creates a function that returns the value at `path` of a given object.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ * @example
+ *
+ * var objects = [
+ *   { 'a': { 'b': 2 } },
+ *   { 'a': { 'b': 1 } }
+ * ];
+ *
+ * _.map(objects, _.property('a.b'));
+ * // => [2, 1]
+ *
+ * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
+ * // => [1, 2]
+ */
+function property(path) {
+  return isKey(path) ? baseProperty(toKey(path)) : basePropertyDeep(path);
+}
+
+module.exports = property;
+
+
+/***/ }),
+/* 240 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function baseProperty(key) {
+  return function(object) {
+    return object == null ? undefined : object[key];
+  };
+}
+
+module.exports = baseProperty;
+
+
+/***/ }),
+/* 241 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGet = __webpack_require__(55);
+
+/**
+ * A specialized version of `baseProperty` which supports deep paths.
+ *
+ * @private
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function basePropertyDeep(path) {
+  return function(object) {
+    return baseGet(object, path);
+  };
+}
+
+module.exports = basePropertyDeep;
+
+
+/***/ }),
+/* 242 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var toFinite = __webpack_require__(243);
+
+/**
+ * Converts `value` to an integer.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToInteger`](http://www.ecma-international.org/ecma-262/7.0/#sec-tointeger).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {number} Returns the converted integer.
+ * @example
+ *
+ * _.toInteger(3.2);
+ * // => 3
+ *
+ * _.toInteger(Number.MIN_VALUE);
+ * // => 0
+ *
+ * _.toInteger(Infinity);
+ * // => 1.7976931348623157e+308
+ *
+ * _.toInteger('3.2');
+ * // => 3
+ */
+function toInteger(value) {
+  var result = toFinite(value),
+      remainder = result % 1;
+
+  return result === result ? (remainder ? result - remainder : result) : 0;
+}
+
+module.exports = toInteger;
+
+
+/***/ }),
+/* 243 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var toNumber = __webpack_require__(244);
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0,
+    MAX_INTEGER = 1.7976931348623157e+308;
+
+/**
+ * Converts `value` to a finite number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.12.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {number} Returns the converted number.
+ * @example
+ *
+ * _.toFinite(3.2);
+ * // => 3.2
+ *
+ * _.toFinite(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toFinite(Infinity);
+ * // => 1.7976931348623157e+308
+ *
+ * _.toFinite('3.2');
+ * // => 3.2
+ */
+function toFinite(value) {
+  if (!value) {
+    return value === 0 ? value : 0;
+  }
+  value = toNumber(value);
+  if (value === INFINITY || value === -INFINITY) {
+    var sign = (value < 0 ? -1 : 1);
+    return sign * MAX_INTEGER;
+  }
+  return value === value ? value : 0;
+}
+
+module.exports = toFinite;
+
+
+/***/ }),
+/* 244 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(19),
+    isSymbol = __webpack_require__(22);
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3.2);
+ * // => 3.2
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3.2');
+ * // => 3.2
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return NAN;
+  }
+  if (isObject(value)) {
+    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+module.exports = toNumber;
+
+
+/***/ }),
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -66299,7 +70352,7 @@ var render = function() {
                 staticClass:
                   "card relative flex flex-wrap justify-center border border-lg border-50 overflow-hidden px-0 py-0 cursor-pointer",
                 attrs: { loading: _vm.loading },
-                on: { click: _vm.showInfo }
+                on: { click: _vm.clickStrategy }
               },
               [
                 _vm.loading
@@ -66335,83 +70388,91 @@ var render = function() {
                   "div",
                   {
                     staticClass:
-                      "actions-grid absolute pin-t pin-r pr-2 pt-2 pb-1 pl-2 bg-50"
+                      "actions-grid absolute pin-t pin-r pr-2 pt-2 pb-1 pl-2 bg-50",
+                    class: { hidden: !_vm.multiSelecting }
                   },
                   [
-                    _c("div", { staticClass: "flex flex-wrap text-70" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "cursor-pointer",
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.deleteFile($event)
-                            }
-                          }
-                        },
-                        [
+                    _vm.multiSelecting
+                      ? _c("div", [
+                          _c("input", {
+                            attrs: { type: "checkbox" },
+                            domProps: { checked: _vm.selected }
+                          })
+                        ])
+                      : _c("div", { staticClass: "flex flex-wrap text-70" }, [
                           _c(
-                            "svg",
+                            "div",
                             {
-                              staticClass: "fill-current",
-                              attrs: {
-                                xmlns: "http://www.w3.org/2000/svg",
-                                width: "20",
-                                height: "20",
-                                viewBox: "0 0 20 20",
-                                "aria-labelledby": "delete"
+                              staticClass: "cursor-pointer",
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.deleteFile($event)
+                                }
                               }
                             },
                             [
-                              _c("path", {
-                                attrs: {
-                                  "fill-rule": "nonzero",
-                                  d:
-                                    "M6 4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h5a1 1 0 0 1 0 2h-1v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6H1a1 1 0 1 1 0-2h5zM4 6v12h12V6H4zm8-2V2H8v2h4zM8 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"
-                                }
-                              })
+                              _c(
+                                "svg",
+                                {
+                                  staticClass: "fill-current",
+                                  attrs: {
+                                    xmlns: "http://www.w3.org/2000/svg",
+                                    width: "20",
+                                    height: "20",
+                                    viewBox: "0 0 20 20",
+                                    "aria-labelledby": "delete"
+                                  }
+                                },
+                                [
+                                  _c("path", {
+                                    attrs: {
+                                      "fill-rule": "nonzero",
+                                      d:
+                                        "M6 4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h5a1 1 0 0 1 0 2h-1v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6H1a1 1 0 1 1 0-2h5zM4 6v12h12V6H4zm8-2V2H8v2h4zM8 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"
+                                    }
+                                  })
+                                ]
+                              )
                             ]
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "cursor-pointer ml-2",
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.renameFile($event)
-                            }
-                          }
-                        },
-                        [
+                          ),
+                          _vm._v(" "),
                           _c(
-                            "svg",
+                            "div",
                             {
-                              staticClass: "fill-current",
-                              attrs: {
-                                xmlns: "http://www.w3.org/2000/svg",
-                                width: "20",
-                                height: "20",
-                                viewBox: "0 0 20 20",
-                                "aria-labelledby": "edit"
+                              staticClass: "cursor-pointer ml-2",
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.renameFile($event)
+                                }
                               }
                             },
                             [
-                              _c("path", {
-                                attrs: {
-                                  d:
-                                    "M4.3 10.3l10-10a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1 0 1.4l-10 10a1 1 0 0 1-.7.3H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 .3-.7zM6 14h2.59l9-9L15 2.41l-9 9V14zm10-2a1 1 0 0 1 2 0v6a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2h6a1 1 0 1 1 0 2H2v14h14v-6z"
-                                }
-                              })
+                              _c(
+                                "svg",
+                                {
+                                  staticClass: "fill-current",
+                                  attrs: {
+                                    xmlns: "http://www.w3.org/2000/svg",
+                                    width: "20",
+                                    height: "20",
+                                    viewBox: "0 0 20 20",
+                                    "aria-labelledby": "edit"
+                                  }
+                                },
+                                [
+                                  _c("path", {
+                                    attrs: {
+                                      d:
+                                        "M4.3 10.3l10-10a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1 0 1.4l-10 10a1 1 0 0 1-.7.3H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 .3-.7zM6 14h2.59l9-9L15 2.41l-9 9V14zm10-2a1 1 0 0 1 2 0v6a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2h6a1 1 0 1 1 0 2H2v14h14v-6z"
+                                    }
+                                  })
+                                ]
+                              )
                             ]
                           )
-                        ]
-                      )
-                    ])
+                        ])
                   ]
                 ),
                 _vm._v(" "),
@@ -66463,9 +70524,69 @@ var render = function() {
                 key: _vm.file.id,
                 staticClass: "cursor-pointer",
                 attrs: { loading: _vm.loading },
-                on: { click: _vm.showInfo }
+                on: { click: _vm.clickStrategy }
               },
               [
+                _vm.multiSelecting
+                  ? _c("td", { staticClass: "w-8" }, [
+                      _c(
+                        "svg",
+                        {
+                          staticClass: "block",
+                          attrs: {
+                            width: "20",
+                            height: "20",
+                            xmlns: "http://www.w3.org/2000/svg",
+                            viewBox: "0 0 20 20"
+                          }
+                        },
+                        [
+                          _vm.selected
+                            ? _c("g", [
+                                _c("rect", {
+                                  attrs: {
+                                    width: "20",
+                                    height: "20",
+                                    rx: "4",
+                                    fill: "var(--primary)"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("path", {
+                                  attrs: {
+                                    fill: "#FFF",
+                                    d:
+                                      "M7.7 9.3c-.23477048-.3130273-.63054226-.46037132-1.01285927-.37708287-.38231702.08328846-.68093514.38190658-.7642236.7642236C5.83962868 10.0694577 5.9869727 10.4652295 6.3 10.7l2 2c.38884351.3811429 1.01115649.3811429 1.4 0l4-4c.3130273-.23477048.4603713-.63054226.3770829-1.01285927-.0832885-.38231702-.3819066-.68093514-.7642236-.7642236C12.9305423 6.83962868 12.5347705 6.9869727 12.3 7.3L9 10.58l-1.3-1.3v.02z"
+                                  }
+                                })
+                              ])
+                            : _c("g", [
+                                _c("rect", {
+                                  attrs: {
+                                    width: "20",
+                                    height: "20",
+                                    fill: "#FFF",
+                                    rx: "4"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("rect", {
+                                  attrs: {
+                                    width: "19",
+                                    height: "19",
+                                    fill: "none",
+                                    x: ".5",
+                                    y: ".5",
+                                    stroke: "#CCD4DB",
+                                    rx: "4"
+                                  }
+                                })
+                              ])
+                        ]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
                 _c(
                   "td",
                   [
@@ -66656,19 +70777,19 @@ if (false) {
 }
 
 /***/ }),
-/* 127 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(128)
+  __webpack_require__(247)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(130)
+var __vue_script__ = __webpack_require__(249)
 /* template */
-var __vue_template__ = __webpack_require__(131)
+var __vue_template__ = __webpack_require__(250)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -66707,13 +70828,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 128 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(129);
+var content = __webpack_require__(248);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -66733,7 +70854,7 @@ if(false) {
 }
 
 /***/ }),
-/* 129 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -66741,17 +70862,19 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.card[data-v-4c9b71d8] {\n  padding: 0 !important;\n}\n.card:hover > svg[data-v-4c9b71d8] {\n    opacity: 0.5;\n}\n.card:hover > .actions-grid[data-v-4c9b71d8] {\n    display: flex;\n}\n.h-5\\/6[data-v-4c9b71d8] {\n  height: 83.33333%;\n}\n.h-1\\/6[data-v-4c9b71d8] {\n  height: 16.66667%;\n}\n.h-2\\/3[data-v-4c9b71d8] {\n  height: 75%;\n}\n.actions-grid[data-v-4c9b71d8] {\n  display: none;\n}\n.w-24[data-v-4c9b71d8] {\n  width: 24px;\n}\n.h-24[data-v-4c9b71d8] {\n  height: 24px;\n}\n", ""]);
+exports.push([module.i, "\n.card[data-v-4c9b71d8] {\n  padding: 0 !important;\n}\n.card:hover > svg[data-v-4c9b71d8] {\n    opacity: 0.5;\n}\n.card:hover > .actions-grid[data-v-4c9b71d8] {\n    display: flex;\n}\n.h-5\\/6[data-v-4c9b71d8] {\n  height: 83.33333%;\n}\n.h-1\\/6[data-v-4c9b71d8] {\n  height: 16.66667%;\n}\n.h-2\\/3[data-v-4c9b71d8] {\n  height: 75%;\n}\n.w-24[data-v-4c9b71d8] {\n  width: 24px;\n}\n.h-24[data-v-4c9b71d8] {\n  height: 24px;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 130 */
+/* 249 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findIndex__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findIndex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_findIndex__);
 //
 //
 //
@@ -66873,6 +70996,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -66887,6 +71023,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             type: String,
             default: 'grid',
             required: false
+        },
+        multiSelecting: {
+            type: Boolean,
+            required: true
+        },
+        selectedFiles: {
+            type: Array,
+            required: true
         }
     },
 
@@ -66903,7 +71047,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
 
+    computed: {
+        selected: function selected() {
+            return __WEBPACK_IMPORTED_MODULE_0_lodash_findIndex___default()(this.selectedFiles, { type: this.file.type, path: this.file.path }) >= 0;
+        }
+    },
+
     methods: {
+        clickStrategy: function clickStrategy() {
+            return this.multiSelecting ? this.select() : this.goToFolder();
+        },
         goToFolder: function goToFolder() {
             this.$emit('goToFolderEvent', this.file.path);
         },
@@ -66918,12 +71071,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         stopDefaultActions: function stopDefaultActions(e) {
             e.preventDefault();
             e.stopPropagation();
+        },
+        select: function select() {
+            this.$emit('select', {
+                type: this.file.type,
+                path: this.file.path
+            });
         }
     }
 });
 
 /***/ }),
-/* 131 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -66944,7 +71103,7 @@ var render = function() {
                   "card relative flex flex-wrap justify-center border border-lg border-50 overflow-hidden px-0 py-0 cursor-pointer",
                 class: { "opacity-50": _vm.dragOver },
                 attrs: { loading: _vm.loading },
-                on: { click: _vm.goToFolder }
+                on: { click: _vm.clickStrategy }
               },
               [
                 _vm.loading
@@ -67031,83 +71190,95 @@ var render = function() {
                         "div",
                         {
                           staticClass:
-                            "actions-grid absolute pin-t pin-r pr-2 pt-2"
+                            "actions-grid absolute pin-t pin-r pr-2 pt-2",
+                          class: { hidden: !_vm.multiSelecting }
                         },
                         [
-                          _c("div", { staticClass: "flex flex-wrap text-70" }, [
-                            _c(
-                              "div",
-                              {
-                                staticClass: "cursor-pointer",
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.deleteFolder($event)
-                                  }
-                                }
-                              },
-                              [
-                                _c(
-                                  "svg",
-                                  {
-                                    staticClass: "fill-current",
-                                    attrs: {
-                                      xmlns: "http://www.w3.org/2000/svg",
-                                      width: "20",
-                                      height: "20",
-                                      viewBox: "0 0 20 20",
-                                      "aria-labelledby": "delete"
-                                    }
-                                  },
-                                  [
-                                    _c("path", {
-                                      attrs: {
-                                        "fill-rule": "nonzero",
-                                        d:
-                                          "M6 4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h5a1 1 0 0 1 0 2h-1v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6H1a1 1 0 1 1 0-2h5zM4 6v12h12V6H4zm8-2V2H8v2h4zM8 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"
+                          _vm.multiSelecting
+                            ? _c("div", [
+                                _c("input", {
+                                  attrs: { type: "checkbox" },
+                                  domProps: { checked: _vm.selected }
+                                })
+                              ])
+                            : _c(
+                                "div",
+                                { staticClass: "flex flex-wrap text-70" },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "cursor-pointer",
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.deleteFolder($event)
+                                        }
                                       }
-                                    })
-                                  ]
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "cursor-pointer ml-2",
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.editFolder($event)
-                                  }
-                                }
-                              },
-                              [
-                                _c(
-                                  "svg",
-                                  {
-                                    staticClass: "fill-current",
-                                    attrs: {
-                                      xmlns: "http://www.w3.org/2000/svg",
-                                      width: "20",
-                                      height: "20",
-                                      viewBox: "0 0 20 20",
-                                      "aria-labelledby": "edit"
-                                    }
-                                  },
-                                  [
-                                    _c("path", {
-                                      attrs: {
-                                        d:
-                                          "M4.3 10.3l10-10a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1 0 1.4l-10 10a1 1 0 0 1-.7.3H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 .3-.7zM6 14h2.59l9-9L15 2.41l-9 9V14zm10-2a1 1 0 0 1 2 0v6a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2h6a1 1 0 1 1 0 2H2v14h14v-6z"
+                                    },
+                                    [
+                                      _c(
+                                        "svg",
+                                        {
+                                          staticClass: "fill-current",
+                                          attrs: {
+                                            xmlns: "http://www.w3.org/2000/svg",
+                                            width: "20",
+                                            height: "20",
+                                            viewBox: "0 0 20 20",
+                                            "aria-labelledby": "delete"
+                                          }
+                                        },
+                                        [
+                                          _c("path", {
+                                            attrs: {
+                                              "fill-rule": "nonzero",
+                                              d:
+                                                "M6 4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h5a1 1 0 0 1 0 2h-1v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6H1a1 1 0 1 1 0-2h5zM4 6v12h12V6H4zm8-2V2H8v2h4zM8 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"
+                                            }
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "cursor-pointer ml-2",
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.editFolder($event)
+                                        }
                                       }
-                                    })
-                                  ]
-                                )
-                              ]
-                            )
-                          ])
+                                    },
+                                    [
+                                      _c(
+                                        "svg",
+                                        {
+                                          staticClass: "fill-current",
+                                          attrs: {
+                                            xmlns: "http://www.w3.org/2000/svg",
+                                            width: "20",
+                                            height: "20",
+                                            viewBox: "0 0 20 20",
+                                            "aria-labelledby": "edit"
+                                          }
+                                        },
+                                        [
+                                          _c("path", {
+                                            attrs: {
+                                              d:
+                                                "M4.3 10.3l10-10a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1 0 1.4l-10 10a1 1 0 0 1-.7.3H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 .3-.7zM6 14h2.59l9-9L15 2.41l-9 9V14zm10-2a1 1 0 0 1 2 0v6a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2h6a1 1 0 1 1 0 2H2v14h14v-6z"
+                                            }
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
                         ]
                       ),
                       _vm._v(" "),
@@ -67216,9 +71387,69 @@ var render = function() {
                       key: _vm.file.id,
                       staticClass: "cursor-pointer",
                       attrs: { loading: _vm.loading },
-                      on: { click: _vm.goToFolder }
+                      on: { click: _vm.clickStrategy }
                     },
                     [
+                      _vm.multiSelecting
+                        ? _c("td", { staticClass: "w-8" }, [
+                            _c(
+                              "svg",
+                              {
+                                staticClass: "block",
+                                attrs: {
+                                  width: "20",
+                                  height: "20",
+                                  xmlns: "http://www.w3.org/2000/svg",
+                                  viewBox: "0 0 20 20"
+                                }
+                              },
+                              [
+                                _vm.selected
+                                  ? _c("g", [
+                                      _c("rect", {
+                                        attrs: {
+                                          width: "20",
+                                          height: "20",
+                                          rx: "4",
+                                          fill: "var(--primary)"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("path", {
+                                        attrs: {
+                                          fill: "#FFF",
+                                          d:
+                                            "M7.7 9.3c-.23477048-.3130273-.63054226-.46037132-1.01285927-.37708287-.38231702.08328846-.68093514.38190658-.7642236.7642236C5.83962868 10.0694577 5.9869727 10.4652295 6.3 10.7l2 2c.38884351.3811429 1.01115649.3811429 1.4 0l4-4c.3130273-.23477048.4603713-.63054226.3770829-1.01285927-.0832885-.38231702-.3819066-.68093514-.7642236-.7642236C12.9305423 6.83962868 12.5347705 6.9869727 12.3 7.3L9 10.58l-1.3-1.3v.02z"
+                                        }
+                                      })
+                                    ])
+                                  : _c("g", [
+                                      _c("rect", {
+                                        attrs: {
+                                          width: "20",
+                                          height: "20",
+                                          fill: "#FFF",
+                                          rx: "4"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("rect", {
+                                        attrs: {
+                                          width: "19",
+                                          height: "19",
+                                          fill: "none",
+                                          x: ".5",
+                                          y: ".5",
+                                          stroke: "#CCD4DB",
+                                          rx: "4"
+                                        }
+                                      })
+                                    ])
+                              ]
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
                       _c("td", [
                         _c(
                           "div",
@@ -67387,15 +71618,15 @@ if (false) {
 }
 
 /***/ }),
-/* 132 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(133)
+var __vue_script__ = __webpack_require__(252)
 /* template */
-var __vue_template__ = __webpack_require__(134)
+var __vue_template__ = __webpack_require__(253)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -67434,7 +71665,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 133 */
+/* 252 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -67488,7 +71719,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
-/* 134 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -67593,7 +71824,7 @@ if (false) {
 }
 
 /***/ }),
-/* 135 */
+/* 254 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -67686,7 +71917,7 @@ var DragAndDrop = {
 };
 
 /***/ }),
-/* 136 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -67933,7 +72164,11 @@ var render = function() {
                                                         "h-40 file-item",
                                                       attrs: {
                                                         file: file,
-                                                        "data-key": file.id
+                                                        "data-key": file.id,
+                                                        "multi-selecting":
+                                                          _vm.multiSelecting,
+                                                        "selected-files":
+                                                          _vm.selectedFiles
                                                       },
                                                       on: {
                                                         missing: function(
@@ -67943,7 +72178,8 @@ var render = function() {
                                                         },
                                                         showInfo: _vm.showInfo,
                                                         rename: _vm.rename,
-                                                        delete: _vm.deleteData
+                                                        delete: _vm.deleteData,
+                                                        select: _vm.select
                                                       }
                                                     })
                                                   ]
@@ -67969,13 +72205,18 @@ var render = function() {
                                                       },
                                                       attrs: {
                                                         file: file,
-                                                        "data-key": file.id
+                                                        "data-key": file.id,
+                                                        "multi-selecting":
+                                                          _vm.multiSelecting,
+                                                        "selected-files":
+                                                          _vm.selectedFiles
                                                       },
                                                       on: {
                                                         goToFolderEvent:
                                                           _vm.goToFolder,
                                                         rename: _vm.rename,
-                                                        delete: _vm.deleteData
+                                                        delete: _vm.deleteData,
+                                                        select: _vm.select
                                                       }
                                                     })
                                                   ]
@@ -68000,6 +72241,10 @@ var render = function() {
                                   [
                                     _c("thead", [
                                       _c("tr", [
+                                        _vm.multiSelecting
+                                          ? _c("th", { staticClass: "w-8" })
+                                          : _vm._e(),
+                                        _vm._v(" "),
                                         _c("th", { staticClass: "w-16" }, [
                                           _vm._v(
                                             "\n                                        " +
@@ -68083,13 +72328,18 @@ var render = function() {
                                                     attrs: {
                                                       "data-key": file.id,
                                                       file: file,
-                                                      view: _vm.view
+                                                      view: _vm.view,
+                                                      "multi-selecting":
+                                                        _vm.multiSelecting,
+                                                      "selected-files":
+                                                        _vm.selectedFiles
                                                     },
                                                     on: {
                                                       goToFolderEvent:
                                                         _vm.goToFolder,
                                                       rename: _vm.rename,
-                                                      delete: _vm.deleteData
+                                                      delete: _vm.deleteData,
+                                                      select: _vm.select
                                                     }
                                                   })
                                                 ]
@@ -68106,7 +72356,11 @@ var render = function() {
                                                     attrs: {
                                                       "data-key": file.id,
                                                       file: file,
-                                                      view: _vm.view
+                                                      view: _vm.view,
+                                                      "multi-selecting":
+                                                        _vm.multiSelecting,
+                                                      "selected-files":
+                                                        _vm.selectedFiles
                                                     },
                                                     on: {
                                                       missing: function(value) {
@@ -68114,7 +72368,8 @@ var render = function() {
                                                       },
                                                       showInfo: _vm.showInfo,
                                                       rename: _vm.rename,
-                                                      delete: _vm.deleteData
+                                                      delete: _vm.deleteData,
+                                                      select: _vm.select
                                                     }
                                                   })
                                                 ]
@@ -68152,43 +72407,46 @@ if (false) {
 }
 
 /***/ }),
-/* 137 */,
-/* 138 */,
-/* 139 */,
-/* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */,
-/* 144 */
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */,
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(145);
+module.exports = __webpack_require__(267);
 
 
 /***/ }),
-/* 145 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 Nova.booting(function (Vue) {
-    Vue.component('index-filemanager-field', __webpack_require__(146));
-    Vue.component('detail-filemanager-field', __webpack_require__(151));
-    Vue.component('form-filemanager-field', __webpack_require__(157));
+    Vue.component('index-filemanager-field', __webpack_require__(268));
+    Vue.component('detail-filemanager-field', __webpack_require__(273));
+    Vue.component('form-filemanager-field', __webpack_require__(279));
 });
 
 /***/ }),
-/* 146 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(147)
+  __webpack_require__(269)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(149)
+var __vue_script__ = __webpack_require__(271)
 /* template */
-var __vue_template__ = __webpack_require__(150)
+var __vue_template__ = __webpack_require__(272)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -68227,13 +72485,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 147 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(148);
+var content = __webpack_require__(270);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -68253,7 +72511,7 @@ if(false) {
 }
 
 /***/ }),
-/* 148 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -68267,7 +72525,7 @@ exports.push([module.i, "\n.svg-icon > svg {\n    width: 2rem;\n    height: 2rem
 
 
 /***/ }),
-/* 149 */
+/* 271 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -68308,7 +72566,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 150 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -68351,15 +72609,15 @@ if (false) {
 }
 
 /***/ }),
-/* 151 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(152)
+var __vue_script__ = __webpack_require__(274)
 /* template */
-var __vue_template__ = __webpack_require__(156)
+var __vue_template__ = __webpack_require__(278)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -68398,12 +72656,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 152 */
+/* 274 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__custom_ImagePanel__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__custom_ImagePanel__ = __webpack_require__(275);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__custom_ImagePanel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__custom_ImagePanel__);
 //
 //
@@ -68437,15 +72695,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 153 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(154)
+var __vue_script__ = __webpack_require__(276)
 /* template */
-var __vue_template__ = __webpack_require__(155)
+var __vue_template__ = __webpack_require__(277)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -68484,12 +72742,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 154 */
+/* 276 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_Image__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_Image__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_Image___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__modules_Image__);
 //
 //
@@ -68548,7 +72806,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 155 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -68617,7 +72875,7 @@ if (false) {
 }
 
 /***/ }),
-/* 156 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -68649,15 +72907,15 @@ if (false) {
 }
 
 /***/ }),
-/* 157 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(158)
+var __vue_script__ = __webpack_require__(280)
 /* template */
-var __vue_template__ = __webpack_require__(180)
+var __vue_template__ = __webpack_require__(302)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -68696,32 +72954,32 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 158 */
+/* 280 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__custom_FileSelect__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__custom_FileSelect__ = __webpack_require__(281);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__custom_FileSelect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__custom_FileSelect__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ModalFileManager__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ModalFileManager__ = __webpack_require__(286);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ModalFileManager___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_ModalFileManager__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CreateFolderModal__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CreateFolderModal__ = __webpack_require__(64);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CreateFolderModal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_CreateFolderModal__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_DetailPopup__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_DetailPopup__ = __webpack_require__(75);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_DetailPopup___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_DetailPopup__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_UploadProgress__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_UploadProgress__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_UploadProgress___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_UploadProgress__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_ConfirmModalRemoveFile__ = __webpack_require__(177);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_ConfirmModalRemoveFile__ = __webpack_require__(299);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_ConfirmModalRemoveFile___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_ConfirmModalRemoveFile__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__modules_Image__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__modules_Image__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__modules_Image___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__modules_Image__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_ConfirmModalDelete__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_ConfirmModalDelete__ = __webpack_require__(57);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_ConfirmModalDelete___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__components_ConfirmModalDelete__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__components_RenameModal__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__components_RenameModal__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__components_RenameModal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__components_RenameModal__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__api__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__api__ = __webpack_require__(6);
 //
 //
 //
@@ -68967,19 +73225,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 159 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(160)
+  __webpack_require__(282)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(162)
+var __vue_script__ = __webpack_require__(284)
 /* template */
-var __vue_template__ = __webpack_require__(163)
+var __vue_template__ = __webpack_require__(285)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -69018,13 +73276,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 160 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(161);
+var content = __webpack_require__(283);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -69044,7 +73302,7 @@ if(false) {
 }
 
 /***/ }),
-/* 161 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -69058,7 +73316,7 @@ exports.push([module.i, "\n.form-input-bordered-l[data-v-70fa7eb3] {\n    backgr
 
 
 /***/ }),
-/* 162 */
+/* 284 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -69085,7 +73343,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 163 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -69144,19 +73402,19 @@ if (false) {
 }
 
 /***/ }),
-/* 164 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(165)
+  __webpack_require__(287)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(167)
+var __vue_script__ = __webpack_require__(289)
 /* template */
-var __vue_template__ = __webpack_require__(176)
+var __vue_template__ = __webpack_require__(298)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -69195,13 +73453,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 165 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(166);
+var content = __webpack_require__(288);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -69221,7 +73479,7 @@ if(false) {
 }
 
 /***/ }),
-/* 166 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -69235,28 +73493,30 @@ exports.push([module.i, "\n.buttons-actions[data-v-5655c3e2] {\n    padding-left
 
 
 /***/ }),
-/* 167 */
+/* 289 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_urijs__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_urijs__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_urijs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_urijs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Manager__ = __webpack_require__(112);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Manager__ = __webpack_require__(146);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Manager___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Manager__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Upload__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Upload__ = __webpack_require__(290);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__Upload__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__UploadProgress__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__UploadProgress__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__UploadProgress___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__UploadProgress__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ConfirmModalDelete__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ConfirmModalDelete__ = __webpack_require__(57);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ConfirmModalDelete___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__ConfirmModalDelete__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__RenameModal__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__RenameModal__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__RenameModal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__RenameModal__);
 var _this = this;
 
+//
+//
 //
 //
 //
@@ -69592,19 +73852,19 @@ var _this = this;
 });
 
 /***/ }),
-/* 168 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(169)
+  __webpack_require__(291)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(171)
+var __vue_script__ = __webpack_require__(293)
 /* template */
-var __vue_template__ = __webpack_require__(175)
+var __vue_template__ = __webpack_require__(297)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -69643,13 +73903,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 169 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(170);
+var content = __webpack_require__(292);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -69669,7 +73929,7 @@ if(false) {
 }
 
 /***/ }),
-/* 170 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -69683,14 +73943,14 @@ exports.push([module.i, "\n.h-16[data-v-6c02d3ac] {\n  height: 4rem;\n}\n", ""])
 
 
 /***/ }),
-/* 171 */
+/* 293 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue2_dropzone__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue2_dropzone__ = __webpack_require__(294);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue2_dropzone___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue2_dropzone__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue2_dropzone_dist_vue2Dropzone_min_css__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue2_dropzone_dist_vue2Dropzone_min_css__ = __webpack_require__(295);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue2_dropzone_dist_vue2Dropzone_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue2_dropzone_dist_vue2Dropzone_min_css__);
 //
 //
@@ -69773,7 +74033,7 @@ var token = document.head.querySelector('meta[name="csrf-token"]');
 });
 
 /***/ }),
-/* 172 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(e,t){ true?module.exports=t():"function"==typeof define&&define.amd?define(t):e.vue2Dropzone=t()}(this,function(){"use strict";var n={getSignedURL:function(o,s){var a={filePath:o.name,contentType:o.type};return new Promise(function(e,t){var n=new FormData,r=new XMLHttpRequest,i="function"==typeof s.signingURL?s.signingURL(o):s.signingURL;r.open("POST",i),r.onload=function(){200==r.status?e(JSON.parse(r.response)):t(r.statusText)},r.onerror=function(e){console.error("Network Error : Could not send request to AWS (Maybe CORS errors)"),t(e)},Object.entries(s.headers||{}).forEach(function(e){var t=e[0],i=e[1];r.setRequestHeader(t,i)}),a=Object.assign(a,s.params||{}),Object.entries(a).forEach(function(e){var t=e[0],i=e[1];n.append(t,i)}),r.send(n)})},sendFile:function(t,e,i){var n=i?this.setResponseHandler:this.sendS3Handler;return this.getSignedURL(t,e).then(function(e){return n(e,t)}).catch(function(e){return e})},setResponseHandler:function(e,t){t.s3Signature=e.signature,t.s3Url=e.postEndpoint},sendS3Handler:function(e,t){var o=new FormData,i=e.signature;return Object.keys(i).forEach(function(e){o.append(e,i[e])}),o.append("file",t),new Promise(function(i,n){var r=new XMLHttpRequest;r.open("POST",e.postEndpoint),r.onload=function(){if(201==r.status){var e=(new window.DOMParser).parseFromString(r.response,"text/xml").firstChild.children[0].innerHTML;i({success:!0,message:e})}else{var t=(new window.DOMParser).parseFromString(r.response,"text/xml").firstChild.children[0].innerHTML;n({success:!1,message:t+". Request is marked as resolved when returns as status 201"})}},r.onerror=function(e){var t=(new window.DOMParser).parseFromString(r.response,"text/xml").firstChild.children[1].innerHTML;n({success:!1,message:t})},r.send(o)})}};var e,t=(function(e){var t=function(){function n(e,t){for(var i=0;i<t.length;i++){var n=t[i];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(e,t,i){return t&&n(e.prototype,t),i&&n(e,i),e}}();function a(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function l(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var i=function(){function e(){l(this,e)}return t(e,[{key:"on",value:function(e,t){return this._callbacks=this._callbacks||{},this._callbacks[e]||(this._callbacks[e]=[]),this._callbacks[e].push(t),this}},{key:"emit",value:function(e){this._callbacks=this._callbacks||{};var t=this._callbacks[e];if(t){for(var i=arguments.length,n=Array(1<i?i-1:0),r=1;r<i;r++)n[r-1]=arguments[r];for(var o=0,s=s=t;;){if(o>=s.length)break;s[o++].apply(this,n)}}return this}},{key:"off",value:function(e,t){if(!this._callbacks||0===arguments.length)return this._callbacks={},this;var i=this._callbacks[e];if(!i)return this;if(1===arguments.length)return delete this._callbacks[e],this;for(var n=0;n<i.length;n++){if(i[n]===t){i.splice(n,1);break}}return this}}]),e}(),r=function(e){function b(e,t){l(this,b);var i,n=a(this,(b.__proto__||Object.getPrototypeOf(b)).call(this)),r=void 0;if(n.element=e,n.version=b.version,n.defaultOptions.previewTemplate=n.defaultOptions.previewTemplate.replace(/\n*/g,""),n.clickableElements=[],n.listeners=[],n.files=[],"string"==typeof n.element&&(n.element=document.querySelector(n.element)),!n.element||null==n.element.nodeType)throw new Error("Invalid dropzone element.");if(n.element.dropzone)throw new Error("Dropzone already attached.");b.instances.push(n),n.element.dropzone=n;var o,s=null!=(i=b.optionsForElement(n.element))?i:{};if(n.options=b.extend({},n.defaultOptions,s,null!=t?t:{}),n.options.forceFallback||!b.isBrowserSupported())return o=n.options.fallback.call(n),a(n,o);if(null==n.options.url&&(n.options.url=n.element.getAttribute("action")),!n.options.url)throw new Error("No URL provided.");if(n.options.acceptedFiles&&n.options.acceptedMimeTypes)throw new Error("You can't provide both 'acceptedFiles' and 'acceptedMimeTypes'. 'acceptedMimeTypes' is deprecated.");if(n.options.uploadMultiple&&n.options.chunking)throw new Error("You cannot set both: uploadMultiple and chunking.");return n.options.acceptedMimeTypes&&(n.options.acceptedFiles=n.options.acceptedMimeTypes,delete n.options.acceptedMimeTypes),null!=n.options.renameFilename&&(n.options.renameFile=function(e){return n.options.renameFilename.call(n,e.name,e)}),n.options.method=n.options.method.toUpperCase(),(r=n.getExistingFallback())&&r.parentNode&&r.parentNode.removeChild(r),!1!==n.options.previewsContainer&&(n.options.previewsContainer?n.previewsContainer=b.getElement(n.options.previewsContainer,"previewsContainer"):n.previewsContainer=n.element),n.options.clickable&&(!0===n.options.clickable?n.clickableElements=[n.element]:n.clickableElements=b.getElements(n.options.clickable,"clickable")),n.init(),n}return function(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}(b,i),t(b,null,[{key:"initClass",value:function(){this.prototype.Emitter=i,this.prototype.events=["drop","dragstart","dragend","dragenter","dragover","dragleave","addedfile","addedfiles","removedfile","thumbnail","error","errormultiple","processing","processingmultiple","uploadprogress","totaluploadprogress","sending","sendingmultiple","success","successmultiple","canceled","canceledmultiple","complete","completemultiple","reset","maxfilesexceeded","maxfilesreached","queuecomplete"],this.prototype.defaultOptions={url:null,method:"post",withCredentials:!1,timeout:3e4,parallelUploads:2,uploadMultiple:!1,chunking:!1,forceChunking:!1,chunkSize:2e6,parallelChunkUploads:!1,retryChunks:!1,retryChunksLimit:3,maxFilesize:256,paramName:"file",createImageThumbnails:!0,maxThumbnailFilesize:10,thumbnailWidth:120,thumbnailHeight:120,thumbnailMethod:"crop",resizeWidth:null,resizeHeight:null,resizeMimeType:null,resizeQuality:.8,resizeMethod:"contain",filesizeBase:1e3,maxFiles:null,headers:null,clickable:!0,ignoreHiddenFiles:!0,acceptedFiles:null,acceptedMimeTypes:null,autoProcessQueue:!0,autoQueue:!0,addRemoveLinks:!1,previewsContainer:null,hiddenInputContainer:"body",capture:null,renameFilename:null,renameFile:null,forceFallback:!1,dictDefaultMessage:"Drop files here to upload",dictFallbackMessage:"Your browser does not support drag'n'drop file uploads.",dictFallbackText:"Please use the fallback form below to upload your files like in the olden days.",dictFileTooBig:"File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.",dictInvalidFileType:"You can't upload files of this type.",dictResponseError:"Server responded with {{statusCode}} code.",dictCancelUpload:"Cancel upload",dictUploadCanceled:"Upload canceled.",dictCancelUploadConfirmation:"Are you sure you want to cancel this upload?",dictRemoveFile:"Remove file",dictRemoveFileConfirmation:null,dictMaxFilesExceeded:"You can not upload any more files.",dictFileSizeUnits:{tb:"TB",gb:"GB",mb:"MB",kb:"KB",b:"b"},init:function(){},params:function(e,t,i){if(i)return{dzuuid:i.file.upload.uuid,dzchunkindex:i.index,dztotalfilesize:i.file.size,dzchunksize:this.options.chunkSize,dztotalchunkcount:i.file.upload.totalChunkCount,dzchunkbyteoffset:i.index*this.options.chunkSize}},accept:function(e,t){return t()},chunksUploaded:function(e,t){t()},fallback:function(){var e=void 0;this.element.className=this.element.className+" dz-browser-not-supported";for(var t=0,i=i=this.element.getElementsByTagName("div");;){if(t>=i.length)break;var n=i[t++];if(/(^| )dz-message($| )/.test(n.className)){(e=n).className="dz-message";break}}e||(e=b.createElement('<div class="dz-message"><span></span></div>'),this.element.appendChild(e));var r=e.getElementsByTagName("span")[0];return r&&(null!=r.textContent?r.textContent=this.options.dictFallbackMessage:null!=r.innerText&&(r.innerText=this.options.dictFallbackMessage)),this.element.appendChild(this.getFallbackForm())},resize:function(e,t,i,n){var r={srcX:0,srcY:0,srcWidth:e.width,srcHeight:e.height},o=e.width/e.height;null==t&&null==i?(t=r.srcWidth,i=r.srcHeight):null==t?t=i*o:null==i&&(i=t/o);var s=(t=Math.min(t,r.srcWidth))/(i=Math.min(i,r.srcHeight));if(r.srcWidth>t||r.srcHeight>i)if("crop"===n)s<o?(r.srcHeight=e.height,r.srcWidth=r.srcHeight*s):(r.srcWidth=e.width,r.srcHeight=r.srcWidth/s);else{if("contain"!==n)throw new Error("Unknown resizeMethod '"+n+"'");s<o?i=t/o:t=i*o}return r.srcX=(e.width-r.srcWidth)/2,r.srcY=(e.height-r.srcHeight)/2,r.trgWidth=t,r.trgHeight=i,r},transformFile:function(e,t){return(this.options.resizeWidth||this.options.resizeHeight)&&e.type.match(/image.*/)?this.resizeImage(e,this.options.resizeWidth,this.options.resizeHeight,this.options.resizeMethod,t):t(e)},previewTemplate:'<div class="dz-preview dz-file-preview">\n  <div class="dz-image"><img data-dz-thumbnail /></div>\n  <div class="dz-details">\n    <div class="dz-size"><span data-dz-size></span></div>\n    <div class="dz-filename"><span data-dz-name></span></div>\n  </div>\n  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>\n  <div class="dz-error-message"><span data-dz-errormessage></span></div>\n  <div class="dz-success-mark">\n    <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">\n      <title>Check</title>\n      <defs></defs>\n      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">\n        <path d="M23.5,31.8431458 L17.5852419,25.9283877 C16.0248253,24.3679711 13.4910294,24.366835 11.9289322,25.9289322 C10.3700136,27.4878508 10.3665912,30.0234455 11.9283877,31.5852419 L20.4147581,40.0716123 C20.5133999,40.1702541 20.6159315,40.2626649 20.7218615,40.3488435 C22.2835669,41.8725651 24.794234,41.8626202 26.3461564,40.3106978 L43.3106978,23.3461564 C44.8771021,21.7797521 44.8758057,19.2483887 43.3137085,17.6862915 C41.7547899,16.1273729 39.2176035,16.1255422 37.6538436,17.6893022 L23.5,31.8431458 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" id="Oval-2" stroke-opacity="0.198794158" stroke="#747474" fill-opacity="0.816519475" fill="#FFFFFF" sketch:type="MSShapeGroup"></path>\n      </g>\n    </svg>\n  </div>\n  <div class="dz-error-mark">\n    <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">\n      <title>Error</title>\n      <defs></defs>\n      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">\n        <g id="Check-+-Oval-2" sketch:type="MSLayerGroup" stroke="#747474" stroke-opacity="0.198794158" fill="#FFFFFF" fill-opacity="0.816519475">\n          <path d="M32.6568542,29 L38.3106978,23.3461564 C39.8771021,21.7797521 39.8758057,19.2483887 38.3137085,17.6862915 C36.7547899,16.1273729 34.2176035,16.1255422 32.6538436,17.6893022 L27,23.3431458 L21.3461564,17.6893022 C19.7823965,16.1255422 17.2452101,16.1273729 15.6862915,17.6862915 C14.1241943,19.2483887 14.1228979,21.7797521 15.6893022,23.3461564 L21.3431458,29 L15.6893022,34.6538436 C14.1228979,36.2202479 14.1241943,38.7516113 15.6862915,40.3137085 C17.2452101,41.8726271 19.7823965,41.8744578 21.3461564,40.3106978 L27,34.6568542 L32.6538436,40.3106978 C34.2176035,41.8744578 36.7547899,41.8726271 38.3137085,40.3137085 C39.8758057,38.7516113 39.8771021,36.2202479 38.3106978,34.6538436 L32.6568542,29 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" id="Oval-2" sketch:type="MSShapeGroup"></path>\n        </g>\n      </g>\n    </svg>\n  </div>\n</div>',drop:function(e){return this.element.classList.remove("dz-drag-hover")},dragstart:function(e){},dragend:function(e){return this.element.classList.remove("dz-drag-hover")},dragenter:function(e){return this.element.classList.add("dz-drag-hover")},dragover:function(e){return this.element.classList.add("dz-drag-hover")},dragleave:function(e){return this.element.classList.remove("dz-drag-hover")},paste:function(e){},reset:function(){return this.element.classList.remove("dz-started")},addedfile:function(t){var i=this;if(this.element===this.previewsContainer&&this.element.classList.add("dz-started"),this.previewsContainer){t.previewElement=b.createElement(this.options.previewTemplate.trim()),t.previewTemplate=t.previewElement,this.previewsContainer.appendChild(t.previewElement);for(var e=0,n=n=t.previewElement.querySelectorAll("[data-dz-name]");;){if(e>=n.length)break;var r=n[e++];r.textContent=t.name}for(var o=0,s=s=t.previewElement.querySelectorAll("[data-dz-size]");!(o>=s.length);)(r=s[o++]).innerHTML=this.filesize(t.size);this.options.addRemoveLinks&&(t._removeLink=b.createElement('<a class="dz-remove" href="javascript:undefined;" data-dz-remove>'+this.options.dictRemoveFile+"</a>"),t.previewElement.appendChild(t._removeLink));for(var a=function(e){return e.preventDefault(),e.stopPropagation(),t.status===b.UPLOADING?b.confirm(i.options.dictCancelUploadConfirmation,function(){return i.removeFile(t)}):i.options.dictRemoveFileConfirmation?b.confirm(i.options.dictRemoveFileConfirmation,function(){return i.removeFile(t)}):i.removeFile(t)},l=0,u=u=t.previewElement.querySelectorAll("[data-dz-remove]");;){if(l>=u.length)break;u[l++].addEventListener("click",a)}}},removedfile:function(e){return null!=e.previewElement&&null!=e.previewElement.parentNode&&e.previewElement.parentNode.removeChild(e.previewElement),this._updateMaxFilesReachedClass()},thumbnail:function(e,t){if(e.previewElement){e.previewElement.classList.remove("dz-file-preview");for(var i=0,n=n=e.previewElement.querySelectorAll("[data-dz-thumbnail]");;){if(i>=n.length)break;var r=n[i++];r.alt=e.name,r.src=t}return setTimeout(function(){return e.previewElement.classList.add("dz-image-preview")},1)}},error:function(e,t){if(e.previewElement){e.previewElement.classList.add("dz-error"),"String"!=typeof t&&t.error&&(t=t.error);for(var i=0,n=n=e.previewElement.querySelectorAll("[data-dz-errormessage]");;){if(i>=n.length)break;n[i++].textContent=t}}},errormultiple:function(){},processing:function(e){if(e.previewElement&&(e.previewElement.classList.add("dz-processing"),e._removeLink))return e._removeLink.textContent=this.options.dictCancelUpload},processingmultiple:function(){},uploadprogress:function(e,t,i){if(e.previewElement)for(var n=0,r=r=e.previewElement.querySelectorAll("[data-dz-uploadprogress]");;){if(n>=r.length)break;var o=r[n++];"PROGRESS"===o.nodeName?o.value=t:o.style.width=t+"%"}},totaluploadprogress:function(){},sending:function(){},sendingmultiple:function(){},success:function(e){if(e.previewElement)return e.previewElement.classList.add("dz-success")},successmultiple:function(){},canceled:function(e){return this.emit("error",e,this.options.dictUploadCanceled)},canceledmultiple:function(){},complete:function(e){if(e._removeLink&&(e._removeLink.textContent=this.options.dictRemoveFile),e.previewElement)return e.previewElement.classList.add("dz-complete")},completemultiple:function(){},maxfilesexceeded:function(){},maxfilesreached:function(){},queuecomplete:function(){},addedfiles:function(){}},this.prototype._thumbnailQueue=[],this.prototype._processingThumbnail=!1}},{key:"extend",value:function(e){for(var t=arguments.length,i=Array(1<t?t-1:0),n=1;n<t;n++)i[n-1]=arguments[n];for(var r=0,o=o=i;;){if(r>=o.length)break;var s=o[r++];for(var a in s){var l=s[a];e[a]=l}}return e}}]),t(b,[{key:"getAcceptedFiles",value:function(){return this.files.filter(function(e){return e.accepted}).map(function(e){return e})}},{key:"getRejectedFiles",value:function(){return this.files.filter(function(e){return!e.accepted}).map(function(e){return e})}},{key:"getFilesWithStatus",value:function(t){return this.files.filter(function(e){return e.status===t}).map(function(e){return e})}},{key:"getQueuedFiles",value:function(){return this.getFilesWithStatus(b.QUEUED)}},{key:"getUploadingFiles",value:function(){return this.getFilesWithStatus(b.UPLOADING)}},{key:"getAddedFiles",value:function(){return this.getFilesWithStatus(b.ADDED)}},{key:"getActiveFiles",value:function(){return this.files.filter(function(e){return e.status===b.UPLOADING||e.status===b.QUEUED}).map(function(e){return e})}},{key:"init",value:function(){var o=this;if("form"===this.element.tagName&&this.element.setAttribute("enctype","multipart/form-data"),this.element.classList.contains("dropzone")&&!this.element.querySelector(".dz-message")&&this.element.appendChild(b.createElement('<div class="dz-default dz-message"><span>'+this.options.dictDefaultMessage+"</span></div>")),this.clickableElements.length){!function r(){return o.hiddenFileInput&&o.hiddenFileInput.parentNode.removeChild(o.hiddenFileInput),o.hiddenFileInput=document.createElement("input"),o.hiddenFileInput.setAttribute("type","file"),(null===o.options.maxFiles||1<o.options.maxFiles)&&o.hiddenFileInput.setAttribute("multiple","multiple"),o.hiddenFileInput.className="dz-hidden-input",null!==o.options.acceptedFiles&&o.hiddenFileInput.setAttribute("accept",o.options.acceptedFiles),null!==o.options.capture&&o.hiddenFileInput.setAttribute("capture",o.options.capture),o.hiddenFileInput.style.visibility="hidden",o.hiddenFileInput.style.position="absolute",o.hiddenFileInput.style.top="0",o.hiddenFileInput.style.left="0",o.hiddenFileInput.style.height="0",o.hiddenFileInput.style.width="0",document.querySelector(o.options.hiddenInputContainer).appendChild(o.hiddenFileInput),o.hiddenFileInput.addEventListener("change",function(){var e=o.hiddenFileInput.files;if(e.length)for(var t=0,i=i=e;!(t>=i.length);){var n=i[t++];o.addFile(n)}return o.emit("addedfiles",e),r()})}()}this.URL=null!==window.URL?window.URL:window.webkitURL;for(var e=0,t=t=this.events;;){if(e>=t.length)break;var i=t[e++];this.on(i,this.options[i])}this.on("uploadprogress",function(){return o.updateTotalUploadProgress()}),this.on("removedfile",function(){return o.updateTotalUploadProgress()}),this.on("canceled",function(e){return o.emit("complete",e)}),this.on("complete",function(e){if(0===o.getAddedFiles().length&&0===o.getUploadingFiles().length&&0===o.getQueuedFiles().length)return setTimeout(function(){return o.emit("queuecomplete")},0)});var n=function(e){return e.stopPropagation(),e.preventDefault?e.preventDefault():e.returnValue=!1};return this.listeners=[{element:this.element,events:{dragstart:function(e){return o.emit("dragstart",e)},dragenter:function(e){return n(e),o.emit("dragenter",e)},dragover:function(e){var t=void 0;try{t=e.dataTransfer.effectAllowed}catch(e){}return e.dataTransfer.dropEffect="move"===t||"linkMove"===t?"move":"copy",n(e),o.emit("dragover",e)},dragleave:function(e){return o.emit("dragleave",e)},drop:function(e){return n(e),o.drop(e)},dragend:function(e){return o.emit("dragend",e)}}}],this.clickableElements.forEach(function(t){return o.listeners.push({element:t,events:{click:function(e){return(t!==o.element||e.target===o.element||b.elementInside(e.target,o.element.querySelector(".dz-message")))&&o.hiddenFileInput.click(),!0}}})}),this.enable(),this.options.init.call(this)}},{key:"destroy",value:function(){return this.disable(),this.removeAllFiles(!0),(null!=this.hiddenFileInput?this.hiddenFileInput.parentNode:void 0)&&(this.hiddenFileInput.parentNode.removeChild(this.hiddenFileInput),this.hiddenFileInput=null),delete this.element.dropzone,b.instances.splice(b.instances.indexOf(this),1)}},{key:"updateTotalUploadProgress",value:function(){var e=void 0,t=0,i=0;if(this.getActiveFiles().length){for(var n=0,r=r=this.getActiveFiles();;){if(n>=r.length)break;var o=r[n++];t+=o.upload.bytesSent,i+=o.upload.total}e=100*t/i}else e=100;return this.emit("totaluploadprogress",e,i,t)}},{key:"_getParamName",value:function(e){return"function"==typeof this.options.paramName?this.options.paramName(e):this.options.paramName+(this.options.uploadMultiple?"["+e+"]":"")}},{key:"_renameFile",value:function(e){return"function"!=typeof this.options.renameFile?e.name:this.options.renameFile(e)}},{key:"getFallbackForm",value:function(){var e,t=void 0;if(e=this.getExistingFallback())return e;var i='<div class="dz-fallback">';this.options.dictFallbackText&&(i+="<p>"+this.options.dictFallbackText+"</p>"),i+='<input type="file" name="'+this._getParamName(0)+'" '+(this.options.uploadMultiple?'multiple="multiple"':void 0)+' /><input type="submit" value="Upload!"></div>';var n=b.createElement(i);return"FORM"!==this.element.tagName?(t=b.createElement('<form action="'+this.options.url+'" enctype="multipart/form-data" method="'+this.options.method+'"></form>')).appendChild(n):(this.element.setAttribute("enctype","multipart/form-data"),this.element.setAttribute("method",this.options.method)),null!=t?t:n}},{key:"getExistingFallback",value:function(){for(var e=function(e){for(var t=0,i=i=e;;){if(t>=i.length)break;var n=i[t++];if(/(^| )fallback($| )/.test(n.className))return n}},t=["div","form"],i=0;i<t.length;i++){var n,r=t[i];if(n=e(this.element.getElementsByTagName(r)))return n}}},{key:"setupEventListeners",value:function(){return this.listeners.map(function(n){return function(){var e=[];for(var t in n.events){var i=n.events[t];e.push(n.element.addEventListener(t,i,!1))}return e}()})}},{key:"removeEventListeners",value:function(){return this.listeners.map(function(n){return function(){var e=[];for(var t in n.events){var i=n.events[t];e.push(n.element.removeEventListener(t,i,!1))}return e}()})}},{key:"disable",value:function(){var t=this;return this.clickableElements.forEach(function(e){return e.classList.remove("dz-clickable")}),this.removeEventListeners(),this.disabled=!0,this.files.map(function(e){return t.cancelUpload(e)})}},{key:"enable",value:function(){return delete this.disabled,this.clickableElements.forEach(function(e){return e.classList.add("dz-clickable")}),this.setupEventListeners()}},{key:"filesize",value:function(e){var t=0,i="b";if(0<e){for(var n=["tb","gb","mb","kb","b"],r=0;r<n.length;r++){var o=n[r];if(Math.pow(this.options.filesizeBase,4-r)/10<=e){t=e/Math.pow(this.options.filesizeBase,4-r),i=o;break}}t=Math.round(10*t)/10}return"<strong>"+t+"</strong> "+this.options.dictFileSizeUnits[i]}},{key:"_updateMaxFilesReachedClass",value:function(){return null!=this.options.maxFiles&&this.getAcceptedFiles().length>=this.options.maxFiles?(this.getAcceptedFiles().length===this.options.maxFiles&&this.emit("maxfilesreached",this.files),this.element.classList.add("dz-max-files-reached")):this.element.classList.remove("dz-max-files-reached")}},{key:"drop",value:function(e){if(e.dataTransfer){this.emit("drop",e);for(var t=[],i=0;i<e.dataTransfer.files.length;i++)t[i]=e.dataTransfer.files[i];if(this.emit("addedfiles",t),t.length){var n=e.dataTransfer.items;n&&n.length&&null!=n[0].webkitGetAsEntry?this._addFilesFromItems(n):this.handleFiles(t)}}}},{key:"paste",value:function(e){if(null!=(t=null!=e?e.clipboardData:void 0,i=function(e){return e.items},null!=t?i(t):void 0)){var t,i;this.emit("paste",e);var n=e.clipboardData.items;return n.length?this._addFilesFromItems(n):void 0}}},{key:"handleFiles",value:function(e){for(var t=0,i=i=e;;){if(t>=i.length)break;var n=i[t++];this.addFile(n)}}},{key:"_addFilesFromItems",value:function(o){var s=this;return function(){for(var e=[],t=0,i=i=o;;){if(t>=i.length)break;var n,r=i[t++];null!=r.webkitGetAsEntry&&(n=r.webkitGetAsEntry())?n.isFile?e.push(s.addFile(r.getAsFile())):n.isDirectory?e.push(s._addFilesFromDirectory(n,n.name)):e.push(void 0):null!=r.getAsFile&&(null==r.kind||"file"===r.kind)?e.push(s.addFile(r.getAsFile())):e.push(void 0)}return e}()}},{key:"_addFilesFromDirectory",value:function(e,o){var s=this,t=e.createReader(),i=function(t){return e=console,i="log",n=function(e){return e.log(t)},null!=e&&"function"==typeof e[i]?n(e,i):void 0;var e,i,n};return function r(){return t.readEntries(function(e){if(0<e.length){for(var t=0,i=i=e;!(t>=i.length);){var n=i[t++];n.isFile?n.file(function(e){if(!s.options.ignoreHiddenFiles||"."!==e.name.substring(0,1))return e.fullPath=o+"/"+e.name,s.addFile(e)}):n.isDirectory&&s._addFilesFromDirectory(n,o+"/"+n.name)}r()}return null},i)}()}},{key:"accept",value:function(e,t){return e.size>1024*this.options.maxFilesize*1024?t(this.options.dictFileTooBig.replace("{{filesize}}",Math.round(e.size/1024/10.24)/100).replace("{{maxFilesize}}",this.options.maxFilesize)):b.isValidFile(e,this.options.acceptedFiles)?null!=this.options.maxFiles&&this.getAcceptedFiles().length>=this.options.maxFiles?(t(this.options.dictMaxFilesExceeded.replace("{{maxFiles}}",this.options.maxFiles)),this.emit("maxfilesexceeded",e)):this.options.accept.call(this,e,t):t(this.options.dictInvalidFileType)}},{key:"addFile",value:function(t){var i=this;return t.upload={uuid:b.uuidv4(),progress:0,total:t.size,bytesSent:0,filename:this._renameFile(t),chunked:this.options.chunking&&(this.options.forceChunking||t.size>this.options.chunkSize),totalChunkCount:Math.ceil(t.size/this.options.chunkSize)},this.files.push(t),t.status=b.ADDED,this.emit("addedfile",t),this._enqueueThumbnail(t),this.accept(t,function(e){return e?(t.accepted=!1,i._errorProcessing([t],e)):(t.accepted=!0,i.options.autoQueue&&i.enqueueFile(t)),i._updateMaxFilesReachedClass()})}},{key:"enqueueFiles",value:function(e){for(var t=0,i=i=e;;){if(t>=i.length)break;var n=i[t++];this.enqueueFile(n)}return null}},{key:"enqueueFile",value:function(e){var t=this;if(e.status!==b.ADDED||!0!==e.accepted)throw new Error("This file can't be queued because it has already been processed or was rejected.");if(e.status=b.QUEUED,this.options.autoProcessQueue)return setTimeout(function(){return t.processQueue()},0)}},{key:"_enqueueThumbnail",value:function(e){var t=this;if(this.options.createImageThumbnails&&e.type.match(/image.*/)&&e.size<=1024*this.options.maxThumbnailFilesize*1024)return this._thumbnailQueue.push(e),setTimeout(function(){return t._processThumbnailQueue()},0)}},{key:"_processThumbnailQueue",value:function(){var t=this;if(!this._processingThumbnail&&0!==this._thumbnailQueue.length){this._processingThumbnail=!0;var i=this._thumbnailQueue.shift();return this.createThumbnail(i,this.options.thumbnailWidth,this.options.thumbnailHeight,this.options.thumbnailMethod,!0,function(e){return t.emit("thumbnail",i,e),t._processingThumbnail=!1,t._processThumbnailQueue()})}}},{key:"removeFile",value:function(e){if(e.status===b.UPLOADING&&this.cancelUpload(e),this.files=n(this.files,e),this.emit("removedfile",e),0===this.files.length)return this.emit("reset")}},{key:"removeAllFiles",value:function(e){null==e&&(e=!1);for(var t=0,i=i=this.files.slice();;){if(t>=i.length)break;var n=i[t++];(n.status!==b.UPLOADING||e)&&this.removeFile(n)}return null}},{key:"resizeImage",value:function(r,e,t,i,o){var s=this;return this.createThumbnail(r,e,t,i,!1,function(e,t){if(null==t)return o(r);var i=s.options.resizeMimeType;null==i&&(i=r.type);var n=t.toDataURL(i,s.options.resizeQuality);return"image/jpeg"!==i&&"image/jpg"!==i||(n=u.restore(r.dataURL,n)),o(b.dataURItoBlob(n))})}},{key:"createThumbnail",value:function(e,t,i,n,r,o){var s=this,a=new FileReader;return a.onload=function(){if(e.dataURL=a.result,"image/svg+xml"!==e.type)return s.createThumbnailFromUrl(e,t,i,n,r,o);null!=o&&o(a.result)},a.readAsDataURL(e)}},{key:"createThumbnailFromUrl",value:function(o,s,a,l,t,u,e){var d=this,c=document.createElement("img");return e&&(c.crossOrigin=e),c.onload=function(){var e=function(e){return e(1)};return"undefined"!=typeof EXIF&&null!==EXIF&&t&&(e=function(e){return EXIF.getData(c,function(){return e(EXIF.getTag(this,"Orientation"))})}),e(function(e){o.width=c.width,o.height=c.height;var t=d.options.resize.call(d,o,s,a,l),i=document.createElement("canvas"),n=i.getContext("2d");switch(i.width=t.trgWidth,i.height=t.trgHeight,4<e&&(i.width=t.trgHeight,i.height=t.trgWidth),e){case 2:n.translate(i.width,0),n.scale(-1,1);break;case 3:n.translate(i.width,i.height),n.rotate(Math.PI);break;case 4:n.translate(0,i.height),n.scale(1,-1);break;case 5:n.rotate(.5*Math.PI),n.scale(1,-1);break;case 6:n.rotate(.5*Math.PI),n.translate(0,-i.height);break;case 7:n.rotate(.5*Math.PI),n.translate(i.width,-i.height),n.scale(-1,1);break;case 8:n.rotate(-.5*Math.PI),n.translate(-i.width,0)}p(n,c,null!=t.srcX?t.srcX:0,null!=t.srcY?t.srcY:0,t.srcWidth,t.srcHeight,null!=t.trgX?t.trgX:0,null!=t.trgY?t.trgY:0,t.trgWidth,t.trgHeight);var r=i.toDataURL("image/png");if(null!=u)return u(r,i)})},null!=u&&(c.onerror=u),c.src=o.dataURL}},{key:"processQueue",value:function(){var e=this.options.parallelUploads,t=this.getUploadingFiles().length,i=t;if(!(e<=t)){var n=this.getQueuedFiles();if(0<n.length){if(this.options.uploadMultiple)return this.processFiles(n.slice(0,e-t));for(;i<e;){if(!n.length)return;this.processFile(n.shift()),i++}}}}},{key:"processFile",value:function(e){return this.processFiles([e])}},{key:"processFiles",value:function(e){for(var t=0,i=i=e;;){if(t>=i.length)break;var n=i[t++];n.processing=!0,n.status=b.UPLOADING,this.emit("processing",n)}return this.options.uploadMultiple&&this.emit("processingmultiple",e),this.uploadFiles(e)}},{key:"_getFilesWithXhr",value:function(t){return this.files.filter(function(e){return e.xhr===t}).map(function(e){return e})}},{key:"cancelUpload",value:function(e){if(e.status===b.UPLOADING){for(var t=this._getFilesWithXhr(e.xhr),i=0,n=n=t;;){if(i>=n.length)break;n[i++].status=b.CANCELED}void 0!==e.xhr&&e.xhr.abort();for(var r=0,o=o=t;;){if(r>=o.length)break;var s=o[r++];this.emit("canceled",s)}this.options.uploadMultiple&&this.emit("canceledmultiple",t)}else e.status!==b.ADDED&&e.status!==b.QUEUED||(e.status=b.CANCELED,this.emit("canceled",e),this.options.uploadMultiple&&this.emit("canceledmultiple",[e]));if(this.options.autoProcessQueue)return this.processQueue()}},{key:"resolveOption",value:function(e){if("function"==typeof e){for(var t=arguments.length,i=Array(1<t?t-1:0),n=1;n<t;n++)i[n-1]=arguments[n];return e.apply(this,i)}return e}},{key:"uploadFile",value:function(e){return this.uploadFiles([e])}},{key:"uploadFiles",value:function(a){var l=this;this._transformFiles(a,function(e){if(a[0].upload.chunked){var r=a[0],o=e[0];r.upload.chunks=[];var n=function(){for(var e=0;void 0!==r.upload.chunks[e];)e++;if(!(e>=r.upload.totalChunkCount)){0;var t=e*l.options.chunkSize,i=Math.min(t+l.options.chunkSize,r.size),n={name:l._getParamName(0),data:o.webkitSlice?o.webkitSlice(t,i):o.slice(t,i),filename:r.upload.filename,chunkIndex:e};r.upload.chunks[e]={file:r,index:e,dataBlock:n,status:b.UPLOADING,progress:0,retries:0},l._uploadData(a,[n])}};if(r.upload.finishedChunkUpload=function(e){var t=!0;e.status=b.SUCCESS,e.dataBlock=null;for(var i=0;i<r.upload.totalChunkCount;i++){if(void 0===r.upload.chunks[i])return n();r.upload.chunks[i].status!==b.SUCCESS&&(t=!1)}t&&l.options.chunksUploaded(r,function(){l._finished(a,"",null)})},l.options.parallelChunkUploads)for(var t=0;t<r.upload.totalChunkCount;t++)n();else n()}else{for(var i=[],s=0;s<a.length;s++)i[s]={name:l._getParamName(s),data:e[s],filename:a[s].upload.filename};l._uploadData(a,i)}})}},{key:"_getChunk",value:function(e,t){for(var i=0;i<e.upload.totalChunkCount;i++)if(void 0!==e.upload.chunks[i]&&e.upload.chunks[i].xhr===t)return e.upload.chunks[i]}},{key:"_uploadData",value:function(t,e){for(var i=this,n=new XMLHttpRequest,r=0,o=o=t;;){if(r>=o.length)break;o[r++].xhr=n}t[0].upload.chunked&&(t[0].upload.chunks[e[0].chunkIndex].xhr=n);var s=this.resolveOption(this.options.method,t),a=this.resolveOption(this.options.url,t);n.open(s,a,!0),n.timeout=this.resolveOption(this.options.timeout,t),n.withCredentials=!!this.options.withCredentials,n.onload=function(e){i._finishedUploading(t,n,e)},n.onerror=function(){i._handleUploadError(t,n)},(null!=n.upload?n.upload:n).onprogress=function(e){return i._updateFilesUploadProgress(t,n,e)};var l={Accept:"application/json","Cache-Control":"no-cache","X-Requested-With":"XMLHttpRequest"};for(var u in this.options.headers&&b.extend(l,this.options.headers),l){var d=l[u];d&&n.setRequestHeader(u,d)}var c=new FormData;if(this.options.params){var p=this.options.params;for(var h in"function"==typeof p&&(p=p.call(this,t,n,t[0].upload.chunked?this._getChunk(t[0],n):null)),p){var f=p[h];c.append(h,f)}}for(var m=0,v=v=t;;){if(m>=v.length)break;var g=v[m++];this.emit("sending",g,n,c)}this.options.uploadMultiple&&this.emit("sendingmultiple",t,n,c),this._addFormElementData(c);for(var k=0;k<e.length;k++){var y=e[k];c.append(y.name,y.data,y.filename)}this.submitRequest(n,c,t)}},{key:"_transformFiles",value:function(i,n){for(var e=this,r=[],o=0,t=function(t){e.options.transformFile.call(e,i[t],function(e){r[t]=e,++o===i.length&&n(r)})},s=0;s<i.length;s++)t(s)}},{key:"_addFormElementData",value:function(e){if("FORM"===this.element.tagName)for(var t=0,i=i=this.element.querySelectorAll("input, textarea, select, button");;){if(t>=i.length)break;var n=i[t++],r=n.getAttribute("name"),o=n.getAttribute("type");if(o&&(o=o.toLowerCase()),null!=r)if("SELECT"===n.tagName&&n.hasAttribute("multiple"))for(var s=0,a=a=n.options;;){if(s>=a.length)break;var l=a[s++];l.selected&&e.append(r,l.value)}else(!o||"checkbox"!==o&&"radio"!==o||n.checked)&&e.append(r,n.value)}}},{key:"_updateFilesUploadProgress",value:function(e,t,i){var n=void 0;if(void 0!==i){if(n=100*i.loaded/i.total,e[0].upload.chunked){var r=e[0],o=this._getChunk(r,t);o.progress=n,o.total=i.total,o.bytesSent=i.loaded;r.upload.progress=0,r.upload.total=0;for(var s=r.upload.bytesSent=0;s<r.upload.totalChunkCount;s++)void 0!==r.upload.chunks[s]&&void 0!==r.upload.chunks[s].progress&&(r.upload.progress+=r.upload.chunks[s].progress,r.upload.total+=r.upload.chunks[s].total,r.upload.bytesSent+=r.upload.chunks[s].bytesSent);r.upload.progress=r.upload.progress/r.upload.totalChunkCount}else for(var a=0,l=l=e;;){if(a>=l.length)break;var u=l[a++];u.upload.progress=n,u.upload.total=i.total,u.upload.bytesSent=i.loaded}for(var d=0,c=c=e;;){if(d>=c.length)break;var p=c[d++];this.emit("uploadprogress",p,p.upload.progress,p.upload.bytesSent)}}else{var h=!0;n=100;for(var f=0,m=m=e;;){if(f>=m.length)break;var v=m[f++];100===v.upload.progress&&v.upload.bytesSent===v.upload.total||(h=!1),v.upload.progress=n,v.upload.bytesSent=v.upload.total}if(h)return;for(var g=0,k=k=e;;){if(g>=k.length)break;var y=k[g++];this.emit("uploadprogress",y,n,y.upload.bytesSent)}}}},{key:"_finishedUploading",value:function(e,t,i){var n=void 0;if(e[0].status!==b.CANCELED&&4===t.readyState){if("arraybuffer"!==t.responseType&&"blob"!==t.responseType&&(n=t.responseText,t.getResponseHeader("content-type")&&~t.getResponseHeader("content-type").indexOf("application/json")))try{n=JSON.parse(n)}catch(e){i=e,n="Invalid JSON response from server."}this._updateFilesUploadProgress(e),200<=t.status&&t.status<300?e[0].upload.chunked?e[0].upload.finishedChunkUpload(this._getChunk(e[0],t)):this._finished(e,n,i):this._handleUploadError(e,t,n)}}},{key:"_handleUploadError",value:function(e,t,i){if(e[0].status!==b.CANCELED){if(e[0].upload.chunked&&this.options.retryChunks){var n=this._getChunk(e[0],t);if(n.retries++<this.options.retryChunksLimit)return void this._uploadData(e,[n.dataBlock]);console.warn("Retried this chunk too often. Giving up.")}for(var r=0,o=o=e;;){if(r>=o.length)break;o[r++];this._errorProcessing(e,i||this.options.dictResponseError.replace("{{statusCode}}",t.status),t)}}}},{key:"submitRequest",value:function(e,t,i){e.send(t)}},{key:"_finished",value:function(e,t,i){for(var n=0,r=r=e;;){if(n>=r.length)break;var o=r[n++];o.status=b.SUCCESS,this.emit("success",o,t,i),this.emit("complete",o)}if(this.options.uploadMultiple&&(this.emit("successmultiple",e,t,i),this.emit("completemultiple",e)),this.options.autoProcessQueue)return this.processQueue()}},{key:"_errorProcessing",value:function(e,t,i){for(var n=0,r=r=e;;){if(n>=r.length)break;var o=r[n++];o.status=b.ERROR,this.emit("error",o,t,i),this.emit("complete",o)}if(this.options.uploadMultiple&&(this.emit("errormultiple",e,t,i),this.emit("completemultiple",e)),this.options.autoProcessQueue)return this.processQueue()}}],[{key:"uuidv4",value:function(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(e){var t=16*Math.random()|0;return("x"===e?t:3&t|8).toString(16)})}}]),b}();r.initClass(),r.version="5.4.0",r.options={},r.optionsForElement=function(e){return e.getAttribute("id")?r.options[o(e.getAttribute("id"))]:void 0},r.instances=[],r.forElement=function(e){if("string"==typeof e&&(e=document.querySelector(e)),null==(null!=e?e.dropzone:void 0))throw new Error("No Dropzone found for given element. This is probably because you're trying to access it before Dropzone had the time to initialize. Use the `init` option to setup any additional observers on your Dropzone.");return e.dropzone},r.autoDiscover=!0,r.discover=function(){var o=void 0;if(document.querySelectorAll)o=document.querySelectorAll(".dropzone");else{o=[];var e=function(r){return function(){for(var e=[],t=0,i=i=r;;){if(t>=i.length)break;var n=i[t++];/(^| )dropzone($| )/.test(n.className)?e.push(o.push(n)):e.push(void 0)}return e}()};e(document.getElementsByTagName("div")),e(document.getElementsByTagName("form"))}return function(){for(var e=[],t=0,i=i=o;;){if(t>=i.length)break;var n=i[t++];!1!==r.optionsForElement(n)?e.push(new r(n)):e.push(void 0)}return e}()},r.blacklistedBrowsers=[/opera.*(Macintosh|Windows Phone).*version\/12/i],r.isBrowserSupported=function(){var e=!0;if(window.File&&window.FileReader&&window.FileList&&window.Blob&&window.FormData&&document.querySelector)if("classList"in document.createElement("a"))for(var t=0,i=i=r.blacklistedBrowsers;;){if(t>=i.length)break;i[t++].test(navigator.userAgent)&&(e=!1)}else e=!1;else e=!1;return e},r.dataURItoBlob=function(e){for(var t=atob(e.split(",")[1]),i=e.split(",")[0].split(":")[1].split(";")[0],n=new ArrayBuffer(t.length),r=new Uint8Array(n),o=0,s=t.length,a=0<=s;a?o<=s:s<=o;a?o++:o--)r[o]=t.charCodeAt(o);return new Blob([n],{type:i})};var n=function(e,t){return e.filter(function(e){return e!==t}).map(function(e){return e})},o=function(e){return e.replace(/[\-_](\w)/g,function(e){return e.charAt(1).toUpperCase()})};r.createElement=function(e){var t=document.createElement("div");return t.innerHTML=e,t.childNodes[0]},r.elementInside=function(e,t){if(e===t)return!0;for(;e=e.parentNode;)if(e===t)return!0;return!1},r.getElement=function(e,t){var i=void 0;if("string"==typeof e?i=document.querySelector(e):null!=e.nodeType&&(i=e),null==i)throw new Error("Invalid `"+t+"` option provided. Please provide a CSS selector or a plain HTML element.");return i},r.getElements=function(e,t){var i=void 0,n=void 0;if(e instanceof Array){n=[];try{for(var r=0,o=o=e;!(r>=o.length);)i=o[r++],n.push(this.getElement(i,t))}catch(e){n=null}}else if("string"==typeof e){n=[];for(var s=0,a=a=document.querySelectorAll(e);!(s>=a.length);)i=a[s++],n.push(i)}else null!=e.nodeType&&(n=[e]);if(null==n||!n.length)throw new Error("Invalid `"+t+"` option provided. Please provide a CSS selector, a plain HTML element or a list of those.");return n},r.confirm=function(e,t,i){return window.confirm(e)?t():null!=i?i():void 0},r.isValidFile=function(e,t){if(!t)return!0;t=t.split(",");for(var i=e.type,n=i.replace(/\/.*$/,""),r=0,o=o=t;;){if(r>=o.length)break;var s=o[r++];if("."===(s=s.trim()).charAt(0)){if(-1!==e.name.toLowerCase().indexOf(s.toLowerCase(),e.name.length-s.length))return!0}else if(/\/\*$/.test(s)){if(n===s.replace(/\/.*$/,""))return!0}else if(i===s)return!0}return!1},"undefined"!=typeof jQuery&&null!==jQuery&&(jQuery.fn.dropzone=function(e){return this.each(function(){return new r(this,e)})}),null!==e?e.exports=r:window.Dropzone=r,r.ADDED="added",r.QUEUED="queued",r.ACCEPTED=r.QUEUED,r.UPLOADING="uploading",r.PROCESSING=r.UPLOADING,r.CANCELED="canceled",r.ERROR="error",r.SUCCESS="success";var p=function(e,t,i,n,r,o,s,a,l,u){var d=function(e){e.naturalWidth;var t=e.naturalHeight,i=document.createElement("canvas");i.width=1,i.height=t;var n=i.getContext("2d");n.drawImage(e,0,0);for(var r=n.getImageData(1,0,1,t).data,o=0,s=t,a=t;o<a;)0===r[4*(a-1)+3]?s=a:o=a,a=s+o>>1;var l=a/t;return 0===l?1:l}(t);return e.drawImage(t,i,n,r,o,s,a,l,u/d)},u=function(){function e(){l(this,e)}return t(e,null,[{key:"initClass",value:function(){this.KEY_STR="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="}},{key:"encode64",value:function(e){for(var t="",i=void 0,n=void 0,r="",o=void 0,s=void 0,a=void 0,l="",u=0;o=(i=e[u++])>>2,s=(3&i)<<4|(n=e[u++])>>4,a=(15&n)<<2|(r=e[u++])>>6,l=63&r,isNaN(n)?a=l=64:isNaN(r)&&(l=64),t=t+this.KEY_STR.charAt(o)+this.KEY_STR.charAt(s)+this.KEY_STR.charAt(a)+this.KEY_STR.charAt(l),i=n=r="",o=s=a=l="",u<e.length;);return t}},{key:"restore",value:function(e,t){if(!e.match("data:image/jpeg;base64,"))return t;var i=this.decode64(e.replace("data:image/jpeg;base64,","")),n=this.slice2Segments(i),r=this.exifManipulation(t,n);return"data:image/jpeg;base64,"+this.encode64(r)}},{key:"exifManipulation",value:function(e,t){var i=this.getExifArray(t),n=this.insertExif(e,i);return new Uint8Array(n)}},{key:"getExifArray",value:function(e){for(var t=void 0,i=0;i<e.length;){if(255===(t=e[i])[0]&225===t[1])return t;i++}return[]}},{key:"insertExif",value:function(e,t){var i=e.replace("data:image/jpeg;base64,",""),n=this.decode64(i),r=n.indexOf(255,3),o=n.slice(0,r),s=n.slice(r),a=o;return a=(a=a.concat(t)).concat(s)}},{key:"slice2Segments",value:function(e){for(var t=0,i=[];;){if(255===e[t]&218===e[t+1])break;if(255===e[t]&216===e[t+1])t+=2;else{var n=t+(256*e[t+2]+e[t+3])+2,r=e.slice(t,n);i.push(r),t=n}if(t>e.length)break}return i}},{key:"decode64",value:function(e){var t=void 0,i=void 0,n="",r=void 0,o=void 0,s="",a=0,l=[];for(/[^A-Za-z0-9\+\/\=]/g.exec(e)&&console.warn("There were invalid base64 characters in the input text.\nValid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\nExpect errors in decoding."),e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");t=this.KEY_STR.indexOf(e.charAt(a++))<<2|(r=this.KEY_STR.indexOf(e.charAt(a++)))>>4,i=(15&r)<<4|(o=this.KEY_STR.indexOf(e.charAt(a++)))>>2,n=(3&o)<<6|(s=this.KEY_STR.indexOf(e.charAt(a++))),l.push(t),64!==o&&l.push(i),64!==s&&l.push(n),t=i=n="",r=o=s="",a<e.length;);return l}}]),e}();u.initClass();r._autoDiscoverFunction=function(){if(r.autoDiscover)return r.discover()},function(i,n){var r=!1,e=!0,o=i.document,s=o.documentElement,t=o.addEventListener?"addEventListener":"attachEvent",a=o.addEventListener?"removeEventListener":"detachEvent",l=o.addEventListener?"":"on",u=function e(t){if("readystatechange"!==t.type||"complete"===o.readyState)return("load"===t.type?i:o)[a](l+t.type,e,!1),!r&&(r=!0)?n.call(i,t.type||t):void 0};if("complete"!==o.readyState){if(o.createEventObject&&s.doScroll){try{e=!i.frameElement}catch(e){}e&&function t(){try{s.doScroll("left")}catch(e){return void setTimeout(t,50)}return u("poll")}()}o[t](l+"DOMContentLoaded",u,!1),o[t](l+"readystatechange",u,!1),i[t](l+"load",u,!1)}}(window,r._autoDiscoverFunction)}(e={exports:{}},e.exports),e.exports);return t.autoDiscover=!1,{render:function(){var e=this.$createElement;return(this._self._c||e)("div",{ref:"dropzoneElement",class:{"vue-dropzone dropzone":this.includeStyling},attrs:{id:this.id}})},staticRenderFns:[],props:{id:{type:String,required:!0},options:{type:Object,required:!0},includeStyling:{type:Boolean,default:!0,required:!1},awss3:{type:Object,required:!1,default:null},destroyDropzone:{type:Boolean,default:!0,required:!1}},data:function(){return{isS3:!1,isS3OverridesServerPropagation:!1,wasQueueAutoProcess:!0}},computed:{dropzoneSettings:function(){var t={thumbnailWidth:200,thumbnailHeight:200};return Object.keys(this.options).forEach(function(e){t[e]=this.options[e]},this),null!==this.awss3&&(t.autoProcessQueue=!1,this.isS3=!0,this.isS3OverridesServerPropagation=!1===this.awss3.sendFileToServer,void 0!==this.options.autoProcessQueue&&(this.wasQueueAutoProcess=this.options.autoProcessQueue),this.isS3OverridesServerPropagation&&(t.url=function(e){return e[0].s3Url})),t}},methods:{manuallyAddFile:function(e,t){e.manuallyAdded=!0,this.dropzone.emit("addedfile",e),t&&this.dropzone.emit("thumbnail",e,t);for(var i=e.previewElement.querySelectorAll("[data-dz-thumbnail]"),n=0;n<i.length;n++)i[n].style.width=this.dropzoneSettings.thumbnailWidth+"px",i[n].style.height=this.dropzoneSettings.thumbnailHeight+"px",i[n].style["object-fit"]="contain";this.dropzone.emit("complete",e),this.dropzone.options.maxFiles&&this.dropzone.options.maxFiles--,this.dropzone.files.push(e),this.$emit("vdropzone-file-added-manually",e)},setOption:function(e,t){this.dropzone.options[e]=t},removeAllFiles:function(e){this.dropzone.removeAllFiles(e)},processQueue:function(){var t=this,e=this.dropzone;this.isS3&&!this.wasQueueAutoProcess?this.getQueuedFiles().forEach(function(e){t.getSignedAndUploadToS3(e)}):this.dropzone.processQueue(),this.dropzone.on("success",function(){e.options.autoProcessQueue=!0}),this.dropzone.on("queuecomplete",function(){e.options.autoProcessQueue=!1})},init:function(){return this.dropzone.init()},destroy:function(){return this.dropzone.destroy()},updateTotalUploadProgress:function(){return this.dropzone.updateTotalUploadProgress()},getFallbackForm:function(){return this.dropzone.getFallbackForm()},getExistingFallback:function(){return this.dropzone.getExistingFallback()},setupEventListeners:function(){return this.dropzone.setupEventListeners()},removeEventListeners:function(){return this.dropzone.removeEventListeners()},disable:function(){return this.dropzone.disable()},enable:function(){return this.dropzone.enable()},filesize:function(e){return this.dropzone.filesize(e)},accept:function(e,t){return this.dropzone.accept(e,t)},addFile:function(e){return this.dropzone.addFile(e)},removeFile:function(e){this.dropzone.removeFile(e)},getAcceptedFiles:function(){return this.dropzone.getAcceptedFiles()},getRejectedFiles:function(){return this.dropzone.getRejectedFiles()},getFilesWithStatus:function(){return this.dropzone.getFilesWithStatus()},getQueuedFiles:function(){return this.dropzone.getQueuedFiles()},getUploadingFiles:function(){return this.dropzone.getUploadingFiles()},getAddedFiles:function(){return this.dropzone.getAddedFiles()},getActiveFiles:function(){return this.dropzone.getActiveFiles()},getSignedAndUploadToS3:function(t){var i=this,e=n.sendFile(t,this.awss3,this.isS3OverridesServerPropagation);this.isS3OverridesServerPropagation?e.then(function(){setTimeout(function(){return i.dropzone.processFile(t)})}):e.then(function(e){e.success?(t.s3ObjectLocation=e.message,setTimeout(function(){return i.dropzone.processFile(t)}),i.$emit("vdropzone-s3-upload-success",e.message)):void 0!==e.message?i.$emit("vdropzone-s3-upload-error",e.message):i.$emit("vdropzone-s3-upload-error","Network Error : Could not send request to AWS. (Maybe CORS error)")}),e.catch(function(e){alert(e)})},setAWSSigningURL:function(e){this.isS3&&(this.awss3.signingURL=e)}},mounted:function(){if(!this.$isServer||!this.hasBeenMounted){this.hasBeenMounted=!0,this.dropzone=new t(this.$refs.dropzoneElement,this.dropzoneSettings);var r=this;this.dropzone.on("thumbnail",function(e,t){r.$emit("vdropzone-thumbnail",e,t)}),this.dropzone.on("addedfile",function(t){r.duplicateCheck&&this.files.length&&this.files.forEach(function(e){e.name===t.name&&(this.removeFile(t),r.$emit("duplicate-file",t))},this),r.$emit("vdropzone-file-added",t),r.isS3&&r.wasQueueAutoProcess&&r.getSignedAndUploadToS3(t)}),this.dropzone.on("addedfiles",function(e){r.$emit("vdropzone-files-added",e)}),this.dropzone.on("removedfile",function(e){r.$emit("vdropzone-removed-file",e),e.manuallyAdded&&r.dropzone.options.maxFiles++}),this.dropzone.on("success",function(e,t){if(r.$emit("vdropzone-success",e,t),r.isS3){if(r.isS3OverridesServerPropagation){var i=(new window.DOMParser).parseFromString(t,"text/xml").firstChild.children[0].innerHTML;r.$emit("vdropzone-s3-upload-success",i)}r.wasQueueAutoProcess&&r.setOption("autoProcessQueue",!1)}}),this.dropzone.on("successmultiple",function(e,t){r.$emit("vdropzone-success-multiple",e,t)}),this.dropzone.on("error",function(e,t,i){r.$emit("vdropzone-error",e,t,i),this.isS3&&r.$emit("vdropzone-s3-upload-error")}),this.dropzone.on("errormultiple",function(e,t,i){r.$emit("vdropzone-error-multiple",e,t,i)}),this.dropzone.on("sending",function(e,t,i){if(r.isS3)if(r.isS3OverridesServerPropagation){var n=e.s3Signature;Object.keys(n).forEach(function(e){i.append(e,n[e])})}else i.append("s3ObjectLocation",e.s3ObjectLocation);r.$emit("vdropzone-sending",e,t,i)}),this.dropzone.on("sendingmultiple",function(e,t,i){r.$emit("vdropzone-sending-multiple",e,t,i)}),this.dropzone.on("complete",function(e){r.$emit("vdropzone-complete",e)}),this.dropzone.on("completemultiple",function(e){r.$emit("vdropzone-complete-multiple",e)}),this.dropzone.on("canceled",function(e){r.$emit("vdropzone-canceled",e)}),this.dropzone.on("canceledmultiple",function(e){r.$emit("vdropzone-canceled-multiple",e)}),this.dropzone.on("maxfilesreached",function(e){r.$emit("vdropzone-max-files-reached",e)}),this.dropzone.on("maxfilesexceeded",function(e){r.$emit("vdropzone-max-files-exceeded",e)}),this.dropzone.on("processing",function(e){r.$emit("vdropzone-processing",e)}),this.dropzone.on("processing",function(e){r.$emit("vdropzone-processing",e)}),this.dropzone.on("processingmultiple",function(e){r.$emit("vdropzone-processing-multiple",e)}),this.dropzone.on("uploadprogress",function(e,t,i){r.$emit("vdropzone-upload-progress",e,t,i)}),this.dropzone.on("totaluploadprogress",function(e,t,i){r.$emit("vdropzone-total-upload-progress",e,t,i)}),this.dropzone.on("reset",function(){r.$emit("vdropzone-reset")}),this.dropzone.on("queuecomplete",function(){r.$emit("vdropzone-queue-complete")}),this.dropzone.on("drop",function(e){r.$emit("vdropzone-drop",e)}),this.dropzone.on("dragstart",function(e){r.$emit("vdropzone-drag-start",e)}),this.dropzone.on("dragend",function(e){r.$emit("vdropzone-drag-end",e)}),this.dropzone.on("dragenter",function(e){r.$emit("vdropzone-drag-enter",e)}),this.dropzone.on("dragover",function(e){r.$emit("vdropzone-drag-over",e)}),this.dropzone.on("dragleave",function(e){r.$emit("vdropzone-drag-leave",e)}),r.$emit("vdropzone-mounted")}},beforeDestroy:function(){this.destroyDropzone&&this.dropzone.destroy()}}});
@@ -69781,13 +74041,13 @@ var token = document.head.querySelector('meta[name="csrf-token"]');
 
 
 /***/ }),
-/* 173 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(174);
+var content = __webpack_require__(296);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -69795,7 +74055,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(11)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -69812,7 +74072,7 @@ if(false) {
 }
 
 /***/ }),
-/* 174 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -69826,7 +74086,7 @@ exports.push([module.i, "@-webkit-keyframes passing-through{0%{opacity:0;-webkit
 
 
 /***/ }),
-/* 175 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -69862,7 +74122,7 @@ if (false) {
 }
 
 /***/ }),
-/* 176 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -69871,404 +74131,430 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "portal",
-    {
-      attrs: {
-        to: "modals",
-        name: "Modal FileManager",
-        transition: "fade-transition"
-      }
-    },
+    { attrs: { to: "modals", name: "FileManager Field Modal" } },
     [
-      _vm.active
-        ? _c("modal", [
-            _c(
-              "div",
-              {
-                staticClass: "bg-white rounded-lg shadow-lg",
-                staticStyle: { width: "900px" }
-              },
-              [
+      _c(
+        "transition",
+        { attrs: { name: "fade" } },
+        [
+          _vm.active
+            ? _c("modal", [
                 _c(
                   "div",
-                  { staticClass: "bg-30 flex flex-wrap border-b border-70" },
+                  {
+                    staticClass: "bg-white rounded-lg shadow-lg",
+                    staticStyle: { width: "900px" }
+                  },
                   [
-                    _c("div", { staticClass: "w-3/4 px-4 py-3 " }, [
-                      _vm._v(
-                        "\n                    " +
-                          _vm._s(_vm.__("FileManager")) +
-                          "\n\n                "
-                      )
-                    ]),
-                    _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "w-1/4 flex flex-wrap justify-end" },
+                      {
+                        staticClass: "bg-30 flex flex-wrap border-b border-70"
+                      },
                       [
+                        _c("div", { staticClass: "w-3/4 px-4 py-3 " }, [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(_vm.__("FileManager")) +
+                              "\n\n                    "
+                          )
+                        ]),
+                        _vm._v(" "),
                         _c(
-                          "button",
-                          {
-                            staticClass: "btn buttons-actions",
-                            on: { click: _vm.closeModal }
-                          },
-                          [_vm._v("X")]
+                          "div",
+                          { staticClass: "w-1/4 flex flex-wrap justify-end" },
+                          [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn buttons-actions",
+                                on: { click: _vm.closeModal }
+                              },
+                              [_vm._v("X")]
+                            )
+                          ]
                         )
                       ]
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "flex flex-wrap" }, [
-                  _c(
-                    "div",
-                    { staticClass: "card relative w-full" },
-                    [
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "flex flex-wrap" }, [
                       _c(
                         "div",
-                        {
-                          staticClass:
-                            "p-3  flex flex-wrap items-center border-b border-50"
-                        },
+                        { staticClass: "card relative w-full" },
                         [
                           _c(
                             "div",
                             {
-                              staticClass: "w-auto flex flex-wrap justify-start"
+                              staticClass:
+                                "p-3  flex flex-wrap items-center border-b border-50"
                             },
                             [
                               _c(
-                                "label",
-                                { staticClass: "manual_upload cursor-pointer" },
+                                "div",
+                                {
+                                  staticClass:
+                                    "w-auto flex flex-wrap justify-start"
+                                },
                                 [
                                   _c(
-                                    "div",
+                                    "label",
+                                    {
+                                      staticClass:
+                                        "manual_upload cursor-pointer"
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "btn btn-default btn-primary mr-3",
+                                          on: {
+                                            click: function($event) {
+                                              _vm.showUpload = !_vm.showUpload
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                        " +
+                                              _vm._s(_vm.__("Upload")) +
+                                              "\n                                    "
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        attrs: {
+                                          type: "file",
+                                          multiple: "true"
+                                        },
+                                        on: { change: _vm.uploadFilesByButton }
+                                      })
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
                                     {
                                       staticClass:
                                         "btn btn-default btn-primary mr-3",
-                                      on: {
-                                        click: function($event) {
-                                          _vm.showUpload = !_vm.showUpload
-                                        }
-                                      }
+                                      on: { click: _vm.showModalCreateFolder }
                                     },
                                     [
                                       _vm._v(
                                         "\n                                    " +
-                                          _vm._s(_vm.__("Upload")) +
+                                          _vm._s(_vm.__("Create folder")) +
                                           "\n                                "
                                       )
                                     ]
                                   ),
                                   _vm._v(" "),
-                                  _c("input", {
-                                    attrs: { type: "file", multiple: "true" },
-                                    on: { change: _vm.uploadFilesByButton }
-                                  })
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "button",
-                                {
-                                  staticClass:
-                                    "btn btn-default btn-primary mr-3",
-                                  on: { click: _vm.showModalCreateFolder }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                " +
-                                      _vm._s(_vm.__("Create folder")) +
-                                      "\n                            "
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _vm.view == "list"
-                                ? _c(
-                                    "button",
-                                    {
-                                      staticClass:
-                                        "btn btn-default btn-small btn-primary text-white mr-3",
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.viewAs("grid")
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c(
-                                        "svg",
-                                        {
-                                          attrs: {
-                                            xmlns: "http://www.w3.org/2000/svg",
-                                            viewBox: "0 0 24 24",
-                                            width: "24",
-                                            height: "24"
-                                          }
-                                        },
-                                        [
-                                          _c("path", {
-                                            staticClass: "heroicon-ui",
-                                            attrs: {
-                                              d:
-                                                "M5 3h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5h-4zM5 13h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4h-4z"
-                                            }
-                                          })
-                                        ]
-                                      )
-                                    ]
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.view == "grid"
-                                ? _c(
-                                    "button",
-                                    {
-                                      staticClass:
-                                        "btn btn-default btn-small btn-primary text-white mr-3",
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.viewAs("list")
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c(
-                                        "svg",
-                                        {
-                                          attrs: {
-                                            xmlns: "http://www.w3.org/2000/svg",
-                                            viewBox: "0 0 20 20",
-                                            width: "20",
-                                            height: "20"
-                                          }
-                                        },
-                                        [
-                                          _c("path", {
-                                            attrs: {
-                                              d:
-                                                "M1 4h2v2H1V4zm4 0h14v2H5V4zM1 9h2v2H1V9zm4 0h14v2H5V9zm-4 5h2v2H1v-2zm4 0h14v2H5v-2z"
-                                            }
-                                          })
-                                        ]
-                                      )
-                                    ]
-                                  )
-                                : _vm._e()
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "w-auto flex flex-1 flex-wrap justify-end"
-                            },
-                            [
-                              _c(
-                                "div",
-                                { staticClass: "relative w-1/3 max-w-xs mr-3" },
-                                [
-                                  _c("div", { staticClass: "relative" }, [
-                                    _c(
-                                      "div",
-                                      { staticClass: "relative" },
-                                      [
-                                        _vm.showFilters
-                                          ? [
-                                              _c(
-                                                "select",
-                                                {
-                                                  directives: [
-                                                    {
-                                                      name: "model",
-                                                      rawName: "v-model",
-                                                      value: _vm.filterBy,
-                                                      expression: "filterBy"
-                                                    }
-                                                  ],
-                                                  staticClass:
-                                                    "pl-search form-control form-input form-input-bordered w-full",
-                                                  on: {
-                                                    change: [
-                                                      function($event) {
-                                                        var $$selectedVal = Array.prototype.filter
-                                                          .call(
-                                                            $event.target
-                                                              .options,
-                                                            function(o) {
-                                                              return o.selected
-                                                            }
-                                                          )
-                                                          .map(function(o) {
-                                                            var val =
-                                                              "_value" in o
-                                                                ? o._value
-                                                                : o.value
-                                                            return val
-                                                          })
-                                                        _vm.filterBy = $event
-                                                          .target.multiple
-                                                          ? $$selectedVal
-                                                          : $$selectedVal[0]
-                                                      },
-                                                      _vm.filterFiles
-                                                    ]
-                                                  }
-                                                },
-                                                [
-                                                  _c(
-                                                    "option",
-                                                    { attrs: { value: "" } },
-                                                    [
-                                                      _vm._v(
-                                                        _vm._s(
-                                                          _vm.__(
-                                                            "Filter by ..."
-                                                          )
-                                                        )
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _vm._l(_vm.filters, function(
-                                                    filter,
-                                                    key
-                                                  ) {
-                                                    return _c(
-                                                      "option",
-                                                      {
-                                                        key: "filter_" + key,
-                                                        domProps: { value: key }
-                                                      },
-                                                      [_vm._v(_vm._s(key))]
-                                                    )
-                                                  })
-                                                ],
-                                                2
-                                              )
-                                            ]
-                                          : _vm._e()
-                                      ],
-                                      2
-                                    )
-                                  ])
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "relative w-1/2 max-w-xs" },
-                                [
-                                  _c("div", { staticClass: "relative" }, [
-                                    _c("div", { staticClass: "relative" }, [
-                                      _c(
-                                        "svg",
+                                  _vm.view == "list"
+                                    ? _c(
+                                        "button",
                                         {
                                           staticClass:
-                                            "fill-current absolute search-icon-center ml-3 text-70",
-                                          attrs: {
-                                            xmlns: "http://www.w3.org/2000/svg",
-                                            width: "20",
-                                            height: "20",
-                                            viewBox: "0 0 20 20",
-                                            "aria-labelledby": "search",
-                                            role: "presentation"
+                                            "btn btn-default btn-small btn-primary text-white mr-3",
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.viewAs("grid")
+                                            }
                                           }
                                         },
                                         [
-                                          _c("path", {
+                                          _c(
+                                            "svg",
+                                            {
+                                              attrs: {
+                                                xmlns:
+                                                  "http://www.w3.org/2000/svg",
+                                                viewBox: "0 0 24 24",
+                                                width: "24",
+                                                height: "24"
+                                              }
+                                            },
+                                            [
+                                              _c("path", {
+                                                staticClass: "heroicon-ui",
+                                                attrs: {
+                                                  d:
+                                                    "M5 3h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2zm0 2v4h4V5h-4zM5 13h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4H5zm10-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4c0-1.1.9-2 2-2zm0 2v4h4v-4h-4z"
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.view == "grid"
+                                    ? _c(
+                                        "button",
+                                        {
+                                          staticClass:
+                                            "btn btn-default btn-small btn-primary text-white mr-3",
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.viewAs("list")
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "svg",
+                                            {
+                                              attrs: {
+                                                xmlns:
+                                                  "http://www.w3.org/2000/svg",
+                                                viewBox: "0 0 20 20",
+                                                width: "20",
+                                                height: "20"
+                                              }
+                                            },
+                                            [
+                                              _c("path", {
+                                                attrs: {
+                                                  d:
+                                                    "M1 4h2v2H1V4zm4 0h14v2H5V4zM1 9h2v2H1V9zm4 0h14v2H5V9zm-4 5h2v2H1v-2zm4 0h14v2H5v-2z"
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e()
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "w-auto flex flex-1 flex-wrap justify-end"
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "relative w-1/3 max-w-xs mr-3"
+                                    },
+                                    [
+                                      _c("div", { staticClass: "relative" }, [
+                                        _c(
+                                          "div",
+                                          { staticClass: "relative" },
+                                          [
+                                            _vm.showFilters
+                                              ? [
+                                                  _c(
+                                                    "select",
+                                                    {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName: "v-model",
+                                                          value: _vm.filterBy,
+                                                          expression: "filterBy"
+                                                        }
+                                                      ],
+                                                      staticClass:
+                                                        "pl-search form-control form-input form-input-bordered w-full",
+                                                      on: {
+                                                        change: [
+                                                          function($event) {
+                                                            var $$selectedVal = Array.prototype.filter
+                                                              .call(
+                                                                $event.target
+                                                                  .options,
+                                                                function(o) {
+                                                                  return o.selected
+                                                                }
+                                                              )
+                                                              .map(function(o) {
+                                                                var val =
+                                                                  "_value" in o
+                                                                    ? o._value
+                                                                    : o.value
+                                                                return val
+                                                              })
+                                                            _vm.filterBy = $event
+                                                              .target.multiple
+                                                              ? $$selectedVal
+                                                              : $$selectedVal[0]
+                                                          },
+                                                          _vm.filterFiles
+                                                        ]
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "option",
+                                                        {
+                                                          attrs: { value: "" }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            _vm._s(
+                                                              _vm.__(
+                                                                "Filter by ..."
+                                                              )
+                                                            )
+                                                          )
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _vm._l(
+                                                        _vm.filters,
+                                                        function(filter, key) {
+                                                          return _c(
+                                                            "option",
+                                                            {
+                                                              key:
+                                                                "filter_" + key,
+                                                              domProps: {
+                                                                value: key
+                                                              }
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                _vm._s(key)
+                                                              )
+                                                            ]
+                                                          )
+                                                        }
+                                                      )
+                                                    ],
+                                                    2
+                                                  )
+                                                ]
+                                              : _vm._e()
+                                          ],
+                                          2
+                                        )
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    { staticClass: "relative w-1/2 max-w-xs" },
+                                    [
+                                      _c("div", { staticClass: "relative" }, [
+                                        _c("div", { staticClass: "relative" }, [
+                                          _c(
+                                            "svg",
+                                            {
+                                              staticClass:
+                                                "fill-current absolute search-icon-center ml-3 text-70",
+                                              attrs: {
+                                                xmlns:
+                                                  "http://www.w3.org/2000/svg",
+                                                width: "20",
+                                                height: "20",
+                                                viewBox: "0 0 20 20",
+                                                "aria-labelledby": "search",
+                                                role: "presentation"
+                                              }
+                                            },
+                                            [
+                                              _c("path", {
+                                                attrs: {
+                                                  "fill-rule": "nonzero",
+                                                  d:
+                                                    "M14.32 12.906l5.387 5.387a1 1 0 0 1-1.414 1.414l-5.387-5.387a8 8 0 1 1 1.414-1.414zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"
+                                                }
+                                              })
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.search,
+                                                expression: "search"
+                                              }
+                                            ],
+                                            staticClass:
+                                              "pl-search form-control form-input form-input-bordered w-full",
                                             attrs: {
-                                              "fill-rule": "nonzero",
-                                              d:
-                                                "M14.32 12.906l5.387 5.387a1 1 0 0 1-1.414 1.414l-5.387-5.387a8 8 0 1 1 1.414-1.414zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"
+                                              dusk: "filemanager-search",
+                                              type: "search",
+                                              placeholder: this.__("Search")
+                                            },
+                                            domProps: { value: _vm.search },
+                                            on: {
+                                              input: [
+                                                function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.search =
+                                                    $event.target.value
+                                                },
+                                                _vm.searchItems
+                                              ]
                                             }
                                           })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("input", {
-                                        directives: [
-                                          {
-                                            name: "model",
-                                            rawName: "v-model",
-                                            value: _vm.search,
-                                            expression: "search"
-                                          }
-                                        ],
-                                        staticClass:
-                                          "pl-search form-control form-input form-input-bordered w-full",
-                                        attrs: {
-                                          dusk: "filemanager-search",
-                                          type: "search",
-                                          placeholder: this.__("Search")
-                                        },
-                                        domProps: { value: _vm.search },
-                                        on: {
-                                          input: [
-                                            function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.search = $event.target.value
-                                            },
-                                            _vm.searchItems
-                                          ]
-                                        }
-                                      })
-                                    ])
-                                  ])
+                                        ])
+                                      ])
+                                    ]
+                                  )
                                 ]
                               )
                             ]
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c("manager", {
-                        ref: "manager",
-                        attrs: {
-                          home: _vm.home,
-                          files: _vm.files,
-                          path: _vm.path,
-                          current: _vm.currentPath,
-                          parent: _vm.parent,
-                          noFiles: _vm.noFiles,
-                          view: _vm.view,
-                          selector: _vm.value,
-                          popupLoaded: true,
-                          loading: _vm.loadingfiles,
-                          search: _vm.search,
-                          filters: _vm.filteredExtensions
-                        },
-                        on: {
-                          goToFolderManager: _vm.goToFolder,
-                          goToFolderManagerNav: _vm.goToFolderNav,
-                          refresh: _vm.refreshCurrent,
-                          selectFile: _vm.setFileValue,
-                          showInfoItem: _vm.showInfoItem,
-                          uploadFiles: _vm.uploadFiles,
-                          rename: _vm.openRenameModal,
-                          delete: _vm.openDeleteModal
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("rename-modal", {
-                        ref: "renameModal",
-                        on: { refresh: _vm.refreshCurrent }
-                      }),
-                      _vm._v(" "),
-                      _c("confirm-modal-delete", {
-                        ref: "confirmDelete",
-                        on: { refresh: _vm.refreshCurrent }
-                      })
-                    ],
-                    1
-                  )
-                ])
-              ]
-            )
-          ])
-        : _vm._e()
+                          ),
+                          _vm._v(" "),
+                          _c("manager", {
+                            ref: "manager",
+                            attrs: {
+                              home: _vm.home,
+                              files: _vm.files,
+                              path: _vm.path,
+                              current: _vm.currentPath,
+                              parent: _vm.parent,
+                              noFiles: _vm.noFiles,
+                              view: _vm.view,
+                              selector: _vm.value,
+                              popupLoaded: true,
+                              loading: _vm.loadingfiles,
+                              search: _vm.search,
+                              filters: _vm.filteredExtensions
+                            },
+                            on: {
+                              goToFolderManager: _vm.goToFolder,
+                              goToFolderManagerNav: _vm.goToFolderNav,
+                              refresh: _vm.refreshCurrent,
+                              selectFile: _vm.setFileValue,
+                              showInfoItem: _vm.showInfoItem,
+                              uploadFiles: _vm.uploadFiles,
+                              rename: _vm.openRenameModal,
+                              delete: _vm.openDeleteModal
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("rename-modal", {
+                            ref: "renameModal",
+                            on: { refresh: _vm.refreshCurrent }
+                          }),
+                          _vm._v(" "),
+                          _c("confirm-modal-delete", {
+                            ref: "confirmDelete",
+                            on: { refresh: _vm.refreshCurrent }
+                          })
+                        ],
+                        1
+                      )
+                    ])
+                  ]
+                )
+              ])
+            : _vm._e()
+        ],
+        1
+      )
     ],
     1
   )
@@ -70284,15 +74570,15 @@ if (false) {
 }
 
 /***/ }),
-/* 177 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(178)
+var __vue_script__ = __webpack_require__(300)
 /* template */
-var __vue_template__ = __webpack_require__(179)
+var __vue_template__ = __webpack_require__(301)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -70331,7 +74617,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 178 */
+/* 300 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70379,7 +74665,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 179 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -70477,7 +74763,7 @@ if (false) {
 }
 
 /***/ }),
-/* 180 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
