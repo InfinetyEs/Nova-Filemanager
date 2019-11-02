@@ -2,15 +2,15 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Illuminate\Http\Request;
-use InvalidArgumentException;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Infinety\Filemanager\Events\FileRemoved;
 use Infinety\Filemanager\Events\FileUploaded;
 use Infinety\Filemanager\Events\FolderRemoved;
 use Infinety\Filemanager\Events\FolderUploaded;
 use Infinety\Filemanager\Exceptions\InvalidConfig;
+use InvalidArgumentException;
 
 class FileManagerService
 {

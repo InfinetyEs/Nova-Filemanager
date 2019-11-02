@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager\Events;
 
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Queue\SerializesModels;
 
 class FileRemoved
 {

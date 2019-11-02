@@ -2,9 +2,9 @@
 
 namespace Infinety\Filemanager;
 
-use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Contracts\Cover;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Contracts\Cover;
+use Laravel\Nova\Fields\Field;
 
 class FilemanagerField extends Field implements Cover
 {
