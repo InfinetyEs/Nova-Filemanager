@@ -24,37 +24,37 @@ class FilemanagerField extends Field implements Cover
     public $uploadRules = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $createFolderButton;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $uploadButton;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $dragAndDropUpload;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $renameFolderButton;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $deleteFolderButton;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $renameFileButton;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $deleteFileButton;
 
@@ -148,7 +148,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Hide Create button Folder
+     * Hide Create button Folder.
      *
      * @return $this
      */
@@ -160,7 +160,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Hide Upload button
+     * Hide Upload button.
      *
      * @return $this
      */
@@ -172,7 +172,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Hide Rename folder button
+     * Hide Rename folder button.
      *
      * @return $this
      */
@@ -184,7 +184,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Hide Delete folder button
+     * Hide Delete folder button.
      *
      * @return $this
      */
@@ -196,7 +196,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Hide Rename file button
+     * Hide Rename file button.
      *
      * @return $this
      */
@@ -208,7 +208,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Hide Rename file button
+     * Hide Rename file button.
      *
      * @return $this
      */
@@ -220,7 +220,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * No drag and drop file upload
+     * No drag and drop file upload.
      *
      * @return $this
      */
@@ -284,7 +284,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Set default button options
+     * Set default button options.
      */
     private function setButtons()
     {
@@ -298,7 +298,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Return correct buttons
+     * Return correct buttons.
      *
      * @return array
      */
@@ -318,7 +318,7 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
-     * Return upload rules
+     * Return upload rules.
      *
      * @return  array
      */
