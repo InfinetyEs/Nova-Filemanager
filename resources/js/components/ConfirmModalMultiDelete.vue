@@ -9,8 +9,8 @@
                     <heading :level="2" class="mb-6">
                         {{ __('Remove selected?') }}
                     </heading>
-                    <p class="text-80">{{__('Are you sure you want to remove selecetd files or folders?')}}</p>
-                    <p class="text-sm text-80 mt-2">{{ __('Remember: The file or folder and all his contents will be delete from your storage') }}</p>
+                    <p class="text-80">{{__('Are you sure you want to remove selected files or folders?')}}</p>
+                    <p class="text-sm text-80 mt-2">{{ __('Remember: The file and folder and all his contents will be delete from your storage') }}</p>
                 </div>
 
                 <div class="bg-30 px-6 py-3 flex">

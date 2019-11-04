@@ -2,6 +2,19 @@
 
 All notable changes to `nova-filemanager` will be documented in this file
 
+## v2.5 - 2019-11-04
+
+#### Improvements
+* Upload validation rules added #72
+* Multi select deletion (Thanks to #83 @godkinmo)
+* New buttons options to hide buttons on tool or field #84
+
+#### Fixes
+
+* Fix nova 2.5 modals. Now all modals open in a custom portal.
+* Events properties are now public #80
+
+
 ## v2.3 - 2019-07-24
 
 #### Improvements

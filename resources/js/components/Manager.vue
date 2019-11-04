@@ -283,7 +283,6 @@ export default {
             required: false,
         },
         buttons: {
-            type: Object,
             default: () => [],
             required: true,
         },
