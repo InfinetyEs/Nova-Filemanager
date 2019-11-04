@@ -11,7 +11,8 @@ module.exports = {
         items: [
           { text: '2.1', link: '/2.1/installation' },
           { text: '2.2', link: '/2.2/installation' },
-          { text: '2.3', link: '/2.3/installation' }
+          { text: '2.3', link: '/2.3/installation' },
+          { text: '2.5', link: '/2.5/installation' }
         ]
       },
       { text: 'Infinety', link: 'https://infinety.es' },
@@ -21,6 +22,7 @@ module.exports = {
       '/2.1/': require('./2.1'),
       '/2.2/': require('./2.2'),
       '/2.3/': require('./2.3'),
+      '/2.5/': require('./2.5'),
     },
     sidebarDepth: 2,
     lastUpdated: 'Last Updated',

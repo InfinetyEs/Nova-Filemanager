@@ -6,7 +6,7 @@
 You can install the package in any Laravel app that uses [Nova](https://nova.laravel.com) via Composer:
 
 ```bash
-composer require "infinety-es/nova-filemanager:2.3"
+composer require infinety-es/nova-filemanager
 ```
 
 Next, publish config file: 
@@ -29,13 +29,15 @@ public function tools()
         new \Infinety\Filemanager\FilemanagerTool(),
     ];
 }
-``` 
+```
+
+## Updating
+
+Check new options to merge the new options in to your `filemanager.php` config file.
 
 ## Configuration File
 
 ```php
-<?php
-
 return [
 
     /*
@@ -74,6 +76,30 @@ return [
     | Cache is set by file, not by folder. Default to false.
      */
     'cache'     => env('FILEMANAGER_CACHE', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Configurable buttons
+    |--------------------------------------------------------------------------
+    | This will hide or show filemanager buttons. You can enable o disable buttons
+    | as your own needs. True means visible. False hidden.
+     */
+    'buttons'   => [
+
+        // Menu
+        'create_folder'   => true,
+        'upload_button'   => true,
+        'select_multiple' => true,
+
+        // Folders
+        'rename_folder'   => true,
+        'delete_folder'   => true,
+
+        // Files
+        'rename_file'     => true,
+        'delete_file'     => true,
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -126,4 +152,5 @@ return [
      */
     'jobs'      => [],
 ];
+
 ```
