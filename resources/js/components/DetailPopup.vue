@@ -1,5 +1,5 @@
 <template>
-    <portal to="modals" name="File Details" transition="fade-transition">
+    <portal to="portal-filemanager" name="File Details" transition="fade-transition">
         <modal v-if="active" @modal-close="handleClose">
             <div class="bg-white rounded-lg shadow-lg" style="width: 70vw;">
                 
@@ -229,6 +229,7 @@ export default {
             theme: 'dracula',
             lineNumbers: true,
             line: true,
+            readOnly: true,
         },
         editingName: false,
         nameNoExtension: null,
@@ -449,6 +450,6 @@ input {
     height: 100%;
 }
 .CodeMirror {
-    height: 400px !important;
+    height: 400px;
 }
 </style>

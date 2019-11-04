@@ -1,5 +1,5 @@
 <template>
-    <portal to="modals" name="Rename Modal" transition="fade-transition">
+    <portal to="portal-filemanager" name="Rename Modal" transition="fade-transition">
         <modal v-if="active" @modal-close="handleClose">
             <div class="bg-white rounded-lg shadow-lg " style="width: 600px;">
                 <div class="p-8">

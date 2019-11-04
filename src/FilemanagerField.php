@@ -2,9 +2,10 @@
 
 namespace Infinety\Filemanager;
 
-use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Contracts\Cover;
+use Illuminate\Validation\Rule;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Contracts\Cover;
+use Laravel\Nova\Fields\Field;
 
 class FilemanagerField extends Field implements Cover
 {
@@ -14,6 +15,48 @@ class FilemanagerField extends Field implements Cover
      * @var string
      */
     public $component = 'filemanager-field';
+
+    /**
+     * The validation rules for upload files.
+     *
+     * @var array
+     */
+    public $uploadRules = [];
+
+    /**
+     * @var boolean
+     */
+    protected $createFolderButton;
+
+    /**
+     * @var boolean
+     */
+    protected $uploadButton;
+
+    /**
+     * @var boolean
+     */
+    protected $dragAndDropUpload;
+
+    /**
+     * @var boolean
+     */
+    protected $renameFolderButton;
+
+    /**
+     * @var boolean
+     */
+    protected $deleteFolderButton;
+
+    /**
+     * @var boolean
+     */
+    protected $renameFileButton;
+
+    /**
+     * @var boolean
+     */
+    protected $deleteFileButton;
 
     /**
      * Create a new field.
@@ -26,6 +69,8 @@ class FilemanagerField extends Field implements Cover
     public function __construct($name, $attribute = null, $resolveCallback = null)
     {
         parent::__construct($name, $attribute, $resolveCallback);
+
+        $this->setButtons();
 
         $this->withMeta(['visibility' => 'public']);
     }
@@ -52,6 +97,20 @@ class FilemanagerField extends Field implements Cover
         $folder = is_callable($folderName) ? call_user_func($folderName) : $folderName;
 
         return $this->withMeta(['folder' => $folder, 'home' => $folder]);
+    }
+
+    /**
+     * Set current folder for the field.
+     *
+     * @param   string | function  $rules
+     *
+     * @return  $this
+     */
+    public function validateUpload($rules)
+    {
+        $this->uploadRules = ($rules instanceof Rule || is_string($rules)) ? func_get_args() : $rules;
+
+        return $this;
     }
 
     /**
@@ -86,6 +145,90 @@ class FilemanagerField extends Field implements Cover
     public function privateFiles()
     {
         return $this->withMeta(['visibility' => 'private']);
+    }
+
+    /**
+     * Hide Create button Folder
+     *
+     * @return $this
+     */
+    public function hideCreateFolderButton()
+    {
+        $this->createFolderButton = false;
+
+        return $this;
+    }
+
+    /**
+     * Hide Upload button
+     *
+     * @return $this
+     */
+    public function hideUploadButton()
+    {
+        $this->uploadButton = false;
+
+        return $this;
+    }
+
+    /**
+     * Hide Rename folder button
+     *
+     * @return $this
+     */
+    public function hideRenameFolderButton()
+    {
+        $this->renameFolderButton = false;
+
+        return $this;
+    }
+
+    /**
+     * Hide Delete folder button
+     *
+     * @return $this
+     */
+    public function hideDeleteFolderButton()
+    {
+        $this->deleteFolderButton = false;
+
+        return $this;
+    }
+
+    /**
+     * Hide Rename file button
+     *
+     * @return $this
+     */
+    public function hideRenameFileButton()
+    {
+        $this->renameFileButton = false;
+
+        return $this;
+    }
+
+    /**
+     * Hide Rename file button
+     *
+     * @return $this
+     */
+    public function hideDeleteFileButton()
+    {
+        $this->deleteFileButton = false;
+
+        return $this;
+    }
+
+    /**
+     * No drag and drop file upload
+     *
+     * @return $this
+     */
+    public function noDragAndDropUpload()
+    {
+        $this->dragAndDropUpload = false;
+
+        return $this;
     }
 
     /**
@@ -137,7 +280,51 @@ class FilemanagerField extends Field implements Cover
      */
     public function meta()
     {
-        return array_merge($this->resolveInfo(), $this->meta);
+        return array_merge($this->resolveInfo(), $this->buttons(), $this->getUploadRules(), $this->meta);
+    }
+
+    /**
+     * Set default button options
+     */
+    private function setButtons()
+    {
+        $this->createFolderButton = config('filemanager.buttons.create_folder', true);
+        $this->uploadButton = config('filemanager.buttons.upload_button', true);
+        $this->dragAndDropUpload = config('filemanager.buttons.upload_drag', true);
+        $this->renameFolderButton = config('filemanager.buttons.rename_folder', true);
+        $this->deleteFolderButton = config('filemanager.buttons.delete_folder', true);
+        $this->renameFileButton = config('filemanager.buttons.rename_file', true);
+        $this->deleteFileButton = config('filemanager.buttons.delete_file', true);
+    }
+
+    /**
+     * Return correct buttons
+     *
+     * @return array
+     */
+    private function buttons()
+    {
+        $buttons = [
+            'create_folder' => $this->createFolderButton,
+            'upload_button' => $this->uploadButton,
+            'upload_drag'   => $this->dragAndDropUpload,
+            'rename_folder' => $this->renameFolderButton,
+            'delete_folder' => $this->deleteFolderButton,
+            'rename_file'   => $this->renameFileButton,
+            'delete_file'   => $this->deleteFileButton,
+        ];
+
+        return ['buttons' => $buttons];
+    }
+
+    /**
+     * Return upload rules
+     *
+     * @return  array
+     */
+    private function getUploadRules()
+    {
+        return ['upload_rules' => $this->uploadRules];
     }
 
     /**

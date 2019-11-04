@@ -2,15 +2,16 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Illuminate\Http\Request;
-use InvalidArgumentException;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Infinety\Filemanager\Events\FileRemoved;
 use Infinety\Filemanager\Events\FileUploaded;
 use Infinety\Filemanager\Events\FolderRemoved;
 use Infinety\Filemanager\Events\FolderUploaded;
 use Infinety\Filemanager\Exceptions\InvalidConfig;
+use InvalidArgumentException;
 
 class FileManagerService
 {
@@ -86,7 +87,7 @@ class FileManagerService
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
-        if (! $this->folderExists($folder)) {
+        if (!$this->folderExists($folder)) {
             $folder = '/';
         }
 
@@ -98,7 +99,7 @@ class FileManagerService
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (! $order) {
+        if (!$order) {
             $order = config('filemanager.order', 'mime');
         }
 
@@ -128,6 +129,7 @@ class FileManagerService
             'files'   => $files,
             'path'    => $this->getPaths($folder),
             'filters' => $filters,
+            'buttons' => $this->getButtons(),
             'parent'  => $parent,
         ]);
     }
@@ -183,14 +185,20 @@ class FileManagerService
      *
      * @return  json
      */
-    public function uploadFile($file, $currentFolder, $visibility, $uploadingFolder = false)
+    public function uploadFile($file, $currentFolder, $visibility, $uploadingFolder = false, array $rules = [])
     {
+        if (count($rules) > 0) {
+            $pases = Validator::make(['file' => $file], [
+                'file' => $rules,
+            ])->validate();
+        }
+
         $fileName = $this->namingStrategy->name($currentFolder, $file);
 
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
             $this->setVisibility($currentFolder, $fileName, $visibility);
 
-            if (! $uploadingFolder) {
+            if (!$uploadingFolder) {
                 $this->checkJobs($this->storage, $currentFolder.$fileName);
                 event(new FileUploaded($this->storage, $currentFolder.$fileName));
             }
@@ -229,7 +237,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (! $this->storage->exists($file)) {
+        if (!$this->storage->exists($file)) {
             return [];
         }
 
@@ -359,6 +367,20 @@ class FileManagerService
         }
 
         return [];
+    }
+
+    private function getButtons()
+    {
+        return config('filemanager.buttons', [
+            'create_folder'   => true,
+            'upload_button'   => true,
+            'select_multiple' => true,
+            'upload_drag'     => true,
+            'rename_folder'   => true,
+            'delete_folder'   => true,
+            'rename_file'     => true,
+            'delete_file'     => true,
+        ]);
     }
 
     /**

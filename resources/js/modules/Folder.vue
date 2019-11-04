@@ -35,10 +35,10 @@
                             <input :checked="selected" type="checkbox">
                         </div>
                         <div v-else class="flex flex-wrap text-70">
-                            <div class="cursor-pointer" @click.prevent="deleteFolder($event)">
+                            <div class="cursor-pointer  mr-2" v-if="deletePermission" @click.prevent="deleteFolder($event)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="delete" class="fill-current"><path fill-rule="nonzero" d="M6 4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h5a1 1 0 0 1 0 2h-1v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6H1a1 1 0 1 1 0-2h5zM4 6v12h12V6H4zm8-2V2H8v2h4zM8 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"></path></svg>
                             </div>
-                            <div class="cursor-pointer ml-2" @click.prevent="editFolder($event)">
+                            <div class="cursor-pointer" v-if="renamePermission" @click.prevent="editFolder($event)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="edit" class="fill-current"><path d="M4.3 10.3l10-10a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1 0 1.4l-10 10a1 1 0 0 1-.7.3H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 .3-.7zM6 14h2.59l9-9L15 2.41l-9 9V14zm10-2a1 1 0 0 1 2 0v6a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2h6a1 1 0 1 1 0 2H2v14h14v-6z"></path></svg>
                             </div>
                         </div>
@@ -114,10 +114,10 @@
                     </td>
                     <td>
                         <div class="flex flex-wrap text-70">
-                            <div class="cursor-pointer" @click.prevent="deleteFolder($event)">
+                            <div class="cursor-pointer mr-2" v-if="deletePermission" @click.prevent="deleteFolder($event)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="delete" class="fill-current"><path fill-rule="nonzero" d="M6 4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h5a1 1 0 0 1 0 2h-1v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6H1a1 1 0 1 1 0-2h5zM4 6v12h12V6H4zm8-2V2H8v2h4zM8 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"></path></svg>
                             </div>
-                            <div class="cursor-pointer ml-2" @click.prevent="editFolder($event)">
+                            <div class="cursor-pointer" v-if="renamePermission" @click.prevent="editFolder($event)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="edit" class="fill-current"><path d="M4.3 10.3l10-10a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1 0 1.4l-10 10a1 1 0 0 1-.7.3H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 .3-.7zM6 14h2.59l9-9L15 2.41l-9 9V14zm10-2a1 1 0 0 1 2 0v6a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2h6a1 1 0 1 1 0 2H2v14h14v-6z"></path></svg>
                             </div>
                         </div>
@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import findIndex from 'lodash/findIndex'
+import findIndex from 'lodash/findIndex';
 
 export default {
     props: {
@@ -149,11 +149,23 @@ export default {
         },
         multiSelecting: {
             type: Boolean,
-            required: true,
+            default: false,
+            required: false,
         },
         selectedFiles: {
             type: Array,
-            required: true,
+            default: () => [],
+            required: false,
+        },
+        deletePermission: {
+            type: Boolean,
+            required: false,
+            default: true,
+        },
+        renamePermission: {
+            type: Boolean,
+            required: false,
+            default: true,
         },
     },
 
@@ -169,7 +181,9 @@ export default {
 
     computed: {
         selected() {
-            return findIndex(this.selectedFiles, { type: this.file.type, path: this.file.path }) >= 0
+            return (
+                findIndex(this.selectedFiles, { type: this.file.type, path: this.file.path }) >= 0
+            );
         },
     },
 
@@ -200,7 +214,7 @@ export default {
         select() {
             this.$emit('select', {
                 type: this.file.type,
-                path: this.file.path
+                path: this.file.path,
             });
         },
     },

@@ -24,6 +24,7 @@
                 :currentPath="currentPath"
                 :defaultFolder="defaultFolder"
                 :filter="field.filterBy"
+                :buttons="field.buttons"
                 v-on:open-modal="openModalCreateFolder" 
                 v-on:close-modal="closeFilemanagerModal" 
                 v-on:update-current-path="updateCurrentPath"
@@ -48,7 +49,7 @@
 
             <create-folder ref="createFolderModal" :active="showCreateFolder" :current="currentPath" v-on:closeCreateFolderModal="closeModalCreateFolder" v-on:refresh="refreshCurrent" />
 
-            <UploadProgress ref="uploader" :current="currentPath" :visibility="field.visibility" v-on:removeFile="removeFileFromUpload"></UploadProgress>
+            <UploadProgress ref="uploader" :current="currentPath" :visibility="field.visibility" :rules="field.upload_rules" v-on:removeFile="removeFileFromUpload"></UploadProgress>
 
             <file-select :id="field.name" :field="field" :css="errorClasses"  v-model="value" v-on:open-modal="openFilemanagerModal"></file-select>
 

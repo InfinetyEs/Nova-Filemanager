@@ -4,8 +4,9 @@ namespace Infinety\Filemanager\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Validation\Rule;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilemanagerToolController extends Controller
 {
@@ -63,7 +64,13 @@ class FilemanagerToolController extends Controller
     {
         $uploadingFolder = $request->folder ?? false;
 
-        return $this->service->uploadFile($request->file, $request->current ?? '', $request->visibility, $uploadingFolder);
+        return $this->service->uploadFile(
+            $request->file,
+            $request->current ?? '',
+            $request->visibility,
+            $uploadingFolder,
+            $request->rules ? $this->getRules($request->rules) : []
+        );
     }
 
     /**
@@ -129,5 +136,17 @@ class FilemanagerToolController extends Controller
         }
 
         return false;
+    }
+
+    /**
+     * Get rules in array way
+     *
+     * @param   string  $rules
+     *
+     * @return  array
+     */
+    private function getRules($rules)
+    {
+        return json_decode($rules);
     }
 }

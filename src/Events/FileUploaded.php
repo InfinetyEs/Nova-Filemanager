@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager\Events;
 
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Queue\SerializesModels;
 
 class FileUploaded
 {
@@ -12,12 +12,12 @@ class FileUploaded
     /**
      * @var mixed
      */
-    protected $storage;
+    public $storage;
 
     /**
      * @var mixed
      */
-    protected $filePath;
+    public $filePath;
 
     /**
      * Create a new event instance.

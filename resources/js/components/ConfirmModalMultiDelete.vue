@@ -1,31 +1,29 @@
 <template>
-    <portal to="modals">
-        <transition name="fade">
-            <modal v-if="active" @modal-close="handleClose">
-                <div
-                    class="bg-white rounded-lg shadow-lg overflow-hidden"
-                    style="width: 460px"
-                >
-                    <div class="p-8">
-                        <heading :level="2" class="mb-6">
-                            {{ __('Remove selected?') }}
-                        </heading>
-                        <p class="text-80">{{__('Are you sure you want to remove selecetd files or folders?')}}</p>
-                        <p class="text-sm text-80 mt-2">{{ __('Remember: The file or folder and all his contents will be delete from your storage') }}</p>
-                    </div>
+    <portal to="portal-filemanager" name="Remove Multi" transition="fade-transition">
+        <modal v-if="active" @modal-close="handleClose">
+            <div
+                class="bg-white rounded-lg shadow-lg overflow-hidden"
+                style="width: 460px"
+            >
+                <div class="p-8">
+                    <heading :level="2" class="mb-6">
+                        {{ __('Remove selected?') }}
+                    </heading>
+                    <p class="text-80">{{__('Are you sure you want to remove selecetd files or folders?')}}</p>
+                    <p class="text-sm text-80 mt-2">{{ __('Remember: The file or folder and all his contents will be delete from your storage') }}</p>
+                </div>
 
-                    <div class="bg-30 px-6 py-3 flex">
-                        <div class="ml-auto">
-                            <button dusk="cancel-upload-delete-button" type="button" data-testid="cancel-button" @click.prevent="handleClose" class="btn text-80 font-normal h-9 px-3 mr-3 btn-link">{{__('Cancel')}}</button>
-                            <button ref="confirmButton" data-testid="confirm-button" :disabled="isDeleting" @click.prevent="deleteData" class="btn btn-default btn-danger" :class="{ 'cursor-not-allowed': isDeleting, 'opacity-50': isDeleting }">
-                                <span v-if="isDeleting">{{ __('Deleting') }}</span>
-                                <span v-else>{{ __('Delete') }}</span>
-                            </button>
-                        </div>
+                <div class="bg-30 px-6 py-3 flex">
+                    <div class="ml-auto">
+                        <button dusk="cancel-upload-delete-button" type="button" data-testid="cancel-button" @click.prevent="handleClose" class="btn text-80 font-normal h-9 px-3 mr-3 btn-link">{{__('Cancel')}}</button>
+                        <button ref="confirmButton" data-testid="confirm-button" :disabled="isDeleting" @click.prevent="deleteData" class="btn btn-default btn-danger" :class="{ 'cursor-not-allowed': isDeleting, 'opacity-50': isDeleting }">
+                            <span v-if="isDeleting">{{ __('Deleting') }}</span>
+                            <span v-else>{{ __('Delete') }}</span>
+                        </button>
                     </div>
                 </div>
-            </modal>
-        </transition>
+            </div>
+        </modal>
     </portal>
 </template>
 

@@ -48,7 +48,7 @@
                     <template v-if="noFiles">
                         <div class="w-full text-lg text-center my-4">
                             {{ __('No files or folders in current directory') }}<br><br>
-                            <button class="btn btn-default btn-danger" @click="removeDirectory">{{ __('Remove directory') }}</button>
+                            <button class="btn btn-default btn-danger" v-if="buttons.delete_folder" @click="removeDirectory">{{ __('Remove directory') }}</button>
                         </div>
                     </template>
 
@@ -74,6 +74,8 @@
                                                 :data-key="file.id"
                                                 :multi-selecting="multiSelecting"
                                                 :selected-files="selectedFiles"
+                                                :delete-permission="buttons.delete_file"
+                                                :rename-permission="buttons.rename_file"
                                                 class="h-40 file-item"
                                                 @missing="(value) => missing = value"
                                                 v-on:showInfo="showInfo"
@@ -90,6 +92,8 @@
                                                 :data-key="file.id"
                                                 :multi-selecting="multiSelecting"
                                                 :selected-files="selectedFiles"
+                                                :delete-permission="buttons.delete_folder"
+                                                :rename-permission="buttons.rename_folder"
                                                 class="h-40 folder-item"
                                                 :class="{'loading': loadingInfo}"
                                                 v-on:goToFolderEvent="goToFolder"
@@ -109,7 +113,7 @@
 
                         <template v-if="view == 'list'">
 
-                            <table class="table custom-table w-full">
+                            <table class="table custom-table w-full" v-if="files.length > 0">
                                 <thead>
                                     <tr>
                                         <th v-if="multiSelecting" class="w-8"></th>
@@ -155,6 +159,8 @@
                                                     :view="view"
                                                     :multi-selecting="multiSelecting"
                                                     :selected-files="selectedFiles"
+                                                    :delete-permission="buttons.delete_folder"
+                                                    :rename-permission="buttons.rename_folder"
                                                     class="folder-item"
                                                     :class="{'loading': loadingInfo}"
                                                     v-on:goToFolderEvent="goToFolder"
@@ -171,6 +177,8 @@
                                                 :view="view"
                                                 :multi-selecting="multiSelecting"
                                                 :selected-files="selectedFiles"
+                                                :delete-permission="buttons.delete_file"
+                                                :rename-permission="buttons.rename_file"
                                                 class="file-item"
                                                 :class="{'loading': loadingInfo}"
                                                 @missing="(value) => missing = value"
@@ -213,15 +221,11 @@ export default {
 
     props: {
         files: {
-            default: function() {
-                return [];
-            },
+            default: () => [],
             required: true,
         },
         path: {
-            default: function() {
-                return [];
-            },
+            default: () => [],
             required: true,
         },
         current: {
@@ -270,10 +274,17 @@ export default {
         },
         multiSelecting: {
             type: Boolean,
-            required: true,
+            default: false,
+            required: false,
         },
         selectedFiles: {
             type: Array,
+            default: () => [],
+            required: false,
+        },
+        buttons: {
+            type: Object,
+            default: () => [],
             required: true,
         },
     },
@@ -359,6 +370,10 @@ export default {
         },
 
         setDragAndDropEvents() {
+            if (this.buttons.upload_drag == false) {
+                return false;
+            }
+
             let filemanagerContainer = document.querySelector('#filemanager-manager-container');
 
             filemanagerContainer.addEventListener('dragenter', e => {

@@ -2,6 +2,10 @@
     <portal to="modals" name="Modal FileManager" transition="fade-transition">
         <modal v-if="active">
 
+            <portal-target name="portal-filemanager">
+
+            </portal-target>
+
             <div class="bg-white rounded-lg shadow-lg" style="width: 900px;">
                 <div class="bg-30 flex flex-wrap border-b border-70">
                     <div class="w-3/4 px-4 py-3 ">
@@ -22,14 +26,14 @@
 
                             <div class="w-auto flex flex-wrap justify-start">
 
-                                <label class="manual_upload cursor-pointer">
+                                <label v-if="buttons.upload_button" class="manual_upload cursor-pointer">
                                     <div @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
                                         {{ __('Upload') }}
                                     </div>
                                     <input type="file" multiple="true" @change="uploadFilesByButton"/>
                                 </label>
 
-                                <button @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
+                                <button  v-if="buttons.create_folder" @click="showModalCreateFolder" class="btn btn-default btn-primary mr-3">
                                     {{ __('Create folder') }}
                                 </button>
 
@@ -90,6 +94,7 @@
                             :loading="loadingfiles"
                             :search="search"
                             :filters="filteredExtensions"
+                            :buttons="buttons"
                             v-on:goToFolderManager="goToFolder"
                             v-on:goToFolderManagerNav="goToFolderNav"
                             v-on:refresh="refreshCurrent"
@@ -158,6 +163,19 @@ export default {
             type: String,
             required: false,
             default: '',
+        },
+        buttons: {
+            default: function() {
+                return [];
+            },
+            required: true,
+        },
+        rules: {
+            type: Array,
+            default: function() {
+                return [];
+            },
+            required: false,
         },
     },
 

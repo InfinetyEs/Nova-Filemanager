@@ -41,6 +41,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Configurable buttons
+    |--------------------------------------------------------------------------
+    | This will hide or show filemanager buttons. You can enable o disable buttons
+    | as your own needs. True means visible. False hidden.
+     */
+    'buttons'   => [
+
+        // Menu
+        'create_folder'   => true,
+        'upload_button'   => true,
+        'select_multiple' => true,
+
+        // Folders
+        'rename_folder'   => true,
+        'delete_folder'   => true,
+
+        // Files
+        'rename_file'     => true,
+        'delete_file'     => true,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Filemanager  filters
     |--------------------------------------------------------------------------
     | This option let you to filter your files by extensions.

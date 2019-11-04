@@ -1,6 +1,6 @@
 <template>
-    <portal to="modals" name="Create Folder" transition="fade-transition">
-        <modal v-if="active"  @modal-close="handleClose">
+    <portal to="portal-filemanager" name="Remove File" transition="fade-transition">
+        <modal v-if="active"  @modal-close="handleClose" class="z-100">
             <div class="bg-white rounded-lg shadow-lg " style="width: 600px;">
                 <div class="p-8">
                     <heading :level="2" class="mb-6">{{ __('Create folder') }}</heading>
