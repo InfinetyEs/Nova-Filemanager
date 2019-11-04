@@ -83,7 +83,7 @@ trait GetFiles
             }
 
             if ($fileInfo['mime'] == 'image') {
-                list($width, $height) = $this->getImageDimesions($file);
+                [$width, $height] = $this->getImageDimesions($file);
                 if (! $width == false) {
                     $fileInfo['dimensions'] = $width.'x'.$height;
                 }
