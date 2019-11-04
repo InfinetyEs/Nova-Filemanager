@@ -2,8 +2,8 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use Illuminate\Http\UploadedFile;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Http\UploadedFile;
 
 abstract class AbstractNamingStrategy
 {
