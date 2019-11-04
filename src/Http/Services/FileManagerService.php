@@ -3,9 +3,9 @@
 namespace Infinety\Filemanager\Http\Services;
 
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 use Illuminate\Support\Facades\Storage;
 use Infinety\Filemanager\Exceptions\InvalidConfig;
+use InvalidArgumentException;
 
 class FileManagerService
 {

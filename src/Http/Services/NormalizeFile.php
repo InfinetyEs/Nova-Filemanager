@@ -2,12 +2,12 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
-use RarArchive;
-use ZipArchive;
-use SplFileInfo;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Collection;
+use RarArchive;
+use SplFileInfo;
+use ZipArchive;
 
 class NormalizeFile
 {
@@ -31,7 +31,7 @@ class NormalizeFile
     /**
      * @param string $path
      */
-    public function __construct(FilesystemAdapter $storage, String $path, String $storagePath)
+    public function __construct(FilesystemAdapter $storage, string $path, string $storagePath)
     {
         $this->storage = $storage;
         $this->file = new SplFileInfo($path);
@@ -162,7 +162,7 @@ class NormalizeFile
         }
 
         if (str_contains($mime, 'image')) {
-            list($width, $height) = getimagesize($this->storage->path($this->storagePath));
+            [$width, $height] = getimagesize($this->storage->path($this->storagePath));
 
             if (! empty($width) && ! empty($height)) {
                 return $width.'x'.$height;

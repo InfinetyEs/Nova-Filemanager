@@ -4,8 +4,8 @@ namespace Infinety\Filemanager\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Infinety\Filemanager\Http\Services\FileManagerService;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilemanagerToolController extends Controller
 {
