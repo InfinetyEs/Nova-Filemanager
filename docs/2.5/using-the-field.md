@@ -40,6 +40,8 @@ Use this method if you want to have a similiar `Image field`. This will show an 
 FilemanagerField::make('Image')->displayAsImage(),
 ```
 
+You can use `rounded` and `squared` methods to customize the preview and global search as in [Image field](https://nova.laravel.com/docs/2.0/resources/fields.html#image-field). Default to `rounded`.
+
 ### folder
 
 Use this method to set an initial folder for your field. This method accept `Callable` or `String`.
