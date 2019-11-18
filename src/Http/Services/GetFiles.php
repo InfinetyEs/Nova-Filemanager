@@ -436,7 +436,7 @@ trait GetFiles
         if ($paths) {
             $folderPath = $paths->implode('/');
 
-            if ($folderPath == $folder) {
+            if ($folderPath == $folder || strlen($folderPath) === 0) {
                 $folderPath = '/';
             }
 
