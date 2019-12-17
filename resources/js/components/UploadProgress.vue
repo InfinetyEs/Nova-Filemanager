@@ -131,7 +131,7 @@ export default {
 
             let data = new FormData();
             data.append('file', file.file);
-            data.append('current', this.current + filePath);
+            data.append('current', this.current + '/' + filePath);
             data.append('visibility', this.visibility);
 
             if (this.type == 'files') {
