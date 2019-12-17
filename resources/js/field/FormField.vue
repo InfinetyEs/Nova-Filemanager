@@ -39,6 +39,7 @@
                 :info="info"
                 :active="activeInfo"
                 :popup="true"
+                :buttons="field.buttons"
                 v-on:closePreview="closePreview" 
                 v-on:refresh="refreshCurrent"
                 v-on:selectFile="setValue"
@@ -62,16 +63,10 @@
                 </button>
             </p>
 
-
-            <portal to="modals">
-                <transition name="fade">
-                    <confirm-modal-remove-file
-                        v-if="removeModalOpen"
-                        @confirm="removeFile"
-                        @close="closeRemoveModal"
-                    />
-                </transition>
-            </portal>
+            <confirm-modal-remove-file
+                :active="removeModalOpen"
+                @confirm="removeFile"
+                @close="closeRemoveModal"></confirm-modal-remove-file>
 
             <p v-if="hasError" class="my-2 text-danger">
                 {{ firstError }}

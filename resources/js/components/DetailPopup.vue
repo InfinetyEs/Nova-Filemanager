@@ -77,16 +77,19 @@
                                 <span class="value bg-white px-1 py-1 rounded-r" v-if="!editingName">{{ info.name }}
                                 </span>
 
-                                <svg v-if="!editingName" @click="editName" class="ml-1 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="12" height="12"><path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"/></svg>
+                                <template v-if="buttons.rename_file">
 
-                                <template v-if="editingName">
+                                    <svg v-if="!editingName" @click="editName" class="ml-1 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="12" height="12"><path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"/></svg>
 
-                                    <input type="text"  v-bind:ref="'inputName'" :style="{ 'width': nameWidth + 'px' }" v-model="nameNoExtension" class=" value px-1 py-1 rounded-r">
-                                
-                                    <svg @click="rename" xmlns="http://www.w3.org/2000/svg" class="ml-1 cursor-pointer text-success fill-current" viewBox="0 0 20 20" width="12" height="12"><path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/></svg>
+                                    <template v-if="editingName">
 
-                                    <svg @click="editingName = !editingName" xmlns="http://www.w3.org/2000/svg" class="ml-1 cursor-pointer" viewBox="0 0 20 20" width="12" height="12"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"/></svg>
+                                        <input type="text"  v-bind:ref="'inputName'" :style="{ 'width': nameWidth + 'px' }" v-model="nameNoExtension" class=" value px-1 py-1 rounded-r">
+                                    
+                                        <svg @click="rename" xmlns="http://www.w3.org/2000/svg" class="ml-1 cursor-pointer text-success fill-current" viewBox="0 0 20 20" width="12" height="12"><path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/></svg>
 
+                                        <svg @click="editingName = !editingName" xmlns="http://www.w3.org/2000/svg" class="ml-1 cursor-pointer" viewBox="0 0 20 20" width="12" height="12"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"/></svg>
+
+                                    </template>
                                 </template>
 
 
@@ -131,6 +134,7 @@
                             <!-- <button type="button" data-testid="cancel-button" @click.prevent="removeFilePopup" class="btn text-danger text-sm font-normal h-9 px-3 mr-3 btn-link">{{ __('Remove file') }}</button> -->
                             <div :class="{ 'm-3': popup }">
                                 <confirmation-button
+                                    v-if="buttons.delete_file"
                                     :messages="messagesRemove"
                                     :css="'btn text-danger text-sm font-normal h-9 px-3 mr-3 btn-link'"
                                     v-on:confirmation-success="removeFilePopup()"></confirmation-button>
@@ -203,6 +207,10 @@ export default {
             type: Boolean,
             default: false,
             required: false,
+        },
+        buttons: {
+            default: () => [],
+            required: true,
         },
     },
 
