@@ -40,10 +40,10 @@
                         <button v-if="multiSelecting && selectedFiles.length > 0" type="button" class="btn btn-default btn-small btn-danger text-white mr-3" @click="openMultiDeleteModal">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-labelledby="delete" role="presentation"><path fill-rule="nonzero" d="M6 4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h5a1 1 0 0 1 0 2h-1v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6H1a1 1 0 1 1 0-2h5zM4 6v12h12V6H4zm8-2V2H8v2h4zM8 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"></path></svg>
                         </button>
-
                     </div>
                     
                     <div class="w-1/2 flex flex-wrap justify-end">
+
                         <!-- Grid -->
                         <div class="relative w-1/6 max-w-xs mr-3">
                             <div class="relative">
@@ -58,6 +58,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- Filter -->
                         <div class="relative w-2/6 max-w-xs mr-3">
                             <div class="relative">
@@ -73,6 +74,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- Search -->
                         <div class="relative w-3/6 max-w-xs">
                             <div class="relative">
@@ -85,7 +87,6 @@
                     </div>
 
                 <div class="flex flex-wrap">
-
 
                     <!-- <button @click="changeToList" class="btn btn-link mr-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" height="24" width="24">
