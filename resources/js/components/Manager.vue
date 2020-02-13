@@ -16,8 +16,8 @@
                 </template>
             </ol>
         </nav>
-        <transition name="fade">
 
+        <transition name="fade">
             <template v-if="uploadingFiles">
                 <div class="px-2 overflow-y-auto files">
                     <div class="drop-files flex flex-wrap items-center border-2 border-primary border-dashed -mx-2">
@@ -30,9 +30,6 @@
 
             <div v-else class="px-2 overflow-y-auto files">
                 <div class="flex flex-wrap -mx-2">
-
-
-
                     <template v-if="files.error">
                         <div class="w-full text-lg text-center my-4">
                             {{ __('You don\'t have permissions to view this folder') }}
@@ -45,19 +42,18 @@
                         </div>
                     </template>
 
-                    <template v-if="noFiles">
+                    <template v-else-if="!files.length">
                         <div class="w-full text-lg text-center my-4">
-                            {{ __('No files or folders in current directory') }}<br><br>
-                            <button class="btn btn-default btn-danger" v-if="buttons.delete_folder" @click="removeDirectory">{{ __('Remove directory') }}</button>
+                            {{ __(`No ${filter || 'files or folders'} in current directory`) }}<br><br>
+                            <button v-if="buttons.delete_folder && !filter" class="btn btn-default btn-danger" @click="removeDirectory">
+                                {{ __('Remove directory') }}
+                            </button>
                         </div>
                     </template>
 
                     <template v-if="!files.error">
-
                         <template v-if="view == 'grid'">
-
                             <template v-if="!files.error">
-
                                 <template v-if="parent.id">
                                     <div :class="filemanagerClass" :key="parent.id" >
                                         <Folder v-drag-and-drop:folder :ref="'folder_' + parent.id" :file="parent" :data-key="parent.id" class="h-40 folder-item" :class="{'loading': loadingInfo}" v-on:goToFolderEvent="goToFolder" />
@@ -104,10 +100,6 @@
                                         </template>
                                     </div>
                                 </template>
-
-                            </template>
-
-                            <template  v-if="!loading">
                             </template>
                         </template>
 
@@ -196,7 +188,6 @@
                 </div>
             </div>
         </transition>
-
     </div>
 </template>
 
@@ -214,9 +205,9 @@ export default {
     name: 'Manager',
 
     components: {
-        ImageLoader: ImageLoader,
-        Folder: Folder,
-        loading: Loading,
+        ImageLoader,
+        Folder,
+        Loading,
     },
 
     props: {
@@ -237,11 +228,6 @@ export default {
             type: Object,
             required: true,
         },
-        noFiles: {
-            type: Boolean,
-            default: false,
-            required: true,
-        },
         loading: {
             type: Boolean,
             default: false,
@@ -249,7 +235,7 @@ export default {
         },
         popupLoaded: {
             type: Boolean,
-            defalut: false,
+            default: false,
             required: false,
         },
         view: {
@@ -266,6 +252,10 @@ export default {
             type: String,
             required: false,
             default: '',
+        },
+        filter: {
+            type: String,
+            required: false,
         },
         filters: {
             type: Array,

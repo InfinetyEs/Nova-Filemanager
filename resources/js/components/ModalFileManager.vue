@@ -58,7 +58,7 @@
 
                                             <template v-if="showFilters">
                                                 <select class="pl-search form-control form-input form-input-bordered w-full" v-model="filterBy">
-                                                    <option value="">{{ __('Filter by ...') }}</option>
+                                                    <option value>{{ __('Filter by ...') }}</option>
                                                     <option v-for="(filter, key) in filters" :key="'filter_' + key" :value="key">{{ key }}</option>
                                                 </select>
                                             </template>
@@ -87,12 +87,12 @@
                             :path="path"
                             :current="currentPath"
                             :parent="parent"
-                            :noFiles="noFiles"
                             :view="view"
                             :selector="value"
                             :popupLoaded="true"
                             :loading="loadingfiles"
                             :search="search"
+                            :filter="filter"
                             :filters="filteredExtensions"
                             :buttons="buttons"
                             v-on:goToFolderManager="goToFolder"
@@ -162,7 +162,7 @@ export default {
         filter: {
             type: String,
             required: false,
-            default: '',
+            default: null,
         },
         buttons: {
             default: () => [],
@@ -195,7 +195,6 @@ export default {
         files: [],
         parent: {},
         path: [],
-        noFiles: false,
         view: 'grid',
         filesToUpload: [],
         firstTime: true,
@@ -222,14 +221,10 @@ export default {
             this.files = [];
             this.parent = {};
             this.path = [];
-            this.noFiles = false;
             this.loadingfiles = true;
 
             api.getDataField(this.resource, this.name, folder, this.filter)
                 .then(result => {
-                    if (_.size(result.files) == 0) {
-                        this.noFiles = true;
-                    }
                     this.files = result.files;
                     this.path = result.path;
                     this.filters = result.filters;

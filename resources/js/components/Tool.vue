@@ -106,7 +106,6 @@
                 :path="path"
                 :current="currentPath"
                 :parent="parent"
-                :noFiles="noFiles"
                 :view="view"
                 :loading="loadingfiles"
                 :search="search"
@@ -177,7 +176,6 @@ export default {
         files: [],
         parent: {},
         path: [],
-        noFiles: false,
         view: 'grid',
         info: {},
         filesToUpload: [],
@@ -221,15 +219,10 @@ export default {
             this.files = [];
             this.parent = {};
             this.path = [];
-            this.noFiles = false;
             this.loadingfiles = true;
             return api
                 .getData(pathToList)
                 .then(result => {
-                    if (_.size(result.files) == 0) {
-                        this.noFiles = true;
-                    }
-
                     this.files = result.files;
                     this.path = result.path;
                     this.filters = result.filters;
