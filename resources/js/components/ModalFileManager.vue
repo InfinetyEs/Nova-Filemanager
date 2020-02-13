@@ -57,12 +57,12 @@
                                         <div class="relative">
 
                                             <template v-if="showFilters">
-                                                <select class="pl-search form-control form-input form-input-bordered w-full" v-model="filterBy" @change="filterFiles">
+                                                <select class="pl-search form-control form-input form-input-bordered w-full" v-model="filterBy">
                                                     <option value="">{{ __('Filter by ...') }}</option>
                                                     <option v-for="(filter, key) in filters" :key="'filter_' + key" :value="key">{{ key }}</option>
-                                                </select>    
+                                                </select>
                                             </template>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
@@ -79,8 +79,8 @@
 
                         </div>
 
-                        
-                        <manager 
+
+                        <manager
                             ref="manager"
                             :home="home"
                             :files="files"
@@ -108,7 +108,7 @@
                         <rename-modal ref="renameModal" v-on:refresh="refreshCurrent" />
 
                         <confirm-modal-delete ref="confirmDelete" v-on:refresh="refreshCurrent" />
-        	            
+
                     </div>
                 </div>
             </div>
@@ -165,26 +165,22 @@ export default {
             default: '',
         },
         buttons: {
-            default: function() {
-                return [];
-            },
+            default: () => [],
             required: true,
         },
         rules: {
             type: Array,
-            default: function() {
-                return [];
-            },
+            default: () => [],
             required: false,
         },
     },
 
     components: {
-        upload: Upload,
-        manager: Manager,
-        UploadProgress: UploadProgress,
-        'rename-modal': RenameModal,
-        'confirm-modal-delete': ConfirmModalDelete,
+        ConfirmModalDelete,
+        Manager,
+        RenameModal,
+        Upload,
+        UploadProgress,
     },
 
     data: () => ({
@@ -206,18 +202,30 @@ export default {
         search: '',
         filters: [],
         filterBy: '',
-        filteredExtensions: [],
         showFilters: false,
     }),
 
+    computed: {
+        filteredExtensions() {
+            const filter = _.get(this.filters, this.filterBy)
+
+            if (filter) {
+                return filter
+            }
+
+            return []
+        },
+    },
+
     methods: {
-        getData(pathToList) {
+        getData(folder) {
             this.files = [];
             this.parent = {};
             this.path = [];
             this.noFiles = false;
             this.loadingfiles = true;
-            api.getDataField(this.resource, this.name, pathToList)
+
+            api.getDataField(this.resource, this.name, folder, this.filter)
                 .then(result => {
                     if (_.size(result.files) == 0) {
                         this.noFiles = true;
@@ -226,7 +234,7 @@ export default {
                     this.path = result.path;
                     this.filters = result.filters;
 
-                    if (pathToList != this.defaultFolder) {
+                    if (folder != this.defaultFolder) {
                         this.parent = result.parent;
                     }
 
@@ -306,43 +314,37 @@ export default {
             this.$refs.confirmDelete.openModal(type, path);
         },
 
-        filterFiles() {
-            let extensions = _.get(this.filters, this.filterBy);
-
-            if (extensions == null) {
-                this.filteredExtensions = [];
-            }
-
-            if (extensions != null && extensions.length > 0) {
-                this.filteredExtensions = extensions;
-            }
-        },
-
         searchItems: _.debounce(function(e) {
             this.search = e.target.value;
         }, 300),
     },
+
     watch: {
-        active: function(val) {
+        active(val) {
             if (val) {
-                let currentUrl = new URI();
+                const currentUrl = new URI();
+
                 if (currentUrl.hasQuery('path')) {
-                    let params = currentUrl.query(true);
+                    const params = currentUrl.query(true);
+
                     this.currentPath = params.path;
                 }
 
                 this.getData(this.currentPath);
             }
         },
-        currentPathFolder: function(val) {
+
+        currentPathFolder(val) {
             this.$emit('update-current-path', val);
         },
 
         filters() {
             if (this.filters) {
-                let size = _.size(this.filters);
+                const size = _.size(this.filters);
+
                 if (size > 1) {
                     this.showFilters = true;
+
                     return true;
                 }
             }
@@ -353,9 +355,10 @@ export default {
 
     created() {
         if (localStorage.getItem('nova-filemanager-view')) {
-            let viewS = localStorage.getItem('nova-filemanager-view');
-            if (['grid', 'list'].includes(viewS)) {
-                this.view = viewS;
+            const view = localStorage.getItem('nova-filemanager-view');
+
+            if (['grid', 'list'].includes(view)) {
+                this.view = view;
             } else {
                 localStorage.setItem('nova-filemanager-view', 'grid');
             }

@@ -83,7 +83,7 @@ class FileManagerService
      *
      * @return json
      */
-    public function ajaxGetFilesAndFolders(Request $request, $filter = false)
+    public function ajaxGetFilesAndFolders(Request $request)
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
@@ -91,11 +91,6 @@ class FileManagerService
             $folder = '/';
         }
 
-        // if (!$this->storage->exists($folder)) {
-        //     $folder = '/';
-        // }
-
-        //Set relative Path
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
@@ -103,13 +98,9 @@ class FileManagerService
             $order = config('filemanager.order', 'mime');
         }
 
-        $defaultFilter = config('filemanager.filter', false);
+        $filter = $request->get('filter', config('filemanager.filter', false));
 
-        if ($filter != false) {
-            $defaultFilter = $filter;
-        }
-
-        $files = $this->getFiles($folder, $order, $defaultFilter);
+        $files = $this->getFiles($folder, $order, $filter);
 
         $filters = $this->getAvailableFilters($files);
 

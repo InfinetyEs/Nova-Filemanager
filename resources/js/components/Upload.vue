@@ -1,21 +1,14 @@
 <template>
     <div>
         <div class="card relative">
-
-            <vue-dropzone 
+            <vue-dropzone
                 ref="dropzone"
                 :id="'upload'"
                 :options="dropzoneOptions"
                 v-on:vdropzone-success="vsuccess"
                 v-on:vdropzone-sending="sendingEvent"
-            >
-        			
-            </vue-dropzone>
-
-        
-            
+            />
         </div>
-
     </div>
 </template>
 

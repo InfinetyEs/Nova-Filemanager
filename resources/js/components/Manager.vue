@@ -657,6 +657,7 @@ export default {
 
         filteredFiles() {
             let filtered = this.files;
+
             if (this.search) {
                 filtered = this.files.filter(m => m.name.toLowerCase().indexOf(this.search) > -1);
             }

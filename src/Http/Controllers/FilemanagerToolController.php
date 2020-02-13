@@ -35,9 +35,7 @@ class FilemanagerToolController extends Controller
      */
     public function getDataField($resource, $attribute, NovaRequest $request)
     {
-        $filter = $this->getFilemanagerFieldFilter($attribute, $request);
-
-        return $this->service->ajaxGetFilesAndFolders($request, $filter);
+        return $this->service->ajaxGetFilesAndFolders($request);
     }
 
     /**
@@ -118,23 +116,6 @@ class FilemanagerToolController extends Controller
     public function folderUploadedEvent(Request $request)
     {
         return $this->service->folderUploadedEvent($request->path);
-    }
-
-    /**
-     * @param NovaRequest $request
-     */
-    private function getFilemanagerFieldFilter($attribute, NovaRequest $request)
-    {
-        $fields = $request->newResource()->fields($request);
-        foreach ($fields as $field) {
-            if (isset($field->attribute) && $field->attribute == $attribute) {
-                if (isset($field->meta['filterBy'])) {
-                    return $field->meta['filterBy'];
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
