@@ -20,12 +20,8 @@
 
                 <div class="flex flex-wrap">
                     <div class="card relative w-full">
-
-
-                        <div class="p-3  flex flex-wrap items-center border-b border-50">
-
+                        <div class="p-3 flex flex-wrap items-center border-b border-50">
                             <div class="w-auto flex flex-wrap justify-start">
-
                                 <label v-if="buttons.upload_button" class="manual_upload cursor-pointer">
                                     <div @click="showUpload = !showUpload" class="btn btn-default btn-primary mr-3">
                                         {{ __('Upload') }}
@@ -44,25 +40,19 @@
                                 <button v-if="view == 'grid'" @click="viewAs('list')" class="btn btn-default btn-small btn-primary text-white mr-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><path d="M1 4h2v2H1V4zm4 0h14v2H5V4zM1 9h2v2H1V9zm4 0h14v2H5V9zm-4 5h2v2H1v-2zm4 0h14v2H5v-2z"/></svg>
                                 </button>
-
                             </div>
-
-
 
                             <!-- Search -->
                             <div class="w-auto flex flex-1 flex-wrap justify-end">
-
                                 <div class="relative w-1/3 max-w-xs mr-3">
                                     <div class="relative">
                                         <div class="relative">
-
                                             <template v-if="showFilters">
                                                 <select class="pl-search form-control form-input form-input-bordered w-full" v-model="filterBy" @change="filterFiles">
                                                     <option value="">{{ __('Filter by ...') }}</option>
                                                     <option v-for="(filter, key) in filters" :key="'filter_' + key" :value="key">{{ key }}</option>
-                                                </select>    
+                                                </select>
                                             </template>
-                                            
                                         </div>
                                     </div>
                                 </div>
@@ -76,11 +66,9 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
-                        
-                        <manager 
+                        <manager
                             ref="manager"
                             :home="home"
                             :files="files"
@@ -108,7 +96,6 @@
                         <rename-modal ref="renameModal" v-on:refresh="refreshCurrent" />
 
                         <confirm-modal-delete ref="confirmDelete" v-on:refresh="refreshCurrent" />
-        	            
                     </div>
                 </div>
             </div>
