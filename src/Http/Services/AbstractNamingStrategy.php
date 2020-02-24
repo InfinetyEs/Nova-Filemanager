@@ -17,5 +17,5 @@ abstract class AbstractNamingStrategy
         $this->storage = $storage;
     }
 
-    abstract public function name(string $currentFolder, UploadedFile $file) : string;
+    abstract public function name(string $currentFolder, UploadedFile $file): string;
 }
