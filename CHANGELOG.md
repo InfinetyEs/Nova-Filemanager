@@ -2,17 +2,51 @@
 
 All notable changes to `nova-filemanager` will be documented in this file
 
+## v2.7 - 2020-03-11
+
+#### Improvements
+* Nova 3 Support
+
+#### Fixes
+* Namespace PSR-4 
+
+## v2.6.6 - 2020-02-24
+
+#### Improvements
+* Working with Nova Flexible Content
+
+#### Fixes
+* Fix Layout #119 
+* Filter fix for Nova Flexible Content
+
+
+## v2.6.5 - 2019-12-17
+
+#### Fixes
+* Fix Detail Popup: Delete and rename buttons now working
+* Fix detach popup
+* Fix uploading a folder inside a folder #108 (Thanks to @victorlap)
+
+## v2.6 - 2019-11-18
+
+#### Improvements
+* Rounded and Squared methods to customize the search and index previews.
+
+#### Fixes
+* Fix for global search
+
+
 ## v2.5 - 2019-11-04
 
 #### Improvements
-* Upload validation rules added #72
-* Multi select deletion (Thanks to #83 @godkinmo)
-* New buttons options to hide buttons on tool or field #84
+* Upload validation rules added
+* Multi select deletion (Thanks to @godkinmo)
+* New buttons options to hide buttons on tool or field
 
 #### Fixes
 
 * Fix nova 2.5 modals. Now all modals open in a custom portal.
-* Events properties are now public #80
+* Events properties are now public
 
 
 ## v2.3 - 2019-07-24
