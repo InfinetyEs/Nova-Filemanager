@@ -1,6 +1,6 @@
 <?php
 
-namespace Infinety\Filemanager\Exceptions;
+namespace Infinety\Filemanager\Http\Exceptions;
 
 use Exception;
 

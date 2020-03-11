@@ -10,7 +10,7 @@ use Infinety\Filemanager\Events\FileRemoved;
 use Infinety\Filemanager\Events\FileUploaded;
 use Infinety\Filemanager\Events\FolderRemoved;
 use Infinety\Filemanager\Events\FolderUploaded;
-use Infinety\Filemanager\Exceptions\InvalidConfig;
+use Infinety\Filemanager\Exceptions\Http\InvalidConfig;
 use InvalidArgumentException;
 
 class FileManagerService

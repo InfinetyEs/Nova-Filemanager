@@ -22,7 +22,7 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "laravel/nova": "~2.0"
+        "laravel/nova": "~2.0|~3.0"
     },
     "require-dev": {
         "orchestra/testbench": "^3.6",
