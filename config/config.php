@@ -60,6 +60,7 @@ return [
         // Files
         'rename_file'     => true,
         'delete_file'     => true,
+        'download_file'   => true,
 
     ],
 

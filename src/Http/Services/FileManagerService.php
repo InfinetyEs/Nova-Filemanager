@@ -87,14 +87,14 @@ class FileManagerService
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
-        if (! $this->folderExists($folder)) {
+        if (!$this->folderExists($folder)) {
             $folder = '/';
         }
 
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (! $order) {
+        if (!$order) {
             $order = config('filemanager.order', 'mime');
         }
 
@@ -137,7 +137,7 @@ class FileManagerService
     {
         $folder = $this->fixDirname($this->fixFilename($folder));
 
-        $path = $currentFolder.'/'.$folder;
+        $path = $currentFolder . '/' . $folder;
 
         if ($this->storage->has($path)) {
             return response()->json(['error' => __('The folder exist in current path')]);
@@ -189,14 +189,27 @@ class FileManagerService
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
             $this->setVisibility($currentFolder, $fileName, $visibility);
 
-            if (! $uploadingFolder) {
-                $this->checkJobs($this->storage, $currentFolder.$fileName);
-                event(new FileUploaded($this->storage, $currentFolder.$fileName));
+            if (!$uploadingFolder) {
+                $this->checkJobs($this->storage, $currentFolder . $fileName);
+                event(new FileUploaded($this->storage, $currentFolder . $fileName));
             }
 
             return response()->json(['success' => true, 'name' => $fileName]);
         } else {
             return response()->json(['success' => false]);
+        }
+    }
+
+    public function downloadFile($file)
+    {
+        if (!config('filemanager.buttons.download_file')) {
+            return response()->json(['success' => false, 'message' => 'File not available for Download'], 403);
+        }
+
+        if ($this->storage->has($file)) {
+            return $this->storage->download($file);
+        } else {
+            return response()->json(['success' => false, 'message' => 'File not found'], 404);
         }
     }
 
@@ -228,7 +241,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (! $this->storage->exists($file)) {
+        if (!$this->storage->exists($file)) {
             return [];
         }
 
@@ -266,10 +279,10 @@ class FileManagerService
         $path = str_replace(basename($file), '', $file);
 
         try {
-            if ($this->storage->move($file, $path.$newName)) {
-                $fullPath = $this->storage->path($path.$newName);
+            if ($this->storage->move($file, $path . $newName)) {
+                $fullPath = $this->storage->path($path . $newName);
 
-                $info = new NormalizeFile($this->storage, $fullPath, $path.$newName);
+                $info = new NormalizeFile($this->storage, $fullPath, $path . $newName);
 
                 return response()->json(['success' => true, 'data' => $info->toArray()]);
             } else {
@@ -336,7 +349,7 @@ class FileManagerService
         if ($folder != '/') {
             $folder .= '/';
         }
-        $this->storage->setVisibility($folder.$file, $visibility);
+        $this->storage->setVisibility($folder . $file, $visibility);
     }
 
     /**

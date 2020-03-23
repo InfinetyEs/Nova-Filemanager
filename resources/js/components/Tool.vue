@@ -94,6 +94,7 @@
                 ref="detailPopup"
                 :info="info"
                 :active="activeInfo"
+                :buttons="buttons"
                 v-on:closePreview="closePreview"
                 v-on:refresh="refreshCurrent"
                 v-on:rename="fileRenamed"
