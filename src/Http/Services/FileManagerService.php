@@ -241,7 +241,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (!$this->storage->exists($file)) {
+        if (! $this->storage->exists($file)) {
             return [];
         }
 
