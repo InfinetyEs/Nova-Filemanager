@@ -62,6 +62,11 @@ class FilemanagerField extends Field implements Cover
     protected $deleteFileButton;
 
     /**
+     * @var bool
+     */
+    protected $readonlyInput;
+
+    /**
      * Create a new field.
      *
      * @param  string  $name
@@ -360,5 +365,17 @@ class FilemanagerField extends Field implements Cover
         unset($data['name']);
 
         return $data;
+    }
+
+    /**
+     * Readonly input field.
+     *
+     * @return $this
+     */
+    public function readonlyInput()
+    {
+        return $this->withMeta(['readonly' => true]);
+
+        return $this;
     }
 }
