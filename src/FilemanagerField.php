@@ -375,7 +375,5 @@ class FilemanagerField extends Field implements Cover
     public function readonlyInput()
     {
         return $this->withMeta(['readonly' => true]);
-
-        return $this;
     }
 }
