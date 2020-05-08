@@ -272,12 +272,61 @@ class FileManagerService
                 $info = new NormalizeFile($this->storage, $fullPath, $path.$newName);
 
                 return response()->json(['success' => true, 'data' => $info->toArray()]);
-            } else {
-                return response()->json(false);
             }
+
+            return response()->json(false);
         } catch (\Exception $e) {
+            $directories = $this->storage->directories($path);
+
+            if (in_array($file, $directories)) {
+                return $this->renameDirectory($file, $newName);
+            }
+
             return response()->json(false);
         }
+    }
+
+    protected function renameDirectory($dir, $newName)
+    {
+        $path = str_replace(basename($dir), '', $dir);
+        $newDir = $path.$newName;
+
+        if ($this->storage->exists($newDir)) {
+            return response()->json(false);
+        }
+
+        $this->storage->makeDirectory($newDir);
+
+        $files = $this->storage->files($dir);
+        $directories = $this->storage->directories($dir);
+
+        $dirNameLength = strlen($dir);
+
+        foreach ($directories as $subDir) {
+            $subDirName = substr($dir, $dirNameLength);
+            array_push($files, ...$this->storage->files($subDir));
+
+            if (! Storage::exists($newDir.$subDirName)) {
+                $this->storage->makeDirectory($newDir.$subDirName);
+            }
+        }
+
+        $copiedFileCount = 0;
+
+        foreach ($files as $file) {
+            $filename = substr($file, $dirNameLength);
+            $this->storage->copy($file, $newDir.$filename) === true ? $copiedFileCount++ : null;
+        }
+
+        if ($copiedFileCount === count($files)) {
+            $this->storage->deleteDirectory($dir);
+        }
+
+        $fullPath = $this->storage->path($newDir);
+
+        $info = new NormalizeFile($this->storage, $fullPath, $newDir);
+
+        return response()->json(['success' => true, 'data' => $info->toArray()]);
     }
 
     /**
