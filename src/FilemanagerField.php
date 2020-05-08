@@ -64,7 +64,7 @@ class FilemanagerField extends Field implements Cover
     /**
      * @var bool
      */
-    protected $readonlyInput;
+    protected $disabledInput;
 
     /**
      * Create a new field.
@@ -372,8 +372,8 @@ class FilemanagerField extends Field implements Cover
      *
      * @return $this
      */
-    public function readonlyInput()
+    public function disabledInput()
     {
-        return $this->withMeta(['readonly' => true]);
+        return $this->withMeta(['disabled' => true]);
     }
 }
