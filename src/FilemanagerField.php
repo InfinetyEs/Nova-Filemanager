@@ -62,6 +62,11 @@ class FilemanagerField extends Field implements Cover
     protected $deleteFileButton;
 
     /**
+     * @var bool
+     */
+    protected $downloadFileButton;
+
+    /**
      * Create a new field.
      *
      * @param  string  $name
@@ -224,6 +229,18 @@ class FilemanagerField extends Field implements Cover
     }
 
     /**
+     * Hide Rename file button.
+     *
+     * @return $this
+     */
+    public function hideDownloadFileButton()
+    {
+        $this->downloadFileButton = false;
+
+        return $this;
+    }
+
+    /**
      * No drag and drop file upload.
      *
      * @return $this
@@ -305,6 +322,7 @@ class FilemanagerField extends Field implements Cover
         $this->deleteFolderButton = config('filemanager.buttons.delete_folder', true);
         $this->renameFileButton = config('filemanager.buttons.rename_file', true);
         $this->deleteFileButton = config('filemanager.buttons.delete_file', true);
+        $this->downloadFileButton = config('filemanager.buttons.download_file', true);
     }
 
     /**
@@ -322,6 +340,7 @@ class FilemanagerField extends Field implements Cover
             'delete_folder' => $this->deleteFolderButton,
             'rename_file'   => $this->renameFileButton,
             'delete_file'   => $this->deleteFileButton,
+            'download_file' => $this->downloadFileButton,
         ];
 
         return ['buttons' => $buttons];
