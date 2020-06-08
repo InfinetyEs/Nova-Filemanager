@@ -10,7 +10,7 @@ use Infinety\Filemanager\Events\FileRemoved;
 use Infinety\Filemanager\Events\FileUploaded;
 use Infinety\Filemanager\Events\FolderRemoved;
 use Infinety\Filemanager\Events\FolderUploaded;
-use Infinety\Filemanager\Exceptions\Http\InvalidConfig;
+use Infinety\Filemanager\Http\Exceptions\InvalidConfig;
 use InvalidArgumentException;
 
 class FileManagerService
@@ -87,14 +87,14 @@ class FileManagerService
     {
         $folder = $this->cleanSlashes($request->get('folder'));
 
-        if (! $this->folderExists($folder)) {
+        if (!$this->folderExists($folder)) {
             $folder = '/';
         }
 
         $this->setRelativePath($folder);
 
         $order = $request->get('sort');
-        if (! $order) {
+        if (!$order) {
             $order = config('filemanager.order', 'mime');
         }
 
@@ -189,7 +189,7 @@ class FileManagerService
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
             $this->setVisibility($currentFolder, $fileName, $visibility);
 
-            if (! $uploadingFolder) {
+            if (!$uploadingFolder) {
                 $this->checkJobs($this->storage, $currentFolder.$fileName);
                 event(new FileUploaded($this->storage, $currentFolder.$fileName));
             }
@@ -200,9 +200,13 @@ class FileManagerService
         }
     }
 
+    /**
+     * @param $file
+     * @return mixed
+     */
     public function downloadFile($file)
     {
-        if (! config('filemanager.buttons.download_file')) {
+        if (!config('filemanager.buttons.download_file')) {
             return response()->json(['success' => false, 'message' => 'File not available for Download'], 403);
         }
 
@@ -241,7 +245,7 @@ class FileManagerService
      */
     public function getFileInfoAsArray($file)
     {
-        if (! $this->storage->exists($file)) {
+        if (!$this->storage->exists($file)) {
             return [];
         }
 

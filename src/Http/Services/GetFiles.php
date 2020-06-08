@@ -339,7 +339,7 @@ trait GetFiles
     public function getImageDimesions($file)
     {
         if ($this->disk == 'public') {
-            return getimagesize($this->storage->path($file['path']));
+            return @getimagesize($this->storage->path($file['path']));
         }
 
         if (in_array(config('filemanager.disk'), $this->cloudDisks)) {

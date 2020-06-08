@@ -7,6 +7,7 @@ use Infinety\Filemanager\Http\Services\FileManagerService;
 use Infinety\Filemanager\Traits\CoverHelpers;
 use Laravel\Nova\Contracts\Cover;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilemanagerField extends Field implements Cover
 {
@@ -65,6 +66,13 @@ class FilemanagerField extends Field implements Cover
      * @var bool
      */
     protected $downloadFileButton;
+
+    /**
+     * The callback used to determine if the field is readonly.
+     *
+     * @var Closure
+     */
+    public $readonlyCallback;
 
     /**
      * Create a new field.
@@ -248,6 +256,54 @@ class FilemanagerField extends Field implements Cover
     public function noDragAndDropUpload()
     {
         $this->dragAndDropUpload = false;
+
+        return $this;
+    }
+
+    /**
+     * Set the callback used to determine if the field is readonly.
+     *
+     * @param  Closure|bool  $callback
+     * @return $this
+     */
+    public function readonly($callback = true)
+    {
+        $this->readonlyCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Determine if the field is readonly.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return bool
+     */
+    public function isReadonly(NovaRequest $request)
+    {
+        return with($this->readonlyCallback, function ($callback) use ($request) {
+            if ($callback === true || (is_callable($callback) && call_user_func($callback, $request))) {
+                $this->setReadonlyAttribute();
+
+                return true;
+            }
+
+            if ($callback !== false) {
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    /**
+     * Set the field to a readonly field.
+     *
+     * @return $this
+     */
+    protected function setReadonlyAttribute()
+    {
+        $this->withMeta(['extraAttributes' => ['readonly' => true]]);
 
         return $this;
     }
