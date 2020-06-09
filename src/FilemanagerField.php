@@ -288,10 +288,6 @@ class FilemanagerField extends Field implements Cover
                 return true;
             }
 
-            if ($callback !== false) {
-                return true;
-            }
-
             return false;
         });
     }
