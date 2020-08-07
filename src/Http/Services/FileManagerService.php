@@ -2,8 +2,10 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
+use App\Repositories\Kiosk\KioskRepository;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Infinety\Filemanager\Events\FileRemoved;
@@ -86,6 +88,9 @@ class FileManagerService
     public function ajaxGetFilesAndFolders(Request $request)
     {
         $folder = $this->cleanSlashes($request->get('folder'));
+        $kioskRepository = app(KioskRepository::class);
+        $user = Auth::user();
+        $kiosks = [];
 
         if (! $this->folderExists($folder)) {
             $folder = '/';
@@ -113,6 +118,20 @@ class FileManagerService
 
             if ($folder !== '/') {
                 $parent = $this->generateParent($folder);
+            }
+        }
+
+        if (strtolower($folder) == strtolower(config("filemanager.folder_kiosk_name"))) {
+            foreach ($kioskRepository->getKiosksForUser($user)->toArray() as $kiosk) {
+                array_push($kiosks, $kiosk['name']);
+            }
+
+            $files = $files->filter(function ($value, $key) use ($kiosks) {
+                return in_array($value->name, $kiosks);
+            });
+
+            if ($files->count() == 0) {
+                $parent = (object) [];
             }
         }
 
