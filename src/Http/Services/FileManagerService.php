@@ -121,7 +121,7 @@ class FileManagerService
             }
         }
 
-        if (strtolower($folder) == strtolower(config("filemanager.folder_kiosk_name"))) {
+        if (strtolower($folder) === strtolower(config("filemanager.folder_kiosk_name"))) {
             foreach ($kioskRepository->getKiosksForUser($user)->toArray() as $kiosk) {
                 array_push($kiosks, $kiosk['name']);
             }
@@ -130,7 +130,7 @@ class FileManagerService
                 return in_array($value->name, $kiosks);
             });
 
-            if ($files->count() == 0) {
+            if ($files->count() === 0) {
                 $parent = (object) [];
             }
         }
