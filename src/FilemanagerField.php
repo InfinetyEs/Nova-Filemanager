@@ -338,7 +338,7 @@ class FilemanagerField extends Field implements Cover
 
             $data = $service->getFileInfoAsArray($this->value);
 
-            if (empty($data)) {
+            if ($data['type'] !== 'image' || empty($data)) {
                 return;
             }
 
@@ -387,11 +387,11 @@ class FilemanagerField extends Field implements Cover
         $buttons = [
             'create_folder' => $this->createFolderButton,
             'upload_button' => $this->uploadButton,
-            'upload_drag'   => $this->dragAndDropUpload,
+            'upload_drag' => $this->dragAndDropUpload,
             'rename_folder' => $this->renameFolderButton,
             'delete_folder' => $this->deleteFolderButton,
-            'rename_file'   => $this->renameFileButton,
-            'delete_file'   => $this->deleteFileButton,
+            'rename_file' => $this->renameFileButton,
+            'delete_file' => $this->deleteFileButton,
             'download_file' => $this->downloadFileButton,
         ];
 
