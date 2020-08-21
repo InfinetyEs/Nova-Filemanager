@@ -192,13 +192,13 @@ export default {
 
     computed: {
         filteredExtensions() {
-            const filter = _.get(this.filters, this.filterBy)
+            const filter = _.get(this.filters, this.filterBy);
 
             if (filter) {
-                return filter
+                return filter;
             }
 
-            return []
+            return [];
         },
     },
 

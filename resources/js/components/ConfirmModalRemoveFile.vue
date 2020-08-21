@@ -25,11 +25,11 @@
 <script>
 export default {
     props: {
-        active:{
+        active: {
             default: false,
             required: true,
-            type: Boolean
-        } 
+            type: Boolean,
+        },
     },
 
     mounted() {
@@ -39,7 +39,7 @@ export default {
     watch: {
         // active(value) {
         //     if (value) {
-        //         this.$refs.confirmButton.focus();    
+        //         this.$refs.confirmButton.focus();
         //     }
         // }
     },
