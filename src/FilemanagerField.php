@@ -338,7 +338,7 @@ class FilemanagerField extends Field implements Cover
 
             $data = $service->getFileInfoAsArray($this->value);
 
-            if ($data['type'] !== 'image' || empty($data)) {
+            if ((isset($data['type']) && $data['type'] !== 'image') || empty($data)) {
                 return;
             }
 
