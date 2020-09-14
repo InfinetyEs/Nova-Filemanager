@@ -3,6 +3,7 @@
 namespace Infinety\Filemanager\Http\Services;
 
 use App\Repositories\Kiosk\KioskRepository;
+use App\Repositories\Catalogue\CatalogueRepository;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -89,8 +90,10 @@ class FileManagerService
     {
         $folder = $this->cleanSlashes($request->get('folder'));
         $kioskRepository = app(KioskRepository::class);
+        $catalogueRepository = app(CatalogueRepository::class);
         $user = Auth::user();
         $kiosks = [];
+        $catalogues = [];
 
         if (! $this->folderExists($folder)) {
             $folder = '/';
@@ -128,6 +131,20 @@ class FileManagerService
 
             $files = $files->filter(function ($value, $key) use ($kiosks) {
                 return in_array($value->name, $kiosks);
+            });
+
+            if ($files->count() === 0) {
+                $parent = (object) [];
+            }
+        }
+
+        if (strtolower($folder) === strtolower(config("filemanager.folder_catalogue_name"))) {
+            foreach ($catalogueRepository->getCataloguesForUser($user)->toArray() as $catalogue) {
+                array_push($catalogues, $catalogue['name']);
+            }
+
+            $files = $files->filter(function ($value, $key) use ($catalogues) {
+                return in_array($value->name, $catalogues);
             });
 
             if ($files->count() === 0) {
