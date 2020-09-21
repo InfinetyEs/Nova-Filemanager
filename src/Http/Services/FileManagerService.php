@@ -214,7 +214,15 @@ class FileManagerService
      */
     public function uploadFile($file, $currentFolder, $visibility, $uploadingFolder = false, array $rules = [])
     {
-        if (count($rules) > 0) {
+        if (preg_match('/^image\//', $file->getMimeType())) {
+            $pases = Validator::make(['file' => $file], [
+                'file' => 'max:5000|dimensions:max_width=1000px',
+            ])->validate();
+        } else if (preg_match('/^video\//', $file->getMimeType())) {
+            $pases = Validator::make(['file' => $file], [
+                'file' => 'max:10240',
+            ])->validate();
+        } else if (count($rules) > 0) {
             $pases = Validator::make(['file' => $file], [
                 'file' => $rules,
             ])->validate();
