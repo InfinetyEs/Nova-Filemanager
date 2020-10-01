@@ -217,13 +217,13 @@ class FileManagerService
         $screenSaverFolderName = config('filemanager.folder_screen_saver_name');
 
         if (preg_match('/^image\//', $file->getMimeType())) {
-            if (preg_match('/^$screenSaverFolderName', $currentFolder)) {
+            if (strpos($currentFolder, $screenSaverFolderName) === false) {
                 $pases = Validator::make(['file' => $file], [
-                    'file' => 'max:5000|dimensions:max_width=1600px,max_height=900px',
+                    'file' => 'max:5000|dimensions:max_width=1300px,max_height=1000px',
                 ])->validate();
             } else {
                 $pases = Validator::make(['file' => $file], [
-                    'file' => 'max:5000|dimensions:max_width=1300px,max_height=1000px',
+                    'file' => 'max:5000|dimensions:max_width=1600px,max_height=900px',
                 ])->validate();
             }
         } else if (preg_match('/^video\//', $file->getMimeType())) {
