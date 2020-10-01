@@ -214,10 +214,18 @@ class FileManagerService
      */
     public function uploadFile($file, $currentFolder, $visibility, $uploadingFolder = false, array $rules = [])
     {
+        $screenSaverFolderName = config('filemanager.folder_screen_saver_name');
+
         if (preg_match('/^image\//', $file->getMimeType())) {
-            $pases = Validator::make(['file' => $file], [
-                'file' => 'max:5000|dimensions:max_width=1000px',
-            ])->validate();
+            if (preg_match('/^$screenSaverFolderName', $currentFolder)) {
+                $pases = Validator::make(['file' => $file], [
+                    'file' => 'max:5000|dimensions:max_width=1600px,max_height=900px',
+                ])->validate();
+            } else {
+                $pases = Validator::make(['file' => $file], [
+                    'file' => 'max:5000|dimensions:max_width=1300px,max_height=1000px',
+                ])->validate();
+            }
         } else if (preg_match('/^video\//', $file->getMimeType())) {
             $pases = Validator::make(['file' => $file], [
                 'file' => 'max:10240',
