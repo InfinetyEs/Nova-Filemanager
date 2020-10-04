@@ -187,7 +187,9 @@ class FileManagerService
         $fileName = $this->namingStrategy->name($currentFolder, $file);
 
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
-            $this->setVisibility($currentFolder, $fileName, $visibility);
+            if ($this->disk != 'dropbox'){
+                $this->setVisibility($currentFolder, $fileName, $visibility);
+            }
 
             if (! $uploadingFolder) {
                 $this->checkJobs($this->storage, $currentFolder.$fileName);
