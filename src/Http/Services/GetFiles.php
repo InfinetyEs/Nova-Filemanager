@@ -17,7 +17,7 @@ trait GetFiles
      * @var array
      */
     protected $cloudDisks = [
-        's3', 'google', 's3-cached',
+        's3', 'google', 's3-cached', 'dropbox'
     ];
 
     /**
