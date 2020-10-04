@@ -72,7 +72,7 @@ trait GetFiles
                 'size'       => ($file['size'] != 0) ? $file['size'] : 0,
                 'size_human' => ($file['size'] != 0) ? $this->formatBytes($file['size'], 0) : 0,
                 'thumb'      => $this->getThumbFile($file),
-                'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
+                //'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
                 'can'        => true,
                 'loading'    => false,
             ];
@@ -450,7 +450,7 @@ trait GetFiles
                 'size'              => 0,
                 'size_human'        => 0,
                 'thumb'             => '',
-                'asset'             => $this->cleanSlashes($this->storage->url($folderPath)),
+                //'asset'             => $this->cleanSlashes($this->storage->url($folderPath)),
                 'can'               => true,
                 'loading'           => false,
                 'last_modification' => false,
