@@ -215,9 +215,10 @@ class FileManagerService
     public function uploadFile($file, $currentFolder, $visibility, $uploadingFolder = false, array $rules = [])
     {
         $screenSaverFolderName = config('filemanager.folder_screen_saver_name');
+        $sharedScreenSaverFolderName = config('filemanager.folder_shared_screen_saver_name');
 
         if (preg_match('/^image\//', $file->getMimeType())) {
-            if (strpos($currentFolder, $screenSaverFolderName) === false) {
+            if (strpos($currentFolder, $screenSaverFolderName) === false || strpos($currentFolder, $sharedScreenSaverFolderName) === false) {
                 $pases = Validator::make(['file' => $file], [
                     'file' => 'max:5000|dimensions:max_width=1300px,max_height=1000px',
                 ])->validate();
