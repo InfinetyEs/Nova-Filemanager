@@ -218,22 +218,17 @@ class FileManagerService
         $sharedScreenSaverFolderName = config('filemanager.folder_shared_screen_saver_name');
 
         if (preg_match('/^image\//', $file->getMimeType())) {
-            if (strpos($currentFolder, $screenSaverFolderName) === false) {
-                $pases = Validator::make(['file' => $file], [
-                    'file' => 'max:5000|dimensions:max_width=1300px,max_height=1000px',
-                ])->validate();
-            } else {
+            if (strpos($currentFolder, $screenSaverFolderName) !== false) {
                 $pases = Validator::make(['file' => $file], [
                     'file' => 'max:5000|dimensions:max_width=1600px,max_height=900px',
                 ])->validate();
-            }
-            if (strpos($currentFolder, $sharedScreenSaverFolderName) === false) {
+            } else if (strpos($currentFolder, $sharedScreenSaverFolderName) !== false) {
                 $pases = Validator::make(['file' => $file], [
-                    'file' => 'max:5000|dimensions:max_width=1300px,max_height=1000px',
+                    'file' => 'max:5000|dimensions:max_width=1600px,max_height=900px',
                 ])->validate();
             } else {
                 $pases = Validator::make(['file' => $file], [
-                    'file' => 'max:5000|dimensions:max_width=1600px,max_height=900px',
+                    'file' => 'max:5000|dimensions:max_width=1300px,max_height=1000px',
                 ])->validate();
             }
         } else if (preg_match('/^video\//', $file->getMimeType())) {
