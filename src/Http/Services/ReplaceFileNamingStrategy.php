@@ -10,8 +10,8 @@ class ReplaceFileNamingStrategy extends AbstractNamingStrategy
     {
         $filename = $file->getClientOriginalName();
 
-        if ($this->storage->exists($currentFolder . '/' . $filename)) {
-            $this->storage->delete($currentFolder . '/' . $filename);
+        if ($this->storage->exists($currentFolder.'/'.$filename)) {
+            $this->storage->delete($currentFolder.'/'.$filename);
         }
 
         return $filename;
