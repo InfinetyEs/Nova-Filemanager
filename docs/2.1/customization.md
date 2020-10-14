@@ -4,13 +4,22 @@
 
 You can resolve the upload file name creating your own class and setting in `config/filemanager.php`
 
-These class should extends `Infinety\Filemanager\Http\Services\AbstractNamingStrategy`.
+These classes should extend `Infinety\Filemanager\Http\Services\AbstractNamingStrategy`.
+
+Per default, a random text of 7 characters will be added, if the file already exists.
+
+You can also use the "Replace Strategy" to replace a file when it has the same name 
+
+```php
+    // config/filemanager.php
+
+    'naming'    => \Infinety\Filemanager\Http\Services\ReplaceFileNamingStrategy::class,
+```
 
 
-Default class get the filename of uploaded file and check if exists. If exists add a random text of 7 characters.
+You can easily create your own custom class to customize the uploaded name. 
 
-You can create your custom class to customize the uploaded name.
-
+This is the implementation of the Default Class:
 
 ```php
 namespace Infinety\Filemanager\Http\Services;
