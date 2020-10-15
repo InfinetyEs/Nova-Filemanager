@@ -62,7 +62,7 @@ export default {
         },
         visibility: {
             type: String,
-            default: 'public',
+            default: '',
         },
 
         rules: {
