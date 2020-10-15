@@ -176,7 +176,7 @@ class FileManagerService
      *
      * @return  json
      */
-    public function uploadFile($file, $currentFolder, $visibility, $uploadingFolder = false, array $rules = [])
+    public function uploadFile($file, $currentFolder, $visibility = null, $uploadingFolder = false, array $rules = [])
     {
         if (count($rules) > 0) {
             $pases = Validator::make(['file' => $file], [
@@ -187,7 +187,9 @@ class FileManagerService
         $fileName = $this->namingStrategy->name($currentFolder, $file);
 
         if ($this->storage->putFileAs($currentFolder, $file, $fileName)) {
-            $this->setVisibility($currentFolder, $fileName, $visibility);
+            if ($visibility) {
+                $this->setVisibility($currentFolder, $fileName, $visibility);
+            }
 
             if (! $uploadingFolder) {
                 $this->checkJobs($this->storage, $currentFolder.$fileName);

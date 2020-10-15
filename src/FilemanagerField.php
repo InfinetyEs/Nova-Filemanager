@@ -88,7 +88,6 @@ class FilemanagerField extends Field implements Cover
 
         $this->setButtons();
 
-        $this->withMeta(['visibility' => 'public']);
         $this->rounded();
     }
 
