@@ -592,6 +592,7 @@
 
             rename(type, path) {
                 this.$emit('rename', type, path);
+                this.$emit('refresh');
             },
 
             deleteData(type, path) {
