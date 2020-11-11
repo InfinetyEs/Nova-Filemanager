@@ -137,7 +137,7 @@
                                         :href="`/nova-vendor/infinety-es/nova-filemanager/actions/download-file?file=${this.info.path}`"
                                         target="_blank"
                                     >
-                                        Download
+                                        {{ __('Download') }}
                                     </a>
                                 </div>
 
