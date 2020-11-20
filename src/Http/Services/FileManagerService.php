@@ -65,6 +65,9 @@ class FileManagerService
     /** @var mixed */
     protected $storageWebp;
 
+    /** @var string  */
+    protected $webpFolder;
+
     /**
      * @param Storage $storage
      */
@@ -79,6 +82,7 @@ class FileManagerService
         $this->mimeType = "webp";
         $this->webpPath = "app/webp/";
         $this->storageWebp = Storage::disk('local');
+        $this->webpFolder = "/webp/";
 
         try {
             $this->storage = Storage::disk($this->disk);
@@ -268,13 +272,11 @@ class FileManagerService
                 event(new FileUploaded($this->storage, $currentFolder.$fileName));
             }
 
-            $webpImgPath = storage_path($this->webpPath
-                . pathinfo($currentFolder.$fileName, PATHINFO_FILENAME)
-                . ".$this->mimeType");
+            $webpImg = pathinfo($currentFolder.$fileName, PATHINFO_FILENAME) . ".$this->mimeType";
+            $webpImgPath = storage_path($this->webpPath . $webpImg);
 
-            if ($this->storageWebp->exists($webpImgPath)) {
-                $this->storageWebp
-                    ->delete($webpImgPath);
+            if ($this->storageWebp->exists($webpImg)) {
+                $this->storageWebp->delete($webpImg);
             }
 
             Image::make($this->storagePath . '/' . $currentFolder.$fileName)
@@ -354,9 +356,8 @@ class FileManagerService
     public function removeFile($file)
     {
         if ($this->storage->delete($file)) {
-            $this->storageWebp->delete("/webp/"
-                    . pathinfo($file, PATHINFO_FILENAME)
-                    . ".$this->mimeType");
+            $webpImg = pathinfo($file, PATHINFO_FILENAME) . ".$this->mimeType";
+            $this->storageWebp->delete($this->webpFolder . $webpImg);
 
             event(new FileRemoved($this->storage, $file));
 
@@ -377,14 +378,19 @@ class FileManagerService
             if ($this->storage->move($file, $path.$newName)) {
                 $fullPath = $this->storage->path($path.$newName);
 
+                $oldWebpImg = pathinfo($file, PATHINFO_FILENAME) . ".$this->mimeType";
+
+                if ($this->storageWebp->exists($this->webpFolder . $oldWebpImg)) {
+                    $this->storageWebp->delete($this->webpFolder . $oldWebpImg);
+                }
+
                 $info = new NormalizeFile($this->storage, $fullPath, $path.$newName);
 
-                $webpImgPath = storage_path($this->webpPath
-                    . pathinfo($path.$newName, PATHINFO_FILENAME)
-                    . ".$this->mimeType");
+                $newWebpImg = pathinfo($newName, PATHINFO_FILENAME) . ".$this->mimeType";
+                $webpImgPath = storage_path($this->webpPath . $newWebpImg);
 
-                if ($this->storageWebp->exists($webpImgPath)) {
-                    $this->storageWebp->delete($webpImgPath);
+                if ($this->storageWebp->exists($this->webpFolder . $newWebpImg)) {
+                    $this->storageWebp->delete($this->webpFolder . $newWebpImg);
                 }
 
                 Image::make($this->storagePath . '/' . $path.$newName)
