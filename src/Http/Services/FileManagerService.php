@@ -62,6 +62,9 @@ class FileManagerService
     /** @var string  */
     protected $webpPath;
 
+    /** @var mixed */
+    protected $storageWebp;
+
     /**
      * @param Storage $storage
      */
@@ -75,6 +78,7 @@ class FileManagerService
         $this->globalFilter = null;
         $this->mimeType = "webp";
         $this->webpPath = "app/webp/";
+        $this->storageWebp = Storage::disk('local');
 
         try {
             $this->storage = Storage::disk($this->disk);
@@ -268,8 +272,8 @@ class FileManagerService
                 . pathinfo($currentFolder.$fileName, PATHINFO_FILENAME)
                 . ".$this->mimeType");
 
-            if (Storage::disk('local')->exists($webpImgPath)) {
-                Storage::disk('local')
+            if ($this->storageWebp->exists($webpImgPath)) {
+                $this->storageWebp
                     ->delete($webpImgPath);
             }
 
@@ -350,8 +354,7 @@ class FileManagerService
     public function removeFile($file)
     {
         if ($this->storage->delete($file)) {
-            Storage::disk('local')
-                ->delete("/webp/"
+            $this->storageWebp->delete("/webp/"
                     . pathinfo($file, PATHINFO_FILENAME)
                     . ".$this->mimeType");
 
@@ -380,8 +383,8 @@ class FileManagerService
                     . pathinfo($path.$newName, PATHINFO_FILENAME)
                     . ".$this->mimeType");
 
-                if (Storage::disk('local')->exists($webpImgPath)) {
-                    Storage::disk('local')->delete($webpImgPath);
+                if ($this->storageWebp->exists($webpImgPath)) {
+                    $this->storageWebp->delete($webpImgPath);
                 }
 
                 Image::make($this->storagePath . '/' . $path.$newName)
