@@ -14,6 +14,7 @@ use Infinety\Filemanager\Events\FileUploaded;
 use Infinety\Filemanager\Events\FolderRemoved;
 use Infinety\Filemanager\Events\FolderUploaded;
 use Infinety\Filemanager\Http\Exceptions\InvalidConfig;
+use Intervention\Image\Facades\Image;
 use InvalidArgumentException;
 
 class FileManagerService
@@ -55,6 +56,15 @@ class FileManagerService
      */
     protected $namingStrategy;
 
+    /** @var string  */
+    protected $mimeType;
+
+    /** @var string  */
+    protected $webpPath;
+
+    /** @var mixed */
+    protected $storageWebp;
+
     /**
      * @param Storage $storage
      */
@@ -66,12 +76,19 @@ class FileManagerService
         $this->exceptFolders = collect([]);
         $this->exceptExtensions = collect([]);
         $this->globalFilter = null;
+        $this->mimeType = "webp";
+        $this->webpPath = "app/webp/";
+        $this->storageWebp = Storage::disk('local');
 
         try {
             $this->storage = Storage::disk($this->disk);
         } catch (InvalidArgumentException $e) {
             throw InvalidConfig::driverNotSupported();
         }
+
+        $this->storagePath = $this->storage
+            ->getAdapter()
+            ->getPathPrefix();
 
         $this->namingStrategy = app()->makeWith(
             config('filemanager.naming', DefaultNamingStrategy::class),
@@ -251,6 +268,19 @@ class FileManagerService
                 event(new FileUploaded($this->storage, $currentFolder.$fileName));
             }
 
+            $webpImgPath = storage_path($this->webpPath
+                . pathinfo($currentFolder.$fileName, PATHINFO_FILENAME)
+                . ".$this->mimeType");
+
+            if ($this->storageWebp->exists($webpImgPath)) {
+                $this->storageWebp
+                    ->delete($webpImgPath);
+            }
+
+            Image::make($this->storagePath . '/' . $currentFolder.$fileName)
+                ->encode($this->mimeType, 70)
+                ->save($webpImgPath);
+
             return response()->json(['success' => true, 'name' => $fileName]);
         } else {
             return response()->json(['success' => false]);
@@ -324,6 +354,10 @@ class FileManagerService
     public function removeFile($file)
     {
         if ($this->storage->delete($file)) {
+            $this->storageWebp->delete("/webp/"
+                    . pathinfo($file, PATHINFO_FILENAME)
+                    . ".$this->mimeType");
+
             event(new FileRemoved($this->storage, $file));
 
             return response()->json(true);
@@ -344,6 +378,18 @@ class FileManagerService
                 $fullPath = $this->storage->path($path.$newName);
 
                 $info = new NormalizeFile($this->storage, $fullPath, $path.$newName);
+
+                $webpImgPath = storage_path($this->webpPath
+                    . pathinfo($path.$newName, PATHINFO_FILENAME)
+                    . ".$this->mimeType");
+
+                if ($this->storageWebp->exists($webpImgPath)) {
+                    $this->storageWebp->delete($webpImgPath);
+                }
+
+                Image::make($this->storagePath . '/' . $path.$newName)
+                    ->encode($this->mimeType, 70)
+                    ->save($webpImgPath);
 
                 return response()->json(['success' => true, 'data' => $info->toArray()]);
             } else {
