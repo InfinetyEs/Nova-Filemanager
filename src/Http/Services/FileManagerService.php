@@ -84,6 +84,10 @@ class FileManagerService
         $this->storageWebp = Storage::disk('local');
         $this->webpFolder = "/webp/";
 
+        if (!$this->storageWebp->exists($this->webpFolder)) {
+            $this->storageWebp->makeDirectory($this->webpFolder, 0775, true);
+        }
+
         try {
             $this->storage = Storage::disk($this->disk);
         } catch (InvalidArgumentException $e) {
