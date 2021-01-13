@@ -178,7 +178,7 @@ class FileManagerService
         }
 
         return response()->json([
-            'files'   => $files,
+            'files'   => $files->values(),
             'path'    => $this->getPaths($folder),
             'filters' => $filters,
             'buttons' => $this->getButtons(),
