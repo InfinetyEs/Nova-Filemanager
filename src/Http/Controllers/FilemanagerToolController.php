@@ -9,17 +9,12 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilemanagerToolController extends Controller
 {
-    /**
-     * @var mixed
-     */
-    protected $service;
 
     /**
-     * @param FileManagerService $filemanagerService
+     * @return FileManagerService
      */
-    public function __construct(FileManagerService $filemanagerService)
-    {
-        $this->service = $filemanagerService;
+    protected function service(){
+        return $this->service =  new FileManagerService();
     }
 
     /**
@@ -27,7 +22,7 @@ class FilemanagerToolController extends Controller
      */
     public function getData(Request $request)
     {
-        return $this->service->ajaxGetFilesAndFolders($request);
+        return $this->service()->ajaxGetFilesAndFolders($request);
     }
 
     /**
@@ -35,7 +30,7 @@ class FilemanagerToolController extends Controller
      */
     public function getDataField($resource, $attribute, NovaRequest $request)
     {
-        return $this->service->ajaxGetFilesAndFolders($request);
+        return $this->service()->ajaxGetFilesAndFolders($request);
     }
 
     /**
@@ -43,7 +38,7 @@ class FilemanagerToolController extends Controller
      */
     public function createFolder(Request $request)
     {
-        return $this->service->createFolderOnPath($request->folder, $request->current);
+        return $this->service()->createFolderOnPath($request->folder, $request->current);
     }
 
     /**
@@ -51,7 +46,7 @@ class FilemanagerToolController extends Controller
      */
     public function deleteFolder(Request $request)
     {
-        return $this->service->deleteDirectory($request->current);
+        return $this->service()->deleteDirectory($request->current);
     }
 
     /**
@@ -61,7 +56,7 @@ class FilemanagerToolController extends Controller
     {
         $uploadingFolder = $request->folder ?? false;
 
-        return $this->service->uploadFile(
+        return $this->service()->uploadFile(
             $request->file,
             $request->current ?? '',
             $request->visibility,
@@ -75,7 +70,7 @@ class FilemanagerToolController extends Controller
      */
     public function move(Request $request)
     {
-        return $this->service->moveFile($request->old, $request->path);
+        return $this->service()->moveFile($request->old, $request->path);
     }
 
     /**
@@ -83,7 +78,7 @@ class FilemanagerToolController extends Controller
      */
     public function getInfo(Request $request)
     {
-        return $this->service->getFileInfo($request->file);
+        return $this->service()->getFileInfo($request->file);
     }
 
     /**
@@ -91,7 +86,7 @@ class FilemanagerToolController extends Controller
      */
     public function removeFile(Request $request)
     {
-        return $this->service->removeFile($request->file, $request->type);
+        return $this->service()->removeFile($request->file, $request->type);
     }
 
     /**
@@ -99,7 +94,7 @@ class FilemanagerToolController extends Controller
      */
     public function renameFile(Request $request)
     {
-        return $this->service->renameFile($request->file, $request->name);
+        return $this->service()->renameFile($request->file, $request->name);
     }
 
     /**
@@ -107,7 +102,7 @@ class FilemanagerToolController extends Controller
      */
     public function downloadFile(Request $request)
     {
-        return $this->service->downloadFile($request->file);
+        return $this->service()->downloadFile($request->file);
     }
 
     /**
@@ -115,7 +110,7 @@ class FilemanagerToolController extends Controller
      */
     public function rename(Request $request)
     {
-        return $this->service->renameFile($request->path, $request->name);
+        return $this->service()->renameFile($request->path, $request->name);
     }
 
     /**
@@ -123,7 +118,7 @@ class FilemanagerToolController extends Controller
      */
     public function folderUploadedEvent(Request $request)
     {
-        return $this->service->folderUploadedEvent($request->path);
+        return $this->service()->folderUploadedEvent($request->path);
     }
 
     /**
