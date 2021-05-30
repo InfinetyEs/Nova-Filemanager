@@ -4,12 +4,12 @@ namespace Infinety\Filemanager\Http\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Infinety\Filemanager\Traits\StorageHelpers;
 
 trait GetFiles
 {
-    use FileFunctions;
+    use FileFunctions, StorageHelpers;
 
     /**
      * Cloud disks.
@@ -72,7 +72,7 @@ trait GetFiles
                 'size'       => ($file['size'] != 0) ? $file['size'] : 0,
                 'size_human' => ($file['size'] != 0) ? $this->formatBytes($file['size'], 0) : 0,
                 'thumb'      => $this->getThumbFile($file),
-                'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
+                'asset'      => $this->cleanSlashes($this->url($this->storage,$file['basename'])),
                 'can'        => true,
                 'loading'    => false,
             ];
@@ -320,7 +320,7 @@ trait GetFiles
 
         if (Str::contains($mime, 'image') || $extension == 'svg') {
             if (method_exists($this->storage, 'put')) {
-                return $this->storage->url($file['path']);
+                return $this->url($this->storage, $file['path']);
             }
 
             return $folder.'/'.$file['basename'];
@@ -359,7 +359,7 @@ trait GetFiles
         try {
             $client = new Client();
 
-            $response = $client->get($this->storage->url($file['path']), ['stream' => true]);
+            $response = $client->get($this->url($this->storage, $file['path']), ['stream' => true]);
             $image = imagecreatefromstring($response->getBody()->getContents());
             $dims = [imagesx($image), imagesy($image)];
             imagedestroy($image);
@@ -450,7 +450,7 @@ trait GetFiles
                 'size'              => 0,
                 'size_human'        => 0,
                 'thumb'             => '',
-                'asset'             => $this->cleanSlashes($this->storage->url($folderPath)),
+                'asset'             => $this->cleanSlashes($this->url($this->storage, $folderPath)),
                 'can'               => true,
                 'loading'           => false,
                 'last_modification' => false,

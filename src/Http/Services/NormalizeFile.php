@@ -6,13 +6,14 @@ use Carbon\Carbon;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Infinety\Filemanager\Traits\StorageHelpers;
 use RarArchive;
 use SplFileInfo;
 use ZipArchive;
 
 class NormalizeFile
 {
-    use FileFunctions;
+    use FileFunctions, StorageHelpers;
 
     /**
      * @var mixed
@@ -50,7 +51,7 @@ class NormalizeFile
             'mime' => $this->getCorrectMimeFileType(),
             'path' => $this->storagePath,
             'size' => $this->getFileSize(),
-            'url'  => $this->cleanSlashes($this->storage->url($this->storagePath)),
+            'url'  => $this->cleanSlashes($this->url($this->storage,$this->storagePath)),
             'date' => $this->modificationDate(),
             'ext'  => $this->file->getExtension(),
         ]);
@@ -77,7 +78,7 @@ class NormalizeFile
         // Video
         if (Str::contains($mime, 'audio')) {
             $data->put('type', 'audio');
-            $src = str_replace(env('APP_URL'), '', $this->storage->url($this->storagePath));
+            $src = str_replace(env('APP_URL'), '', $this->url($this->storage,$this->storagePath));
             $data->put('src', $src);
         }
 
@@ -145,7 +146,7 @@ class NormalizeFile
     private function getImage($mime, $extension = false)
     {
         if (Str::contains($mime, 'image') || $extension == 'svg') {
-            return $this->storage->url($this->storagePath);
+            return $this->url($this->storage,$this->storagePath);
         }
 
         $fileType = new FileTypesImages();
