@@ -69,24 +69,13 @@ trait GetFiles
                 'type'       => $file['type'],
                 'mime'       => $this->getFileType($file),
                 'ext'        => (isset($file['extension'])) ? $file['extension'] : false,
-                'size'       => ($file['size'] != 0) ? $file['size'] : 0,
                 'size_human' => ($file['size'] != 0) ? $this->formatBytes($file['size'], 0) : 0,
                 'thumb'      => $this->getThumbFile($file),
-                'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
-                'can'        => true,
                 'loading'    => false,
             ];
 
             if (isset($file['timestamp'])) {
-                $fileInfo['last_modification'] = $file['timestamp'];
                 $fileInfo['date'] = $this->modificationDate($file['timestamp']);
-            }
-
-            if ($fileInfo['mime'] == 'image') {
-                [$width, $height] = $this->getImageDimesions($file);
-                if (! $width == false) {
-                    $fileInfo['dimensions'] = $width.'x'.$height;
-                }
             }
 
             if ($fileInfo['type'] == 'dir') {
