@@ -6,4 +6,5 @@ https://github.com/InfinetyEs/Nova-Filemanager
 ```bash
 yarn install --ignore-scripts
 npm rebuild node-sass --verbose
+yarn dev
 ```
