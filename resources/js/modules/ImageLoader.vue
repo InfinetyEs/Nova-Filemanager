@@ -1,27 +1,17 @@
 <template>
     <transition name='fade'>
         <template v-if="view == 'grid'">
-
-            <div @click='clickStrategy'
-                 ref='card'
-                 :loading='loading'
-                 class='card relative flex flex-wrap justify-center border border-lg border-50 overflow-hidden px-0 py-0 cursor-pointer'
+            <lazy-component @show='handleLazyShow'
+                            @click.native='clickStrategy'
+                            ref='card'
+                            :loading='loading'
+                            class='card relative flex flex-wrap justify-center border border-lg border-50 overflow-hidden px-0 py-0 cursor-pointer'
             >
-                <template v-if='loading'>
-                    <div class='rounded-lg flex items-center justify-center absolute pin z-50'>
-                        <loader class='text-60' />
-                    </div>
-                </template>
-
                 <div v-if="file.mime != 'image'" v-html='file.thumb'
-                     class='mime-icon flex items-center justify-center  h-5/6'>
-
-                </div>
+                     class='mime-icon flex items-center justify-center  h-5/6' />
 
                 <div v-if="file.mime == 'image'" ref='image' class='image-block block w-full h-5/6'>
-                    <lazy-component @show='handleLazyShow' :class='getClassLazyContainer'>
-                        <div :style='{backgroundImage: `url(${file.thumb})`}' :class='getClassContainer' />
-                    </lazy-component>
+                    <div :style='{backgroundImage: `url(${file.thumb})`}' :class='getClassContainer' />
                 </div>
 
                 <div class='actions-grid absolute pin-t pin-r pr-2 pt-2 pb-1 pl-2 '
@@ -61,7 +51,8 @@
                     class='h-1/6 w-full text-center text-xs  border-t border-30 bg-50 flex items-center justify-center'>
                     {{ file.name | truncate(25) }}
                 </div>
-            </div>
+
+            </lazy-component>
         </template>
 
         <template v-if="view == 'list'">
@@ -80,23 +71,15 @@
                         </g>
                     </svg>
                 </td>
-                <td>
-                    <template v-if='loading'>
-                        <div class='rounded-lg flex items-center justify-center absolute pin z-50'>
-                            <loader class='text-60' />
-                        </div>
-                    </template>
-
-                    <div class='w-full h-full flex justify-center items-center'>
+                <td class='relative'>
+                    <lazy-component @show='handleLazyShow' class='w-full h-full flex justify-center items-center'>
                         <div v-if="file.mime != 'image'" v-html='file.thumb'
-                             class='mime-icon flex items-center justify-center w-1/3 h-full'>
-
-                        </div>
+                             class='mime-icon flex items-center justify-center w-1/3 h-full' />
 
                         <div v-if="file.mime == 'image'" ref='image' class='image-block block w-full h-full'>
-
+                            <div :style='{backgroundImage: `url(${file.thumb})`}' :class='getClassContainer' />
                         </div>
-                    </div>
+                    </lazy-component>
 
                     <div class='w-full missing p-8' v-if='missing'>
                         <p class='text-center leading-normal'>
@@ -215,9 +198,6 @@ export default {
             return false;
         },
 
-        getClassLazyContainer() {
-            return 'w-full h-full';
-        },
         getClassContainer() {
             return 'block w-full h-full bg-center bg-cover h-2/3';
         },
@@ -255,6 +235,7 @@ export default {
         },
 
         handleLazyShow() {
+            console.log('handleLazyShow');
             this.loading = false;
         },
     },
