@@ -235,7 +235,6 @@ export default {
         },
 
         handleLazyShow() {
-            console.log('handleLazyShow');
             this.loading = false;
         },
     },
