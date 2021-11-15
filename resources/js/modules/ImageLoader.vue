@@ -11,7 +11,7 @@
                      class='mime-icon flex items-center justify-center  h-5/6' />
 
                 <div v-if="file.mime == 'image'" ref='image' class='image-block block w-full h-5/6'>
-                    <div :style='{backgroundImage: `url(${thumbEncodedUrl})`}' :class='getClassContainer' />
+                    <div :style="{backgroundImage: `url(${thumbEncodedUrl})`}" :class='getClassContainer' />
                 </div>
 
                 <div class='actions-grid absolute pin-t pin-r pr-2 pt-2 pb-1 pl-2 '
@@ -77,7 +77,7 @@
                              class='mime-icon flex items-center justify-center w-1/3 h-full' />
 
                         <div v-if="file.mime == 'image'" ref='image' class='image-block block w-full h-full'>
-                            <div :style='{backgroundImage: `url(${thumbEncodedUrl})`}' :class='getClassContainer' />
+                            <div :style="{backgroundImage: `url(${thumbEncodedUrl})`}" :class='getClassContainer' />
                         </div>
                     </lazy-component>
 
@@ -204,6 +204,9 @@ export default {
 
         thumbEncodedUrl() {
             return encodeURI(this.file.thumb)
+                .replace("'", "%27")
+                .replace("(", "%28")
+                .replace(")", "%29");
         }
     },
 
