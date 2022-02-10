@@ -1,4 +1,4 @@
-<?php
+mimeType<?php
 
 namespace Infinety\Filemanager\Http\Services;
 
