@@ -28,7 +28,6 @@ trait GetFiles
     public function getFiles($folder, $order, $filter = false)
     {
         $filesData = $this->storage->listContents($folder);
-        $filesData = $this->normalizeFiles($filesData);
         $files = [];
 
         $cacheTime = config('filemanager.cache', false);
@@ -61,41 +60,45 @@ trait GetFiles
      */
     public function getFileData($file, $id)
     {
-        if (! $this->isDot($file) && ! $this->exceptExtensions->contains($file['extension']) && ! $this->exceptFolders->contains($file['basename']) && ! $this->exceptFiles->contains($file['basename']) && $this->accept($file)) {
-            $fileInfo = [
-                'id'         => $id,
-                'name'       => trim($file['basename']),
-                'path'       => $this->cleanSlashes($file['path']),
-                'type'       => $file['type'],
-                'mime'       => $this->getFileType($file),
-                'ext'        => (isset($file['extension'])) ? $file['extension'] : false,
-                'size'       => ($file['size'] != 0) ? $file['size'] : 0,
-                'size_human' => ($file['size'] != 0) ? $this->formatBytes($file['size'], 0) : 0,
-                'thumb'      => $this->getThumbFile($file),
-                'asset'      => $this->cleanSlashes($this->storage->url($file['basename'])),
-                'can'        => true,
-                'loading'    => false,
-            ];
+        if (! $this->isDot($file)
+            && ! $this->exceptExtensions->contains(Str::afterLast($file->path(), '.'))
+            && ! $this->exceptFolders->contains(Str::beforeLast($file->path(), '/'))
+            && ! $this->exceptFiles->contains(basename($file->path()))
+            && $this->accept($file)) {
+                $fileInfo = [
+                    'id'         => $id,
+                    'name'       => trim(basename($file->path())),
+                    'path'       => $this->cleanSlashes($file->path()),
+                    'type'       => $file->type(),
+                    'mime'       => $this->getFileType($file),
+                    'ext'        => Str::afterLast($file->path(), '.'),
+                    'size'       => $file->fileSize(),
+                    'size_human' => $this->formatBytes($file->fileSize()),
+                    'thumb'      => $this->getThumbFile($file),
+                    'asset'      => $this->cleanSlashes($this->storage->url($file->path())),
+                    'can'        => true,
+                    'loading'    => false,
+                ];
 
-            if (isset($file['timestamp'])) {
-                $fileInfo['last_modification'] = $file['timestamp'];
-                $fileInfo['date'] = $this->modificationDate($file['timestamp']);
-            }
-
-            if ($fileInfo['mime'] == 'image') {
-                [$width, $height] = $this->getImageDimesions($file);
-                if (! $width == false) {
-                    $fileInfo['dimensions'] = $width.'x'.$height;
+                if (isset($file['timestamp'])) {
+                    $fileInfo['last_modification'] = $file['timestamp'];
+                    $fileInfo['date'] = $this->modificationDate($file['timestamp']);
                 }
-            }
 
-            if ($fileInfo['type'] == 'dir') {
-                if (! $this->checkShouldHideFolder($fileInfo['path'])) {
-                    return false;
+                if ($fileInfo['mime'] == 'image') {
+                    [$width, $height] = $this->getImageDimesions($file);
+                    if (! $width == false) {
+                        $fileInfo['dimensions'] = $width.'x'.$height;
+                    }
                 }
-            }
 
-            return (object) $fileInfo;
+                if ($fileInfo['type'] == 'dir') {
+                    if (! $this->checkShouldHideFolder($fileInfo['path'])) {
+                        return false;
+                    }
+                }
+
+                return (object) $fileInfo;
         }
     }
 
@@ -176,17 +179,17 @@ trait GetFiles
     /**
      * Generates an id based on file.
      *
-     * @param   array  $file
+     * @param   \League\Flysystem\FileAttributes  $file
      *
      * @return  string
      */
     public function generateId($file)
     {
-        if (isset($file['timestamp'])) {
-            return md5($this->disk.'_'.trim($file['basename']).$file['timestamp']);
+        if ($file->lastModified()) {
+            return md5($this->disk.'_'.trim(basename($file->path())).$file->lastModified());
         }
 
-        return md5($this->disk.'_'.trim($file['basename']));
+        return md5($this->disk.'_'.trim(basename($file->path())));
     }
 
     /**
@@ -196,7 +199,7 @@ trait GetFiles
      */
     public function setRelativePath($folder)
     {
-        $defaultPath = $this->storage->getDriver()->getAdapter()->getPathPrefix();
+        $defaultPath = $this->storage->getConfig()['root'];
 
         $publicPath = str_replace($defaultPath, '', $folder);
 
@@ -228,12 +231,12 @@ trait GetFiles
      */
     public function getFileType($file)
     {
-        if ($file['type'] == 'dir') {
+        if ($file->type() == 'dir') {
             return 'dir';
         }
 
-        $mime = $this->storage->getMimetype($file['path']);
-        $extension = $file['extension'];
+        $mime = $this->storage->mimeType($file->path());
+        $extension = Str::afterLast($file->path(), '.');
 
         if (Str::contains($mime, 'directory')) {
             return 'dir';
@@ -307,12 +310,12 @@ trait GetFiles
      */
     public function getThumb($file, $folder = false)
     {
-        if ($file['type'] == 'dir') {
+        if ($file->type() == 'dir') {
             return false;
         }
 
-        $mime = $this->storage->getMimetype($file['path']);
-        $extension = $file['extension'];
+        $mime = $this->storage->mimeType($file->path());
+        $extension = Str::afterLast($file->path(), '.');
 
         if (Str::contains($mime, 'directory')) {
             return false;
@@ -322,12 +325,10 @@ trait GetFiles
             if (method_exists($this->storage, 'put')) {
                 return $this->storage->url($file['path']);
             }
-
             return $folder.'/'.$file['basename'];
         }
 
         $fileType = new FileTypesImages();
-
         return $fileType->getImage($mime);
     }
 
@@ -382,43 +383,25 @@ trait GetFiles
     }
 
     /**
-     * @param $files
-     */
-    public function normalizeFiles($files)
-    {
-        foreach ($files as $key => $file) {
-            if (! isset($file['extension'])) {
-                $files[$key]['extension'] = null;
-            }
-            if (! isset($file['size'])) {
-                // $size = $this->storage->getSize($file['path']);
-                $files[$key]['size'] = null;
-            }
-        }
-
-        return $files;
-    }
-
-    /**
      * @param $file
      *
      * @return bool
      */
     public function accept($file)
     {
-        return '.' !== substr($file['basename'], 0, 1);
+        return '.' !== substr($file->path(), 0, 1);
     }
 
     /**
      * Check if file is Dot.
      *
-     * @param   string   $file
+     * @param   isDot   $file
      *
      * @return  bool
      */
     public function isDot($file)
     {
-        if (Str::startsWith($file['basename'], '.')) {
+        if (Str::startsWith($file->path(), '.')) {
             return true;
         }
 
@@ -464,7 +447,7 @@ trait GetFiles
      */
     public function getPaths($currentFolder)
     {
-        $defaultPath = $this->cleanSlashes($this->storage->getDriver()->getAdapter()->getPathPrefix());
+        $defaultPath = $this->cleanSlashes($this->storage->getConfig()['root']);
         $currentPath = $this->cleanSlashes($this->storage->path($currentFolder));
 
         $paths = $currentPath;
