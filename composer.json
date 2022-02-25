@@ -1,32 +1,22 @@
 {
-    "name": "infinety-es/nova-filemanager",
-    "description": "Filemanager tool for Laravel Nova",
+    "name": "grayloon/nova-filemanager",
+    "description": "Filemanager tool for Laravel Nova. Forked from InfinetyEs/nova-filemanager",
     "keywords": [
         "laravel",
         "nova",
         "filemanager"
     ],
-    "homepage": "https://github.com/InfinetyEs/nova-filemanager",
+    "homepage": "https://github.com/grayloon/nova-filemanager",
     "license": "MIT",
     "authors": [
         {
-            "name": "Eric Lagarda",
-            "email": "eric@infinety.es",
+            "name": "Andy Hinkle",
+            "email": "ahinkle@grayloon.com",
             "role": "Developer"
-        },
-        {
-            "name": "InfinetyEs",
-            "email": "apps@infinety.es",
-            "role": "Maintainer"
         }
     ],
     "require": {
-        "php": ">=7.1.0",
-        "laravel/nova": "~2.0|~3.0"
-    },
-    "require-dev": {
-        "orchestra/testbench": "^3.6",
-        "phpunit/phpunit": "7.1"
+        "php": "^8.0"
     },
     "autoload": {
         "psr-4": {
