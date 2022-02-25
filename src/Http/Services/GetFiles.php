@@ -72,8 +72,8 @@ trait GetFiles
                     'type'       => $file->type(),
                     'mime'       => $this->getFileType($file),
                     'ext'        => Str::afterLast($file->path(), '.'),
-                    'size'       => $file->fileSize(),
-                    'size_human' => $this->formatBytes($file->fileSize()),
+                    'size'       => method_exists($file, 'fileSize') ? $file->fileSize() : 0,
+                    'size_human' => method_exists($file, 'fileSize') ? $this->formatBytes($file->fileSize()) : 0,
                     'thumb'      => $this->getThumbFile($file),
                     'asset'      => $this->cleanSlashes($this->storage->url($file->path())),
                     'can'        => true,
@@ -493,9 +493,10 @@ trait GetFiles
      */
     private function checkShouldHideFolder($path)
     {
+
         $filesData = $this->storage->listContents($path);
 
-        $key = array_search('.hide', array_column($filesData, 'basename'));
+        $key = array_search('.hide', array_column($filesData->toArray(), 'basename'));
 
         if ($key === false) {
             return true;
