@@ -1,6 +1,6 @@
 {
     "name": "grayloon/nova-filemanager",
-    "description": "Filemanager tool for Laravel Nova. Forked from InfinetyEs/nova-filemanager",
+    "description": "Filemanager tool for Laravel Nova. Forked from GrayloonEs/nova-filemanager",
     "keywords": [
         "laravel",
         "nova",
@@ -20,18 +20,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Infinety\\Filemanager\\": "src/"
+            "Grayloon\\Filemanager\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Infinety\\Filemanager\\Tests\\": "tests"
+            "Grayloon\\Filemanager\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Infinety\\Filemanager\\FilemanagerServiceProvider"
+                "Grayloon\\Filemanager\\FilemanagerServiceProvider"
             ]
         }
     },

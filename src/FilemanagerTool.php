@@ -1,6 +1,6 @@
 <?php
 
-namespace Infinety\Filemanager;
+namespace Grayloon\Filemanager;
 
 use Laravel\Nova\Nova;
 use Laravel\Nova\Tool as BaseTool;

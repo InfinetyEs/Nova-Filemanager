@@ -1,6 +1,6 @@
 <?php
 
-namespace Infinety\Filemanager\Events;
+namespace Grayloon\Filemanager\Events;
 
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Queue\SerializesModels;

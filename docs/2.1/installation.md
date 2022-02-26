@@ -6,10 +6,10 @@
 You can install the package in any Laravel app that uses [Nova](https://nova.laravel.com) via Composer:
 
 ```bash
-composer require infinety-es/nova-filemanager
+composer require grayloon/nova-filemanager
 ```
 
-Next, publish config file: 
+Next, publish config file:
 
 ```bash
 php artisan vendor:publish --tag=filemanager-config
@@ -35,7 +35,7 @@ public function tools()
 
 Please publish the config file after update.
 
-`Folder` option now limits the home. So now, when you set a initial folder, this will be the home. 
+`Folder` option now limits the home. So now, when you set a initial folder, this will be the home.
 
 ## Configuration File
 
@@ -85,7 +85,7 @@ return [
     |--------------------------------------------------------------------------
     | Filemanager  filters
     |--------------------------------------------------------------------------
-    | This option let you to filter your files by extensions. 
+    | This option let you to filter your files by extensions.
     | You can create|modify|delete as you want.
      */
 

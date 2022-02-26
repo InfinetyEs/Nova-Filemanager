@@ -1,10 +1,10 @@
 <?php
 
-namespace Infinety\Filemanager;
+namespace Grayloon\Filemanager;
 
 use Illuminate\Validation\Rule;
-use Infinety\Filemanager\Http\Services\FileManagerService;
-use Infinety\Filemanager\Traits\CoverHelpers;
+use Grayloon\Filemanager\Http\Services\FileManagerService;
+use Grayloon\Filemanager\Traits\CoverHelpers;
 use Laravel\Nova\Contracts\Cover;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;

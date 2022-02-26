@@ -101,9 +101,9 @@ return [
     | Naming strategy
     |--------------------------------------------------------------------------
     | Resolve the upload file name with a class that extends
-    | Infinety\Filemanager\Http\Services\AbstractNamingStrategy
+    | Grayloon\Filemanager\Http\Services\AbstractNamingStrategy
      */
-    'naming'    => Infinety\Filemanager\Http\Services\DefaultNamingStrategy::class,
+    'naming'    => Grayloon\Filemanager\Http\Services\DefaultNamingStrategy::class,
 
     /*
     |--------------------------------------------------------------------------

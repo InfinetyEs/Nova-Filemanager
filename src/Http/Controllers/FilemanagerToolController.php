@@ -1,10 +1,10 @@
 <?php
 
-namespace Infinety\Filemanager\Http\Controllers;
+namespace Grayloon\Filemanager\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Infinety\Filemanager\Http\Services\FileManagerService;
+use Grayloon\Filemanager\Http\Services\FileManagerService;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilemanagerToolController extends Controller

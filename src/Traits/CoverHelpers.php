@@ -1,6 +1,6 @@
 <?php
 
-namespace Infinety\Filemanager\Traits;
+namespace Grayloon\Filemanager\Traits;
 
 trait CoverHelpers
 {

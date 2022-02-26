@@ -4,7 +4,7 @@
 
 You can resolve the upload file name creating your own class and setting in `config/filemanager.php`
 
-These class should extends `Infinety\Filemanager\Http\Services\AbstractNamingStrategy`.
+These class should extends `Grayloon\Filemanager\Http\Services\AbstractNamingStrategy`.
 
 
 Default class get the filename of uploaded file and check if exists. If exists add a random text of 7 characters.
@@ -13,7 +13,7 @@ You can create your custom class to customize the uploaded name.
 
 
 ```php
-namespace Infinety\Filemanager\Http\Services;
+namespace Grayloon\Filemanager\Http\Services;
 
 use Illuminate\Http\UploadedFile;
 
@@ -90,7 +90,3 @@ For example to translate this tool to spanish, you can use this json.
 "Only files below 350 Kb will be shown": "Solo se mostraran archivos con un peso menor a 350 Kb"
 "Filter by ...": "Filtrar por ..."
 ```
-
-
-
-

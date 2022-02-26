@@ -3,7 +3,7 @@
 To add the `Filemanager Field` to a resource, we can simply add it to the resource's `fields` method.
 
 ```php
-use Infinety\Filemanager\FilemanagerField;
+use Grayloon\Filemanager\FilemanagerField;
 
 /**
  * Get the fields displayed by the resource.
@@ -52,7 +52,7 @@ FilemanagerField::make('Image')->folder(function() {
 
 ### filterBy
 
-If you want to filter all your files you can use this method. The given data should be a lowercase key of your filters in `config/filemanager.php `. 
+If you want to filter all your files you can use this method. The given data should be a lowercase key of your filters in `config/filemanager.php `.
 
 ```php
 FilemanagerField::make('Image')->filterBy('images'),

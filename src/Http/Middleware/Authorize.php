@@ -1,10 +1,10 @@
 <?php
 
-namespace Infinety\Filemanager\Http\Middleware;
+namespace Grayloon\Filemanager\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Infinety\Filemanager\FilemanagerTool;
+use Grayloon\Filemanager\FilemanagerTool;
 use Symfony\Component\HttpFoundation\Response;
 
 class Authorize

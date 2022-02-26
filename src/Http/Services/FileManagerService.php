@@ -1,16 +1,16 @@
 <?php
 
-namespace Infinety\Filemanager\Http\Services;
+namespace Grayloon\Filemanager\Http\Services;
 
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Infinety\Filemanager\Events\FileRemoved;
-use Infinety\Filemanager\Events\FileUploaded;
-use Infinety\Filemanager\Events\FolderRemoved;
-use Infinety\Filemanager\Events\FolderUploaded;
-use Infinety\Filemanager\Http\Exceptions\InvalidConfig;
+use Grayloon\Filemanager\Events\FileRemoved;
+use Grayloon\Filemanager\Events\FileUploaded;
+use Grayloon\Filemanager\Events\FolderRemoved;
+use Grayloon\Filemanager\Events\FolderUploaded;
+use Grayloon\Filemanager\Http\Exceptions\InvalidConfig;
 use InvalidArgumentException;
 
 class FileManagerService

@@ -1,7 +1,7 @@
 export default {
     getData(folder) {
         return window.axios
-            .get('/nova-vendor/infinety-es/nova-filemanager/data', {
+            .get('/nova-vendor/grayloon/nova-filemanager/data', {
                 params: {
                     folder,
                 },
@@ -11,7 +11,7 @@ export default {
 
     getDataField(resource, attribute, folder, filter) {
         return window.axios
-            .get(`/nova-vendor/infinety-es/nova-filemanager/${resource}/${attribute}/data`, {
+            .get(`/nova-vendor/grayloon/nova-filemanager/${resource}/${attribute}/data`, {
                 params: {
                     folder,
                     filter,
@@ -22,13 +22,13 @@ export default {
 
     uploadFile() {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/uploads/add')
+            .post('/nova-vendor/grayloon/nova-filemanager/uploads/add')
             .then(response => response.data);
     },
 
     moveFile(oldPath, newPath) {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/actions/move', {
+            .post('/nova-vendor/grayloon/nova-filemanager/actions/move', {
                 old: oldPath,
                 path: newPath,
             })
@@ -37,7 +37,7 @@ export default {
 
     createFolder(folderName, currentFolder) {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/actions/create-folder', {
+            .post('/nova-vendor/grayloon/nova-filemanager/actions/create-folder', {
                 folder: folderName,
                 current: currentFolder,
             })
@@ -46,7 +46,7 @@ export default {
 
     removeDirectory(currentFolder) {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/actions/delete-folder', {
+            .post('/nova-vendor/grayloon/nova-filemanager/actions/delete-folder', {
                 current: currentFolder,
             })
             .then(response => response.data);
@@ -54,19 +54,19 @@ export default {
 
     getInfo(file) {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/actions/get-info', { file: file })
+            .post('/nova-vendor/grayloon/nova-filemanager/actions/get-info', { file: file })
             .then(response => response.data);
     },
 
     removeFile(file) {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/actions/remove-file', { file: file })
+            .post('/nova-vendor/grayloon/nova-filemanager/actions/remove-file', { file: file })
             .then(response => response.data);
     },
 
     renameFile(file, name) {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/actions/rename-file', {
+            .post('/nova-vendor/grayloon/nova-filemanager/actions/rename-file', {
                 file: file,
                 name: name,
             })
@@ -75,7 +75,7 @@ export default {
 
     rename(path, name) {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/actions/rename', {
+            .post('/nova-vendor/grayloon/nova-filemanager/actions/rename', {
                 path: path,
                 name: name,
             })
@@ -84,7 +84,7 @@ export default {
 
     eventFolderUploaded(path) {
         return window.axios
-            .post('/nova-vendor/infinety-es/nova-filemanager/events/folder', { path: path })
+            .post('/nova-vendor/grayloon/nova-filemanager/events/folder', { path: path })
             .then(response => response.data);
     },
 };

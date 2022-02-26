@@ -144,7 +144,7 @@ export default {
 
         uploadFileToServer(file, data, config) {
             window.axios
-                .post('/nova-vendor/infinety-es/nova-filemanager/uploads/add', data, config)
+                .post('/nova-vendor/grayloon/nova-filemanager/uploads/add', data, config)
                 .then(response => {
                     if (response.data.success == true) {
                         _.forEach(this.files, fileUpload => {
@@ -195,7 +195,7 @@ export default {
             data.append('folder', true);
 
             window.axios
-                .post('/nova-vendor/infinety-es/nova-filemanager/uploads/add', data, config)
+                .post('/nova-vendor/grayloon/nova-filemanager/uploads/add', data, config)
                 .then(response => {
                     if (response.data.success == true) {
                         _.forEach(this.files, fileUpload => {

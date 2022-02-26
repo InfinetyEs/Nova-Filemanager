@@ -1,6 +1,6 @@
 <?php
 
-namespace Infinety\Filemanager\Http\Services;
+namespace Grayloon\Filemanager\Http\Services;
 
 use Carbon\Carbon;
 use Illuminate\Filesystem\FilesystemAdapter;
