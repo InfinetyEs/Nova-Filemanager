@@ -92,9 +92,7 @@ class FileManagerService
             throw InvalidConfig::driverNotSupported();
         }
 
-        $this->storagePath = $this->storage
-            ->getAdapter()
-            ->getPathPrefix();
+        $this->storagePath = $this->storage->path('');
 
         $this->namingStrategy = app()->makeWith(
             config('filemanager.naming', DefaultNamingStrategy::class),
