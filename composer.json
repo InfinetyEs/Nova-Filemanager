@@ -1,5 +1,5 @@
 {
-    "name": "infinety-es/nova-filemanager",
+    "name": "webid/nova-filemanager",
     "description": "Filemanager tool for Laravel Nova",
     "keywords": [
         "laravel",
@@ -22,7 +22,8 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "laravel/nova": "~2.0|~3.0"
+        "laravel/nova": "~2.0|~3.0",
+        "intervention/image": "^2.5"
     },
     "require-dev": {
         "orchestra/testbench": "^3.6",

@@ -6,3 +6,5 @@ composer.phar
 composer.lock
 phpunit.xml
 mix-manifest.json
+.idea
+.DS_Store

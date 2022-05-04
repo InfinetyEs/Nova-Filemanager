@@ -4,6 +4,7 @@ namespace Infinety\Filemanager\Http\Services;
 
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Infinety\Filemanager\Events\FileRemoved;
@@ -11,6 +12,7 @@ use Infinety\Filemanager\Events\FileUploaded;
 use Infinety\Filemanager\Events\FolderRemoved;
 use Infinety\Filemanager\Events\FolderUploaded;
 use Infinety\Filemanager\Http\Exceptions\InvalidConfig;
+use Intervention\Image\Facades\Image;
 use InvalidArgumentException;
 
 class FileManagerService
@@ -52,6 +54,18 @@ class FileManagerService
      */
     protected $namingStrategy;
 
+    /** @var string  */
+    protected $mimeType;
+
+    /** @var string  */
+    protected $webpPath;
+
+    /** @var mixed */
+    protected $storageWebp;
+
+    /** @var string  */
+    protected $webpFolder;
+
     /**
      * @param Storage $storage
      */
@@ -63,12 +77,24 @@ class FileManagerService
         $this->exceptFolders = collect([]);
         $this->exceptExtensions = collect([]);
         $this->globalFilter = null;
+        $this->mimeType = "webp";
+        $this->webpPath = "app/webp/";
+        $this->storageWebp = Storage::disk('local');
+        $this->webpFolder = "/webp/";
+
+        if (!$this->storageWebp->exists($this->webpFolder)) {
+            $this->storageWebp->makeDirectory($this->webpFolder, 0775, true);
+        }
 
         try {
             $this->storage = Storage::disk($this->disk);
         } catch (InvalidArgumentException $e) {
             throw InvalidConfig::driverNotSupported();
         }
+
+        $this->storagePath = $this->storage
+            ->getAdapter()
+            ->getPathPrefix();
 
         $this->namingStrategy = app()->makeWith(
             config('filemanager.naming', DefaultNamingStrategy::class),
@@ -86,6 +112,9 @@ class FileManagerService
     public function ajaxGetFilesAndFolders(Request $request)
     {
         $folder = $this->cleanSlashes($request->get('folder'));
+        $user = Auth::user();
+        $kiosks = [];
+        $catalogues = [];
 
         if (! $this->folderExists($folder)) {
             $folder = '/';
@@ -117,7 +146,7 @@ class FileManagerService
         }
 
         return response()->json([
-            'files'   => $files,
+            'files'   => $files->values(),
             'path'    => $this->getPaths($folder),
             'filters' => $filters,
             'buttons' => $this->getButtons(),
@@ -194,6 +223,19 @@ class FileManagerService
                 event(new FileUploaded($this->storage, $currentFolder.$fileName));
             }
 
+            if (preg_match('/^image\//', $file->getMimeType())) {
+                $webpImg = pathinfo($currentFolder . $fileName, PATHINFO_FILENAME) . ".$this->mimeType";
+                $webpImgPath = storage_path($this->webpPath . $webpImg);
+
+                if ($this->storageWebp->exists($webpImg)) {
+                    $this->storageWebp->delete($webpImg);
+                }
+
+                Image::make($this->storagePath . '/' . $currentFolder . $fileName)
+                    ->encode($this->mimeType, 70)
+                    ->save($webpImgPath);
+            }
+
             return response()->json(['success' => true, 'name' => $fileName]);
         } else {
             return response()->json(['success' => false]);
@@ -267,6 +309,9 @@ class FileManagerService
     public function removeFile($file)
     {
         if ($this->storage->delete($file)) {
+            $webpImg = pathinfo($file, PATHINFO_FILENAME) . ".$this->mimeType";
+            $this->storageWebp->delete($this->webpFolder . $webpImg);
+
             event(new FileRemoved($this->storage, $file));
 
             return response()->json(true);
@@ -286,7 +331,28 @@ class FileManagerService
             if ($this->storage->move($file, $path.$newName)) {
                 $fullPath = $this->storage->path($path.$newName);
 
+                if (preg_match('/^image\//', $file->getMimeType())) {
+                    $oldWebpImg = pathinfo($file, PATHINFO_FILENAME) . ".$this->mimeType";
+
+                    if ($this->storageWebp->exists($this->webpFolder . $oldWebpImg)) {
+                        $this->storageWebp->delete($this->webpFolder . $oldWebpImg);
+                    }
+                }
+
                 $info = new NormalizeFile($this->storage, $fullPath, $path.$newName);
+
+                if (preg_match('/^image\//', $file->getMimeType())) {
+                    $newWebpImg = pathinfo($newName, PATHINFO_FILENAME) . ".$this->mimeType";
+                    $webpImgPath = storage_path($this->webpPath . $newWebpImg);
+
+                    if ($this->storageWebp->exists($this->webpFolder . $newWebpImg)) {
+                        $this->storageWebp->delete($this->webpFolder . $newWebpImg);
+                    }
+
+                    Image::make($this->storagePath . '/' . $path . $newName)
+                        ->encode($this->mimeType, 70)
+                        ->save($webpImgPath);
+                }
 
                 return response()->json(['success' => true, 'data' => $info->toArray()]);
             }
