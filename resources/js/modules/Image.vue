@@ -39,12 +39,12 @@
 <script>
 import { Minimum } from 'laravel-nova';
 
-import Viewer from 'v-viewer/src/component.vue';
+import { component } from 'v-viewer';
 import 'viewerjs/dist/viewer.css';
 
 export default {
     components: {
-        Viewer,
+        component,
     },
 
     props: {
