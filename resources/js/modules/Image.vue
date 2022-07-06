@@ -16,7 +16,7 @@
 
             </div>
 
-            <viewer :options="voptions" :images="images"
+            <component :options="voptions" :images="images"
                     @inited="inited"
                     class="viewer" ref="viewer"
                     v-if="preview"
@@ -25,7 +25,7 @@
                 <template slot-scope="scope">
                     <img :src="file.image" :key="file.id">
                 </template>
-            </viewer>
+            </component>
 
             <div class="missing p-8" v-if="missing">
                 <p class="text-center leading-normal">
@@ -39,12 +39,12 @@
 <script>
 import { Minimum } from 'laravel-nova';
 
-import { Viewer } from 'v-viewer/src/component.vue';
+import { component } from 'v-viewer';
 import 'viewerjs/dist/viewer.css';
 
 export default {
     components: {
-        Viewer,
+        component,
     },
 
     props: {
