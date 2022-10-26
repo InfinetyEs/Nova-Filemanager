@@ -253,7 +253,7 @@ class FileManagerService
                 ])->validate();
             } else {
                 $pases = Validator::make(['file' => $file], [
-                    'file' => 'max:5000|dimensions:max_width=1300px,max_height=1000px',
+                    'file' => 'max:5000',
                 ])->validate();
             }
         } else if (preg_match('/^video\//', $file->getMimeType())) {
