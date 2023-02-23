@@ -4,8 +4,9 @@ namespace Infinety\Filemanager\Http\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use League\Flysystem\FileAttributes;
+use League\Flysystem\StorageAttributes;
 
 trait GetFiles
 {
@@ -27,7 +28,7 @@ trait GetFiles
      */
     public function getFiles($folder, $order, $filter = false)
     {
-        $filesData = $this->storage->listContents($folder);
+        $filesData = $this->listContents($folder);
         $filesData = $this->normalizeFiles($filesData);
         $files = [];
 
@@ -53,6 +54,26 @@ trait GetFiles
         }
 
         return $this->orderData($files, $order, config('filemanager.direction', 'asc'));
+    }
+
+    protected function listContents(string $folder)
+    {
+        $lists = $this->storage->listContents($folder)->map(function(StorageAttributes $attributes) {
+            if($attributes->path() === '.gitignore') {
+                return [];
+            }
+            return [
+                'type' => $attributes->type(),
+                'basename' => basename($attributes->path()),
+                'path' => $attributes->path(),
+                'size' => $attributes instanceof FileAttributes ? $attributes->fileSize() : 0,
+                'visibility' => $attributes->visibility(),
+                'lastModified' => $attributes->lastModified(),
+                'mimeType' => $attributes instanceof FileAttributes ? $this->storage->mimeType($attributes->path()) : null,
+            ];
+        });
+
+        return collect($lists)->filter()->toArray();
     }
 
     /**
@@ -185,7 +206,7 @@ trait GetFiles
      */
     public function setRelativePath($folder)
     {
-        $defaultPath = $this->storage->getDriver()->getAdapter()->getPathPrefix();
+        $defaultPath = $this->storage->path('');
 
         $publicPath = str_replace($defaultPath, '', $folder);
 
@@ -221,7 +242,7 @@ trait GetFiles
             return 'dir';
         }
 
-        $mime = $this->storage->getMimetype($file['path']);
+        $mime = $file['mimeType'];
         $extension = $file['extension'];
 
         if (Str::contains($mime, 'directory')) {
@@ -300,7 +321,7 @@ trait GetFiles
             return false;
         }
 
-        $mime = $this->storage->getMimetype($file['path']);
+        $mime = $file['mimeType'];
         $extension = $file['extension'];
 
         if (Str::contains($mime, 'directory')) {
@@ -453,7 +474,7 @@ trait GetFiles
      */
     public function getPaths($currentFolder)
     {
-        $defaultPath = $this->cleanSlashes($this->storage->getDriver()->getAdapter()->getPathPrefix());
+        $defaultPath = $this->cleanSlashes($this->storage->path(''));
         $currentPath = $this->cleanSlashes($this->storage->path($currentFolder));
 
         $paths = $currentPath;
@@ -499,7 +520,7 @@ trait GetFiles
      */
     private function checkShouldHideFolder($path)
     {
-        $filesData = $this->storage->listContents($path);
+        $filesData = $this->listContents($path);
 
         $key = array_search('.hide', array_column($filesData, 'basename'));
 
