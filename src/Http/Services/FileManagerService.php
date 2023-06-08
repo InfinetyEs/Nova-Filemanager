@@ -175,7 +175,7 @@ class FileManagerService
             if ($files->count() === 0) {
                 $parent = (object) [];
             }
-        } elseif (!$user->root()) {
+        } elseif (!$user->isRoot()) {
             abort(404);
         }
 
