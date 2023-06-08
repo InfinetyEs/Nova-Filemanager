@@ -118,7 +118,11 @@ class FileManagerService
         $kiosks = [];
         $catalogues = [];
 
-        if (! $this->folderExists($folder)) {
+        if (!$this->folderExists($folder)) {
+            if (!$user->isRoot()) {
+                abort(404);
+            }
+
             $folder = '/';
         }
 
@@ -147,7 +151,19 @@ class FileManagerService
             }
         }
 
-        if (strtolower($folder) === strtolower(config("filemanager.folder_kiosk_name"))) {
+        if (str_starts_with($folder, config("filemanager.folder_catalogue_name"))) {
+            foreach ($catalogueRepository->getCataloguesForUser($user) as $catalogue) {
+                array_push($catalogues, $catalogue->name);
+            }
+
+            $files = $files->filter(function ($value, $key) use ($catalogues) {
+                return in_array($value->name, $catalogues);
+            });
+
+            if ($files->count() === 0) {
+                $parent = (object) [];
+            }
+        } elseif (str_starts_with($folder, config("filemanager.folder_kiosk_name"))) {
             foreach ($kioskRepository->getKiosksForUser($user)->toArray() as $kiosk) {
                 array_push($kiosks, $kiosk['name']);
             }
@@ -159,21 +175,10 @@ class FileManagerService
             if ($files->count() === 0) {
                 $parent = (object) [];
             }
+        } elseif (!$user->root()) {
+            abort(404);
         }
 
-        if (strtolower($folder) === strtolower(config("filemanager.folder_catalogue_name"))) {
-            foreach ($catalogueRepository->getCataloguesForUser($user)->toArray() as $catalogue) {
-                array_push($catalogues, $catalogue['name']);
-            }
-
-            $files = $files->filter(function ($value, $key) use ($catalogues) {
-                return in_array($value->name, $catalogues);
-            });
-
-            if ($files->count() === 0) {
-                $parent = (object) [];
-            }
-        }
 
         return response()->json([
             'files'   => $files->values(),
