@@ -2,6 +2,7 @@
 
 namespace Infinety\Filemanager\Http\Services;
 
+use Illuminate\Support\Facades\Artisan;
 use App\Repositories\Kiosk\KioskRepository;
 use App\Repositories\Catalogue\CatalogueRepository;
 use Illuminate\Contracts\Bus\Dispatcher;
@@ -69,6 +70,9 @@ class FileManagerService
     /** @var string  */
     protected $webpFolder;
 
+    /** @var string */
+    protected $centralizedImagesFolderName;
+
     /**
      * @param Storage $storage
      */
@@ -84,6 +88,7 @@ class FileManagerService
         $this->webpPath = "app/webp/";
         $this->storageWebp = Storage::disk('local');
         $this->webpFolder = "/webp/";
+        $this->centralizedImagesFolderName = config('filemanager.folder_centralized_images_name');
 
         if (!$this->storageWebp->exists($this->webpFolder)) {
             $this->storageWebp->makeDirectory($this->webpFolder, 0775, true);
@@ -295,9 +300,20 @@ class FileManagerService
                     $this->storageWebp->delete($webpImg);
                 }
 
-                Image::make($this->storagePath . '/' . $currentFolder . $fileName)
+                $image = Image::make($this->storagePath . '/' . $currentFolder . $fileName)
                     ->encode($this->mimeType, 70)
                     ->save($webpImgPath);
+
+                if (str_starts_with($currentFolder, $this->centralizedImagesFolderName)) {
+                    $base64 = base64_encode($image);
+
+                    Artisan::call('centralized_images:sync:couchdb', [
+                        'image' => [
+                            'docName' => "{$this->centralizedImagesFolderName}/{$fileName}",
+                            'imageB64' => "data:{$this->mimeType};base64, {$base64}"
+                        ]
+                    ]);
+                }
             }
 
             return response()->json(['success' => true, 'name' => $fileName]);
@@ -374,9 +390,19 @@ class FileManagerService
     {
         if ($this->storage->delete($file)) {
             $webpImg = pathinfo($file, PATHINFO_FILENAME) . ".$this->mimeType";
+
             $this->storageWebp->delete($this->webpFolder . $webpImg);
 
             event(new FileRemoved($this->storage, $file));
+
+            if (str_starts_with($file, $this->centralizedImagesFolderName)) {
+                Artisan::call('centralized_images:sync:couchdb', [
+                    'image' => [
+                        'docName' => "{$file}",
+                    ],
+                    '--delete' => true,
+                ]);
+            }
 
             return response()->json(true);
         } else {
@@ -390,12 +416,13 @@ class FileManagerService
     public function renameFile($file, $newName)
     {
         $path = str_replace(basename($file), '', $file);
+        $mimeType = json_decode($this->getFileInfo($file)->content())->mime;
 
         try {
             if ($this->storage->move($file, $path.$newName)) {
                 $fullPath = $this->storage->path($path.$newName);
 
-                if (preg_match('/^image\//', $file->getMimeType())) {
+                if (preg_match('/^image\//', $mimeType)) {
                     $oldWebpImg = pathinfo($file, PATHINFO_FILENAME) . ".$this->mimeType";
 
                     if ($this->storageWebp->exists($this->webpFolder . $oldWebpImg)) {
@@ -405,7 +432,7 @@ class FileManagerService
 
                 $info = new NormalizeFile($this->storage, $fullPath, $path.$newName);
 
-                if (preg_match('/^image\//', $file->getMimeType())) {
+                if (preg_match('/^image\//', $mimeType)) {
                     $newWebpImg = pathinfo($newName, PATHINFO_FILENAME) . ".$this->mimeType";
                     $webpImgPath = storage_path($this->webpPath . $newWebpImg);
 
@@ -413,9 +440,21 @@ class FileManagerService
                         $this->storageWebp->delete($this->webpFolder . $newWebpImg);
                     }
 
-                    Image::make($this->storagePath . '/' . $path . $newName)
+                    $image = Image::make($this->storagePath . '/' . $path . $newName)
                         ->encode($this->mimeType, 70)
                         ->save($webpImgPath);
+
+                    if (str_starts_with($path.$newName, $this->centralizedImagesFolderName)) {
+                        $base64 = base64_encode($image);
+
+                        Artisan::call('centralized_images:sync:couchdb', [
+                            'image' => [
+                                'docName' => $file,
+                                'newName' => "{$this->centralizedImagesFolderName}/{$newName}",
+                                'imageB64' => "data:{$this->mimeType};base64, {$base64}"
+                            ]
+                        ]);
+                    }
                 }
 
                 return response()->json(['success' => true, 'data' => $info->toArray()]);
@@ -438,6 +477,30 @@ class FileManagerService
     public function moveFile($oldPath, $newPath)
     {
         if ($this->storage->move($oldPath, $newPath)) {
+            if (str_starts_with($oldPath, $this->centralizedImagesFolderName)
+                && str_starts_with($newPath, $this->centralizedImagesFolderName)) {
+                $image = $this->storage->get($newPath);
+                $base64 = base64_encode($image);
+
+                Artisan::call('centralized_images:sync:couchdb', [
+                    'image' => [
+                        'docName' => $oldPath,
+                        'newName' => $newPath,
+                        'imageB64' => "data:{$this->mimeType};base64, {$base64}"
+                    ]
+                ]);
+            }
+
+            if (str_starts_with($oldPath, $this->centralizedImagesFolderName)
+                && !str_starts_with($newPath, $this->centralizedImagesFolderName)) {
+                Artisan::call('centralized_images:sync:couchdb', [
+                    'image' => [
+                        'docName' => $oldPath,
+                    ],
+                    '--delete' => true,
+                ]);
+            }
+
             return response()->json(['success' => true]);
         }
 
