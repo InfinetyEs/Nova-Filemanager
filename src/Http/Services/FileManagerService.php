@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Infinety\Filemanager\Events\FileRemoved;
 use Infinety\Filemanager\Events\FileUploaded;
 use Infinety\Filemanager\Events\FolderRemoved;
@@ -151,25 +152,33 @@ class FileManagerService
             }
         }
 
-        if (str_starts_with($folder, config("filemanager.folder_catalogue_name"))) {
+        if (str_starts_with(strtolower($folder), strtolower(config("filemanager.folder_catalogue_name")))) {
             foreach ($catalogueRepository->getCataloguesForUser($user) as $catalogue) {
                 array_push($catalogues, $catalogue->name);
             }
 
-            $files = $files->filter(function ($value, $key) use ($catalogues) {
-                return in_array($value->name, $catalogues);
+            $files = $files->filter(function ($value, $key) use ($catalogues, $user) {
+                if ($user->isRoot()) {
+                    return true;
+                }
+
+                return Str::contains($value->path, $catalogues);
             });
 
             if ($files->count() === 0) {
                 $parent = (object) [];
             }
-        } elseif (str_starts_with($folder, config("filemanager.folder_kiosk_name"))) {
-            foreach ($kioskRepository->getKiosksForUser($user)->toArray() as $kiosk) {
-                array_push($kiosks, $kiosk['name']);
+        } elseif (str_starts_with(strtolower($folder), strtolower(config("filemanager.folder_kiosk_name")))) {
+            foreach ($kioskRepository->getKiosksForUser($user) as $kiosk) {
+                array_push($kiosks, $kiosk->name);
             }
 
-            $files = $files->filter(function ($value, $key) use ($kiosks) {
-                return in_array($value->name, $kiosks);
+            $files = $files->filter(function ($value, $key) use ($kiosks, $user) {
+                if ($user->isRoot()) {
+                    return true;
+                }
+
+                return Str::contains($value->path, $kiosks);
             });
 
             if ($files->count() === 0) {
@@ -178,7 +187,6 @@ class FileManagerService
         } elseif (!$user->isRoot()) {
             abort(404);
         }
-
 
         return response()->json([
             'files'   => $files->values(),
