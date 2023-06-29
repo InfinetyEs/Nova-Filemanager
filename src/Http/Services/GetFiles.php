@@ -99,12 +99,6 @@ trait GetFiles
                 $fileInfo['date'] = $this->modificationDate($file['timestamp']);
             }
 
-            if ($fileInfo['type'] == 'dir') {
-                if (! $this->checkShouldHideFolder($fileInfo['path'])) {
-                    return false;
-                }
-            }
-
             return (object) $fileInfo;
         }
     }
@@ -512,22 +506,5 @@ trait GetFiles
         } catch (\Exception $e) {
             return false;
         }
-    }
-
-    /**
-     * Hide folders with .hide file.
-     * @param $oath
-     */
-    private function checkShouldHideFolder($path)
-    {
-        $filesData = $this->listContents($path);
-
-        $key = array_search('.hide', array_column($filesData, 'basename'));
-
-        if ($key === false) {
-            return true;
-        }
-
-        return false;
     }
 }
